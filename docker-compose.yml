@@ -1,0 +1,11 @@
+version: "3.8" # Define Docker Compose file format version
+
+services: # List of services (containers) to run
+  brandly: # Service name (you can name it anything)
+    build: . # Build the image using Dockerfile in current dir (.)
+    ports: # Map host:container ports
+      - "5173:5173"
+    volumes: # Mount local code into the container (for live updates)
+      - .:/app
+      - /app/node_modules
+    command: yarn dev # Run Vite dev server when the container starts
