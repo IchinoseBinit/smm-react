@@ -67,7 +67,12 @@ export default function Register() {
         </Box>
         <Box bg="white" w={{ base: "90%", md: "50%" }}>
           <Box m={{ base: "0", md: "10" }} mt={{ base: "5", md: "0" }}>
-            <Text fontSize="3xl" fontWeight="bold" whiteSpace="nowrap">
+            <Text
+              fontSize="3xl"
+              fontWeight="bold"
+              whiteSpace="nowrap"
+              color={{ base: "black" }}
+            >
               Brandly
             </Text>
           </Box>
@@ -76,13 +81,18 @@ export default function Register() {
             minW={{ base: "19rem", md: "20rem" }}
             mt={{ base: "8rem", md: "10rem" }}
           >
-            <Text fontSize="2xl" fontWeight="bold" mb={6}>
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              mb={6}
+              color={{ base: "black" }}
+            >
               Register
             </Text>
             <form onSubmit={handleSubmit}>
               <VStack>
                 <Field.Root invalid={!!errors.email}>
-                  <Field.Label fontWeight="semibold">
+                  <Field.Label fontWeight="semibold" color={{ base: "black" }}>
                     Email
                     <Field.RequiredIndicator />
                   </Field.Label>
@@ -92,11 +102,13 @@ export default function Register() {
                     value={formData.email}
                     onChange={handleChange}
                   />
-                  <Field.ErrorText>{errors.email}</Field.ErrorText>
+                  <Field.ErrorText color={{ base: "red.600" }}>
+                    {errors.email}
+                  </Field.ErrorText>
                 </Field.Root>
 
                 <Field.Root invalid={!!errors.password}>
-                  <Field.Label fontWeight="semibold">
+                  <Field.Label fontWeight="semibold" color={{ base: "black" }}>
                     Create Password
                   </Field.Label>
                   <Input
@@ -105,7 +117,9 @@ export default function Register() {
                     value={formData.password}
                     onChange={handleChange}
                   />
-                  <Field.ErrorText>{errors.password}</Field.ErrorText>
+                  <Field.ErrorText color={{ base: "red.600" }}>
+                    {errors.password}
+                  </Field.ErrorText>
                 </Field.Root>
                 <Button
                   type="submit"
@@ -113,6 +127,7 @@ export default function Register() {
                   w="full"
                   bgColor="blue"
                   fontWeight="semibold"
+                  color={{ base: "white" }}
                 >
                   Register
                 </Button>
@@ -123,7 +138,7 @@ export default function Register() {
                   gap={4}
                   fontSize="sm"
                 >
-                  <Text fontSize="md" mt="2">
+                  <Text fontSize="md" mt="2" color={{ base: "black" }}>
                     Already have an account?
                     <Link
                       href="/login"

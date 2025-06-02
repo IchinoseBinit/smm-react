@@ -41,7 +41,7 @@ export default function Login() {
         password: fieldErrors.password?.[0] || "",
       });
     } else {
-      console.log(result.data);
+      alert(`${result.data.email} is login`);
     }
   };
 
@@ -50,7 +50,12 @@ export default function Login() {
       <Flex justify="center" w="100%">
         <Box bg="white" w={{ base: "90%", md: "50%" }}>
           <Box m={{ base: "0", md: "10" }} mt={{ base: "5", md: "0" }}>
-            <Text fontSize="3xl" fontWeight="bold" whiteSpace="nowrap">
+            <Text
+              fontSize="3xl"
+              fontWeight="bold"
+              whiteSpace="nowrap"
+              color={{ base: "black" }}
+            >
               Brandly
             </Text>
           </Box>
@@ -59,13 +64,18 @@ export default function Login() {
             minW={{ base: "19rem", md: "20rem" }}
             mt={{ base: "8rem", md: "10rem" }}
           >
-            <Text fontSize="2xl" fontWeight="bold" mb={6}>
+            <Text
+              fontSize="2xl"
+              fontWeight="bold"
+              mb={6}
+              color={{ base: "black" }}
+            >
               Log in
             </Text>
             <form onSubmit={handleSubmit}>
               <VStack>
                 <Field.Root invalid={!!errors.email}>
-                  <Field.Label fontWeight="semibold">
+                  <Field.Label fontWeight="semibold" color={{ base: "black" }}>
                     Email
                     <Field.RequiredIndicator />
                   </Field.Label>
@@ -75,18 +85,24 @@ export default function Login() {
                     value={formData.email}
                     onChange={handleChange}
                   />
-                  <Field.ErrorText>{errors.email}</Field.ErrorText>
+                  <Field.ErrorText color={{ base: "red" }}>
+                    {errors.email}
+                  </Field.ErrorText>
                 </Field.Root>
 
                 <Field.Root invalid={!!errors.password}>
-                  <Field.Label fontWeight="semibold">Password</Field.Label>
+                  <Field.Label fontWeight="semibold" color={{ base: "black" }}>
+                    Password
+                  </Field.Label>
                   <Input
                     name="password"
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
                   />
-                  <Field.ErrorText>{errors.password}</Field.ErrorText>
+                  <Field.ErrorText color={{ base: "red" }}>
+                    {errors.password}
+                  </Field.ErrorText>
                 </Field.Root>
                 <Button
                   type="submit"
@@ -94,6 +110,7 @@ export default function Login() {
                   w="full"
                   bgColor="blue"
                   fontWeight="semibold"
+                  color={{ base: "white" }}
                 >
                   Log In
                 </Button>
@@ -135,10 +152,9 @@ export default function Login() {
         <Box
           color="white"
           bgColor="blue"
-          border="1px solid black"
           w="100%"
           h="100vh"
-          display={{ base: "none", lg: "block" }}
+          display={{ base: "none", lg: "flex" }}
           overflow="hidden"
         >
           <Box>
