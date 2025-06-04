@@ -1,183 +1,84 @@
-import React from "react";
-import {
-  Box,
-  Button,
-  VStack,
-  Text,
-  Flex,
-  Link,
-  Image,
-  Input,
-  Field,
-} from "@chakra-ui/react";
-import { z } from "zod";
+import { Box, Flex, Text, Image, useBreakpointValue } from "@chakra-ui/react";
+import LoginForm from "./_components/LoginForm";
+import { LuZap } from "react-icons/lu";
 
-const schema = z.object({
-  email: z
-    .string()
-    .nonempty({ message: "Email is required" })
-    .email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters" }),
-});
-
-export default function Login() {
-  const [formData, setFormData] = React.useState({ email: "", password: "" });
-  const [errors, setErrors] = React.useState({ email: "", password: "" });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const result = schema.safeParse(formData);
-    if (!result.success) {
-      const fieldErrors = result.error.flatten().fieldErrors;
-      setErrors({
-        email: fieldErrors.email?.[0] || "",
-        password: fieldErrors.password?.[0] || "",
-      });
-    } else {
-      alert(`${result.data.email} is login`);
-    }
-  };
+function App() {
+  const isMobile = useBreakpointValue({ base: true, lg: false });
 
   return (
-    <Box position="relative" h="100vh" w="100%">
-      <Flex justify="center" w="100%">
-        <Box bg="white" w={{ base: "90%", md: "50%" }}>
-          <Box m={{ base: "0", md: "10" }} mt={{ base: "5", md: "0" }}>
-            <Text
-              fontSize="3xl"
-              fontWeight="bold"
-              whiteSpace="nowrap"
-              color={{ base: "black" }}
-            >
-              Brandly
-            </Text>
-          </Box>
-          <Box
-            m={{ base: "0", md: "20" }}
-            minW={{ base: "19rem", md: "20rem" }}
-            mt={{ base: "8rem", md: "10rem" }}
-          >
-            <Text
-              fontSize="2xl"
-              fontWeight="bold"
-              mb={6}
-              color={{ base: "black" }}
-            >
-              Log in
-            </Text>
-            <form onSubmit={handleSubmit}>
-              <VStack>
-                <Field.Root invalid={!!errors.email}>
-                  <Field.Label fontWeight="semibold" color={{ base: "black" }}>
-                    Email
-                    <Field.RequiredIndicator />
-                  </Field.Label>
-                  <Input
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                  <Field.ErrorText color={{ base: "red" }}>
-                    {errors.email}
-                  </Field.ErrorText>
-                </Field.Root>
-
-                <Field.Root invalid={!!errors.password}>
-                  <Field.Label fontWeight="semibold" color={{ base: "black" }}>
-                    Password
-                  </Field.Label>
-                  <Input
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
-                  <Field.ErrorText color={{ base: "red" }}>
-                    {errors.password}
-                  </Field.ErrorText>
-                </Field.Root>
-                <Button
-                  type="submit"
-                  colorScheme="purple"
-                  w="full"
-                  bgColor="blue"
-                  fontWeight="semibold"
-                  color={{ base: "white" }}
-                >
-                  Log In
-                </Button>
-                <Flex
-                  justify="space-between"
-                  w="full"
-                  fontWeight="semibold"
-                  gap={4}
-                  fontSize="sm"
-                >
-                  <Link
-                    href="/register"
-                    color="gray.400"
-                    _hover={{ color: "gray.600" }}
-                  >
-                    Create an account
-                  </Link>
-                  <Link
-                    href="#"
-                    color="gray.400"
-                    _hover={{ color: "gray.600" }}
-                  >
-                    Forgot your password?
-                  </Link>
-                </Flex>
-              </VStack>
-            </form>
-          </Box>
-          {/* <Box>
-            <Flex mt="8rem" gap={4} fontSize="xs" color="gray.500">
-              <Link href="#">Terms of Service</Link>
-              <Text>•</Text>
-              <Link href="#">Privacy Policy</Link>
-              <Text>•</Text>
-              <Link href="#">Security</Link>
-            </Flex>
-          </Box> */}
-        </Box>
+    <Box minH="100vh" bg="white">
+      <Flex direction={{ base: "column", lg: "row" }} minH="100vh">
+        {/* Form Section */}
         <Box
-          color="white"
-          bgColor="blue"
-          w="100%"
-          h="100vh"
-          display={{ base: "none", lg: "flex" }}
-          overflow="hidden"
+          flex="1"
+          p={{ base: 8, lg: 12 }}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
         >
-          <Box>
-            <Text
-              fontSize="4xl"
-              fontWeight="bold"
-              whiteSpace="wrap"
-              w="70%"
-              mt="18rem"
-              ml="15rem"
+          <Box w="full" maxW="md">
+            <Flex align="center" mb={8}>
+              <Box as={LuZap} color="blue.500" boxSize={8} mr={2} />
+              <Text fontSize="2xl" fontWeight="bold" color="gray.900">
+                Brandly
+              </Text>
+            </Flex>
+            <LoginForm />
+          </Box>
+        </Box>
+
+        {/* Image Section - Only shown on larger screens */}
+        {!isMobile && (
+          <Box flex="1" bg="blue.600" position="relative" overflow="hidden">
+            <Box
+              position="absolute"
+              inset={0}
+              bgGradient="linear(to-br, blue.600, blue.800)"
+              opacity={0.9}
+              zIndex={1}
+            />
+
+            <Box
+              position="relative"
+              zIndex={2}
+              p={12}
+              color="white"
+              maxW="xl"
+              mx="auto"
+              h="full"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
             >
-              Brandly AI Assistant Becomes Social Media Smart
-            </Text>
+              <Text
+                fontSize={{ base: "3xl", md: "4xl" }}
+                fontWeight="bold"
+                mb={6}
+                lineHeight="tight"
+              >
+                Empower your brand with AI-driven social media insights
+              </Text>
+              <Text fontSize="lg" color="blue.100" mb={8}>
+                Unlock the potential of your social presence with intelligent
+                analytics and content strategies.
+              </Text>
+            </Box>
+
             <Image
-              src="https://s3.amazonaws.com/static.buffer.com/login/public/img/ai-assistant-feature@2x.png"
-              alt="AI Assistant Feature"
-              maxW="900px"
-              ml="10rem"
-              borderRadius={30}
+              src="https://img.freepik.com/free-vector/gradient-network-connection-background_23-2148865392.jpg"
+              alt="Digital marketing illustration"
+              position="absolute"
+              inset={0}
+              objectFit="cover"
+              w="full"
+              h="full"
+              opacity={0.4}
             />
           </Box>
-        </Box>
+        )}
       </Flex>
     </Box>
   );
 }
+
+export default App;
