@@ -65,8 +65,11 @@ const LoginForm = () => {
 
         <Stack spaceY={5}>
           <Fieldset.Root color="fg">
-            <Field.Root invalid>
-              <Field.Label>Email address</Field.Label>
+            <Field.Root invalid required>
+              <Field.Label>
+                Email address
+                <Field.RequiredIndicator />
+              </Field.Label>
               <Input
                 type="email"
                 {...register("email")}
@@ -80,8 +83,11 @@ const LoginForm = () => {
               <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
             </Field.Root>
 
-            <Field.Root invalid mt={5}>
-              <Field.Label>Password</Field.Label>
+            <Field.Root invalid mt={5} required>
+              <Field.Label>
+                Password
+                <Field.RequiredIndicator />
+              </Field.Label>
               <Flex position="relative" align="center" w="full">
                 <Input
                   type={showPassword ? "text" : "password"}

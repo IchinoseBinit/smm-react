@@ -24,7 +24,9 @@ const signupSchema = z
         /[^A-Za-z0-9]/,
         "Password must contain at least one special character",
       ),
-    confirmPassword: z.string().optional(),
+    confirmPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters"),
     // agreeToTerms: z.boolean().refine((val) => val === true, {
     //   message: "You must agree to the terms",
     // }),

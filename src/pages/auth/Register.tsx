@@ -132,8 +132,11 @@ const SignUpForm: React.FC = () => {
               <Field.ErrorText>{errors.country?.message}</Field.ErrorText>
             </Field.Root> */}
             <Flex gap={4}>
-              <Field.Root invalid={Boolean(errors.first_name)}>
-                <Field.Label>First Name</Field.Label>
+              <Field.Root invalid={Boolean(errors.first_name)} required>
+                <Field.Label>
+                  First Name
+                  <Field.RequiredIndicator />
+                </Field.Label>
                 <Input
                   {...register("first_name")}
                   placeholder="Enter first name"
@@ -142,8 +145,11 @@ const SignUpForm: React.FC = () => {
                 <Field.ErrorText>{errors.first_name?.message}</Field.ErrorText>
               </Field.Root>
 
-              <Field.Root invalid={Boolean(errors.last_name)}>
-                <Field.Label>Last Name</Field.Label>
+              <Field.Root invalid={Boolean(errors.last_name)} required>
+                <Field.Label>
+                  Last Name
+                  <Field.RequiredIndicator />
+                </Field.Label>
                 <Input
                   {...register("last_name")}
                   placeholder="Enter last name"
@@ -153,8 +159,11 @@ const SignUpForm: React.FC = () => {
               </Field.Root>
             </Flex>
 
-            <Field.Root invalid={Boolean(errors.email)}>
-              <Field.Label>Email Address</Field.Label>
+            <Field.Root invalid={Boolean(errors.email)} required>
+              <Field.Label>
+                Email Address
+                <Field.RequiredIndicator />
+              </Field.Label>
               <Input
                 {...register("email")}
                 type="email"
@@ -199,8 +208,11 @@ const SignUpForm: React.FC = () => {
               </Flex>
             </Fieldset.Root>
 
-            <Field.Root invalid={Boolean(errors.password)}>
-              <Field.Label>Password</Field.Label>
+            <Field.Root invalid={Boolean(errors.password)} required>
+              <Field.Label>
+                Password
+                <Field.RequiredIndicator />
+              </Field.Label>
               <Box position="relative" w="100%">
                 <Input
                   {...register("password")}
@@ -241,8 +253,11 @@ const SignUpForm: React.FC = () => {
               <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
             </Field.Root>
 
-            <Field.Root invalid={Boolean(errors.confirmPassword)}>
-              <Field.Label>Confirm Password</Field.Label>
+            <Field.Root invalid={Boolean(errors.confirmPassword)} required>
+              <Field.Label>
+                Confirm Password
+                <Field.RequiredIndicator />
+              </Field.Label>
               <Box position="relative" w="100%">
                 <Input
                   {...register("confirmPassword")}
