@@ -23,6 +23,7 @@ import useEmailStore from "@/lib/store/useEmailStore";
 
 const SignUpForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { mutate, isPending } = useRegisterUser();
   const navigate = useNavigate();
   const { setEmail } = useEmailStore();
@@ -82,7 +83,9 @@ const SignUpForm: React.FC = () => {
   };
 
   const onSubmit = async (data: SignupFormData) => {
-    mutate(data);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...registerData } = data;
+    mutate(registerData);
     setEmail(data.email);
     reset();
   };
@@ -128,6 +131,27 @@ const SignUpForm: React.FC = () => {
               </NativeSelect.Root>
               <Field.ErrorText>{errors.country?.message}</Field.ErrorText>
             </Field.Root> */}
+            <Flex gap={4}>
+              <Field.Root invalid={Boolean(errors.first_name)}>
+                <Field.Label>First Name</Field.Label>
+                <Input
+                  {...register("first_name")}
+                  placeholder="Enter first name"
+                  borderRadius="md"
+                />
+                <Field.ErrorText>{errors.first_name?.message}</Field.ErrorText>
+              </Field.Root>
+
+              <Field.Root invalid={Boolean(errors.last_name)}>
+                <Field.Label>Last Name</Field.Label>
+                <Input
+                  {...register("last_name")}
+                  placeholder="Enter last name"
+                  borderRadius="md"
+                />
+                <Field.ErrorText>{errors.last_name?.message}</Field.ErrorText>
+              </Field.Root>
+            </Flex>
 
             <Field.Root invalid={Boolean(errors.email)}>
               <Field.Label>Email Address</Field.Label>
@@ -174,31 +198,10 @@ const SignUpForm: React.FC = () => {
                 </Field.Root>
               </Flex>
             </Fieldset.Root>
-            <Flex gap={4}>
-              <Field.Root invalid={Boolean(errors.first_name)}>
-                <Field.Label>First Name</Field.Label>
-                <Input
-                  {...register("first_name")}
-                  placeholder="Enter first name"
-                  borderRadius="md"
-                />
-                <Field.ErrorText>{errors.first_name?.message}</Field.ErrorText>
-              </Field.Root>
-
-              <Field.Root invalid={Boolean(errors.last_name)}>
-                <Field.Label>Last Name</Field.Label>
-                <Input
-                  {...register("last_name")}
-                  placeholder="Enter last name"
-                  borderRadius="md"
-                />
-                <Field.ErrorText>{errors.last_name?.message}</Field.ErrorText>
-              </Field.Root>
-            </Flex>
 
             <Field.Root invalid={Boolean(errors.password)}>
               <Field.Label>Password</Field.Label>
-              <Box position="relative">
+              <Box position="relative" w="100%">
                 <Input
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
@@ -238,6 +241,39 @@ const SignUpForm: React.FC = () => {
               <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
             </Field.Root>
 
+            <Field.Root invalid={Boolean(errors.confirmPassword)}>
+              <Field.Label>Confirm Password</Field.Label>
+              <Box position="relative" w="100%">
+                <Input
+                  {...register("confirmPassword")}
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Re-enter password"
+                  pr="2.5rem"
+                  borderRadius="md"
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  position="absolute"
+                  top="50%"
+                  right="0.5rem"
+                  transform="translateY(-50%)"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={
+                    showConfirmPassword ? "Hide password" : "Show password"
+                  }
+                >
+                  {showConfirmPassword ? (
+                    <LuEyeOff size={18} />
+                  ) : (
+                    <LuEye size={18} />
+                  )}
+                </Button>
+              </Box>
+              <Field.ErrorText>
+                {errors.confirmPassword?.message}
+              </Field.ErrorText>
+            </Field.Root>
             {/* <Field.Root>
               <Checkbox.Root
                 {...register("receiveUpdates")}

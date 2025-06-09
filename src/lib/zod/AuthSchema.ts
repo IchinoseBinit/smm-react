@@ -1,31 +1,39 @@
 import { z } from "zod";
 
-const signupSchema = z.object({
-  // country: z.string().min(1, "Country is required"),
-  email: z.string().email("Invalid email address"),
-  first_name: z.string().min(1, "First name is required"),
-  last_name: z.string().min(1, "Last name is required"),
-  mobile: z
-    .string()
-    .min(10, "Mobile number is too short")
-    .max(10, "Mobile number is too long")
-    .regex(/^\d+$/, "Only digits allowed"),
-  // countryCode: z.string().min(1, "Select country code"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(
-      /[^A-Za-z0-9]/,
-      "Password must contain at least one special character",
-    ),
-  // agreeToTerms: z.boolean().refine((val) => val === true, {
-  //   message: "You must agree to the terms",
-  // }),
-  // receiveUpdates: z.boolean(),
-});
+const signupSchema = z
+  .object({
+    // country: z.string().min(1, "Country is required"),
+    email: z.string().email("Invalid email address"),
+    first_name: z.string().min(1, "First name is required"),
+    last_name: z.string().min(1, "Last name is required"),
+
+    mobile: z
+      .string()
+      .regex(/^\d{10}$/, "Mobile number must be exactly 10 digits")
+      .optional()
+      .or(z.literal("")),
+
+    // countryCode: z.string().min(1, "Select country code"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/[0-9]/, "Password must contain at least one number")
+      .regex(
+        /[^A-Za-z0-9]/,
+        "Password must contain at least one special character",
+      ),
+    confirmPassword: z.string().optional(),
+    // agreeToTerms: z.boolean().refine((val) => val === true, {
+    //   message: "You must agree to the terms",
+    // }),
+    // receiveUpdates: z.boolean(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match",
+  });
 
 const sendOtpSchema = z.object({
   email: z.string().email("Invalid email address"),
