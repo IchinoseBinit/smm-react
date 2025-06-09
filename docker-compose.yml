@@ -1,11 +1,10 @@
-version: "3.8" # Define Docker Compose file format version
+version: "3.8"
 
-services: # List of services (containers) to run
-  brandly: # Service name (you can name it anything)
-    build: . # Build the image using Dockerfile in current dir (.)
-    ports: # Map host:container ports
+services:
+  brandly:
+    container_name: smm-react-prod
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
       - "5173:5173"
-    volumes: # Mount local code into the container (for live updates)
-      - .:/app
-      - /app/node_modules
-    command: yarn dev # Run Vite dev server when the container starts
