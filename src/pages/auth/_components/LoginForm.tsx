@@ -52,7 +52,7 @@ const LoginForm = () => {
   };
 
   return (
-    <Box w="full">
+    <Box w="full" bg="white" className="light">
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Box mb={8}>
           <Text fontSize="3xl" fontWeight="bold" color="gray.900">
@@ -64,7 +64,7 @@ const LoginForm = () => {
         </Box>
 
         <Stack spaceY={5}>
-          <Fieldset.Root>
+          <Fieldset.Root color="fg">
             <Field.Root invalid>
               <Field.Label>Email address</Field.Label>
               <Input
@@ -89,8 +89,8 @@ const LoginForm = () => {
                   pr="2.5rem"
                   borderColor={errors.password ? "red.500" : "gray.300"}
                   _focus={{
-                    borderColor: errors.password ? "red.500" : "blue.500",
-                    boxShadow: `0 0 0 1px ${errors.password ? "red.500" : "blue.500"}`,
+                    borderColor: errors.password ? "red.500" : "gray.500",
+                    boxShadow: `0 0 0 1px ${errors.password ? "red.500" : "gray.500"}`,
                   }}
                 />
                 <IconButton
@@ -112,9 +112,16 @@ const LoginForm = () => {
 
             <Flex justify="space-between" align="center">
               <Checkbox.Root>
+                <Checkbox.HiddenInput />
+                <Checkbox.Control boxSize={4} cursor="pointer" />
                 <Checkbox.Label>Remember me</Checkbox.Label>
               </Checkbox.Root>
-              <Link href="#" color="blue.600" fontSize="sm" fontWeight="medium">
+              <Link
+                href="/reset-password/send-opt"
+                color="green.600"
+                fontSize="sm"
+                fontWeight="medium"
+              >
                 Forgot password?
               </Link>
             </Flex>
@@ -122,7 +129,6 @@ const LoginForm = () => {
 
           <Button
             type="submit"
-            colorScheme="blue"
             size="lg"
             disabled={isPending}
             loadingText="Signing in"
@@ -133,7 +139,7 @@ const LoginForm = () => {
 
           <Text textAlign="center" mt={6} color="gray.600">
             Don't have an account?{" "}
-            <Link href="/register" color="blue.600" fontWeight="medium">
+            <Link href="/register" color="green.600" fontWeight="medium">
               Sign up
             </Link>
           </Text>

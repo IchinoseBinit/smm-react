@@ -15,15 +15,17 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { signupSchema, type SignupFormData } from "@/lib/zod/RegisterSchema";
+import { signupSchema, type SignupFormData } from "@/lib/zod/AuthSchema";
 import { LuArrowLeft, LuEye, LuEyeOff } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { useRegisterUser } from "@/hooks/useAuthUser";
+import useEmailStore from "@/lib/store/useEmailStore";
 
 const SignUpForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { mutate, isPending } = useRegisterUser();
   const navigate = useNavigate();
+  const { setEmail } = useEmailStore();
 
   const calculatePasswordStrength = (password: string): number => {
     if (!password) return 0;
@@ -40,6 +42,7 @@ const SignUpForm: React.FC = () => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
@@ -80,6 +83,8 @@ const SignUpForm: React.FC = () => {
 
   const onSubmit = async (data: SignupFormData) => {
     mutate(data);
+    setEmail(data.email);
+    reset();
   };
 
   return (

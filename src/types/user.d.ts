@@ -21,4 +21,28 @@ type LoginResponse = {
   access: string;
 };
 
-export { RegisterResponse, RegisterUserData, LoginUserData, LoginResponse };
+type TokenError = {
+  response: {
+    data: {
+      detail: string;
+      code: string;
+    };
+  };
+};
+type otpSend = {
+  email: string;
+};
+type changePsw = {
+  email: string;
+  otp: string;
+  password: string;
+};
+export {
+  RegisterResponse,
+  RegisterUserData,
+  LoginUserData,
+  LoginResponse,
+  TokenError,
+  otpSend,
+  changePsw,
+};

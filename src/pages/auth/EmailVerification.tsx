@@ -5,30 +5,53 @@ import {
   Flex,
   Heading,
   Text,
-  PinInput,
-  HStack,
   VStack,
   Link,
   ProgressCircle,
+  Field,
+  PinInput,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router";
 import { toaster } from "@/components/ui/toaster";
 import { LuArrowLeft, LuCircle, LuRefreshCw } from "react-icons/lu";
+import useEmailStore from "@/lib/store/useEmailStore";
+import { verifyOtpSchema, type VerifyOtpFormData } from "@/lib/zod/AuthSchema";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSendOtp, useVerifyOtp } from "@/hooks/useAuthUser";
 
 const EmailVerification: React.FC = () => {
   const navigate = useNavigate();
-  const [otp, setOtp] = useState("");
   const [timeLeft, setTimeLeft] = useState(60);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
-  const timerRef = useRef<number | null>(null);
+  const timerRef = useRef<any | null>(null);
 
-  // Get email from session storage
-  const signupData = sessionStorage.getItem("signupData");
-  const email = signupData ? JSON.parse(signupData).email : "";
+  const { email } = useEmailStore();
+  const { mutate: sendOtp } = useSendOtp();
+  const { mutate: verifyOtp } = useVerifyOtp();
 
-  // Masked email for display
+  const sendOtpFunc = (e: string) => {
+    sendOtp(e);
+  };
+  useEffect(() => {
+    if (!email) {
+      navigate("/register");
+    }
+    sendOtpFunc(email);
+  }, [email, navigate]);
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<VerifyOtpFormData>({
+    resolver: zodResolver(verifyOtpSchema),
+    defaultValues: {},
+  });
+
   const maskEmail = (email: string) => {
     if (!email) return "";
     const [username, domain] = email.split("@");
@@ -40,82 +63,34 @@ const EmailVerification: React.FC = () => {
   };
 
   useEffect(() => {
-    // Start the countdown timer
     startTimer();
-
     return () => {
-      // Clean up timer on unmount
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
+      if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);
 
   const startTimer = () => {
     setTimeLeft(60);
-
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
-
+    if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          if (timerRef.current) clearInterval(timerRef.current);
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
           return 0;
         }
-        return prevTime - 1;
+        return prev - 1;
       });
     }, 1000);
-  };
-
-  // @ts-expect-error: will sovle it later
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleOtpChange = (value: string) => {
-    setOtp(value);
-  };
-
-  const handleVerify = () => {
-    if (otp.length !== 6) {
-      toaster.error({
-        title: "Invalid code",
-        description: "Please enter the 6-digit verification code",
-        duration: 3000,
-      });
-      return;
-    }
-
-    setIsVerifying(true);
-
-    // Simulate verification process
-    setTimeout(() => {
-      setIsVerifying(false);
-      setVerificationSuccess(true);
-
-      toaster.success({
-        title: "Email verified!",
-        description: "Your account has been successfully created",
-        duration: 5000,
-      });
-
-      // Redirect to home/dashboard after short delay
-      setTimeout(() => {
-        sessionStorage.removeItem("signupData"); // Clean up
-        navigate("/");
-      }, 2000);
-    }, 1500);
   };
 
   const handleResendCode = () => {
     if (timeLeft > 0) return;
 
     setIsResending(true);
-
-    // Simulate resending OTP
     setTimeout(() => {
       setIsResending(false);
+      sendOtpFunc(email);
       startTimer();
-
       toaster.success({
         title: "Code resent",
         description: `We've sent a new verification code to ${maskEmail(email)}`,
@@ -124,8 +99,20 @@ const EmailVerification: React.FC = () => {
     }, 1000);
   };
 
+  const onSubmit = (data: VerifyOtpFormData) => {
+    const datas = { email, otp: data.otp.join() };
+    setIsVerifying(true);
+    setTimeout(() => {
+      setIsVerifying(false);
+      verifyOtp(datas);
+      setVerificationSuccess(true);
+    }, 1500);
+  };
+
   return (
     <Box
+      as="form"
+      onSubmit={handleSubmit(onSubmit)}
       bg="white"
       boxShadow="md"
       borderRadius="lg"
@@ -175,21 +162,29 @@ const EmailVerification: React.FC = () => {
               to verify your email address.
             </Text>
 
-            <Box py={4}>
-              <HStack justify="center" spaceX={4}>
-                <PinInput.Root>
-                  <PinInput.HiddenInput />
-                  <PinInput.Control>
-                    <PinInput.Input index={0} />
-                    <PinInput.Input index={1} />
-                    <PinInput.Input index={2} />
-                    <PinInput.Input index={3} />
-                    <PinInput.Input index={4} />
-                    <PinInput.Input index={5} />
-                  </PinInput.Control>
-                </PinInput.Root>
-              </HStack>
-            </Box>
+            <Field.Root invalid={!!errors.otp}>
+              <Controller
+                control={control}
+                name="otp"
+                render={({ field }) => (
+                  <PinInput.Root
+                    value={field.value}
+                    onValueChange={(e) => field.onChange(e.value)}
+                  >
+                    <PinInput.HiddenInput />
+                    <PinInput.Control>
+                      <PinInput.Input index={0} />
+                      <PinInput.Input index={1} />
+                      <PinInput.Input index={2} />
+                      <PinInput.Input index={3} />
+                      <PinInput.Input index={4} />
+                      <PinInput.Input index={5} />
+                    </PinInput.Control>
+                  </PinInput.Root>
+                )}
+              />
+              <Field.ErrorText>{errors.otp?.message}</Field.ErrorText>
+            </Field.Root>
 
             <Flex justify="center" align="center" direction="column">
               <ProgressCircle.Root
@@ -214,14 +209,14 @@ const EmailVerification: React.FC = () => {
             </Flex>
 
             <Button
+              type="submit"
               colorScheme="brand"
               size="lg"
               w="100%"
               mt={4}
-              onClick={handleVerify}
               loading={isVerifying}
               loadingText="Verifying"
-              disabled={otp.length !== 6}
+              disabled={watch("otp")?.length !== 6}
               _hover={{ transform: "translateY(-2px)", boxShadow: "md" }}
               transition="all 0.2s"
             >

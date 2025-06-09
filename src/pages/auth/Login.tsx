@@ -1,12 +1,29 @@
-import { Box, Flex, Text, Image, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Text,
+  Image,
+  useBreakpointValue,
+  Icon,
+} from "@chakra-ui/react";
 import LoginForm from "./_components/LoginForm";
 import { LuZap } from "react-icons/lu";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
-function App() {
+function Login() {
   const isMobile = useBreakpointValue({ base: true, lg: false });
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
-    <Box minH="100vh" bg="white">
+    <Box minH="100vh" bg="white" className="light">
       <Flex direction={{ base: "column", lg: "row" }} minH="100vh">
         {/* Form Section */}
         <Box
@@ -18,9 +35,15 @@ function App() {
         >
           <Box w="full" maxW="md">
             <Flex align="center" mb={8}>
-              <Box as={LuZap} color="blue.500" boxSize={8} mr={2} />
+              <Icon
+                as={LuZap}
+                _dark={{ color: "secondary.500" }}
+                color="secondary.500"
+                boxSize={8}
+                mr={2}
+              />
               <Text fontSize="2xl" fontWeight="bold" color="gray.900">
-                Brandly
+                Socially
               </Text>
             </Flex>
             <LoginForm />
@@ -81,4 +104,4 @@ function App() {
   );
 }
 
-export default App;
+export default Login;
