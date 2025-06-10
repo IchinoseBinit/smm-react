@@ -18,6 +18,7 @@ import type {
   RegisterUserData,
 } from "@/types/user";
 import { getTokenExpiry } from "@/lib/token";
+import { useAuth } from "./useAuth";
 
 const useRegisterUser = () => {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const useRegisterUser = () => {
 };
 
 const useLoginUser = () => {
-  const navigate = useNavigate();
+  const { recheckAuth } = useAuth();
   return useMutation({
     mutationFn: (loginData: LoginUserData) => loginUser(loginData),
     onSuccess: (data) => {
@@ -75,7 +76,7 @@ const useLoginUser = () => {
         title: "Login successful",
         duration: 5000,
       });
-      navigate("/");
+      recheckAuth();
     },
 
     onError: (error: {

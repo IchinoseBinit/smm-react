@@ -1,5 +1,5 @@
 // AuthContext.tsx
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { getTokenExpiry } from "../token";
 import { useRefreshToken } from "@/hooks/useAuthUser";
@@ -11,8 +11,7 @@ interface Props {
 export const AuthProvider = ({ children }: Props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { mutate } = useRefreshToken();
-
-  useEffect(() => {
+  const recheckAuth = useCallback(() => {
     const access_token = Cookies.get("access_token");
     const refresh_token = Cookies.get("refresh_token");
 
@@ -28,8 +27,12 @@ export const AuthProvider = ({ children }: Props) => {
     }
   }, [mutate]);
 
+  useEffect(() => {
+    recheckAuth();
+  }, [recheckAuth]);
+
   return (
-    <AuthContext.Provider value={{ user: null, isAuthenticated }}>
+    <AuthContext.Provider value={{ user: null, isAuthenticated, recheckAuth }}>
       {children}
     </AuthContext.Provider>
   );
