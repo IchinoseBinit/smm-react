@@ -136,7 +136,7 @@ const LoginForm = () => {
           <Button
             type="submit"
             size="lg"
-            disabled={isPending}
+            loading={isPending}
             loadingText="Signing in"
             w="full"
           >

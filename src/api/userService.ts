@@ -42,7 +42,7 @@ const refreshToken = async (refreshToken: string): Promise<LoginResponse> => {
   try {
     const { data } = await axios.post<LoginResponse>(
       API_ROUTES.AUTH.REFRESH_TOKEN,
-      { refresh_token: refreshToken },
+      { refresh: refreshToken },
     );
     return data;
   } catch (err) {
@@ -70,7 +70,10 @@ type otpProps = {
 //verify otp
 const verifyOtp = async (d: otpProps) => {
   try {
-    const { data } = await axios.post(API_ROUTES.AUTH.UPDATE_PSW, d);
+    const { data } = await axios.post(API_ROUTES.AUTH.UPDATE_PSW, {
+      email: d.email,
+      otp: d.otp.split(",").join(""),
+    });
     return data;
   } catch (err) {
     const error = err as AxiosError<{ message: string }>;

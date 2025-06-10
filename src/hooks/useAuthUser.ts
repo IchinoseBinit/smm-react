@@ -18,7 +18,6 @@ import type {
   RegisterUserData,
 } from "@/types/user";
 import { getTokenExpiry } from "@/lib/token";
-import type { AxiosError } from "axios";
 
 const useRegisterUser = () => {
   const navigate = useNavigate();
@@ -134,19 +133,20 @@ const useRefreshToken = () => {
       });
       navigate("/");
     },
-    onError: (error: AxiosError<{ code?: string; detail?: string }>) => {
-      if (error?.response?.data?.code === "token_not_valid") {
+
+    onError: (error: { code?: string; detail?: string }) => {
+      const code = error?.code;
+      const detail = error?.detail;
+
+      if (code === "token_not_valid") {
         Cookies.remove("access_token");
         Cookies.remove("refresh_token");
         navigate("/login");
       }
 
-      console.error("Refresh token failed:", error);
       toaster.error({
         title: "Error",
-        description:
-          error.response?.data?.detail ||
-          "Something went wrong. Please try again.",
+        description: detail || "An unexpected error occurred.",
         duration: 5000,
       });
     },
@@ -159,7 +159,7 @@ const useSendOtp = () => {
     mutationFn: (email: string) => sendOtp(email),
     onSuccess: () => {
       // navigate to dashboard (use your router here)
-      toaster.create({
+      toaster.success({
         title: "Otp code sent",
         description: "please check your email",
         duration: 5000,
@@ -199,14 +199,21 @@ const useVerifyOtp = () => {
         duration: 5000,
       });
     },
-    onError: (error) => {
+    onError: (error: { error: string }) => {
       // you can parse error.message or error.validationErrors
-      console.error("otp sent failed:", error);
-      toaster.error({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        duration: 5000,
-      });
+      if (error.error === "Invalid email or OTP") {
+        toaster.error({
+          title: "Invalid email or OTP",
+          description: "Please try again",
+          duration: 5000,
+        });
+      } else {
+        toaster.error({
+          title: "Error",
+          description: "Something went wrong. Please try again.",
+          duration: 5000,
+        });
+      }
     },
   });
 };

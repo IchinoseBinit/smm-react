@@ -21,7 +21,7 @@ export default function ResetPsw() {
   const [showPassword, setShowPassword] = useState(false);
   const { email } = useEmailStore();
   const navigate = useNavigate();
-  const { mutate } = useChangePassword();
+  const { mutate, isPending } = useChangePassword();
 
   useEffect(() => {
     if (!email) {
@@ -180,6 +180,7 @@ export default function ResetPsw() {
           size="lg"
           w="100%"
           mt={6}
+          loading={isPending}
           loadingText="Resetting Password"
           _hover={{ transform: "translateY(-2px)", boxShadow: "md" }}
           transition="all 0.2s"

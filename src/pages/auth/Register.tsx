@@ -323,7 +323,7 @@ const SignUpForm: React.FC = () => {
             size="lg"
             w="100%"
             mt={4}
-            disabled={isPending}
+            loading={isPending}
             loadingText="Creating Account"
             _hover={{ transform: "translateY(-2px)", boxShadow: "md" }}
             transition="all 0.2s"

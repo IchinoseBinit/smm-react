@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }: Props) => {
       return;
     }
     const access_exp = getTokenExpiry(access_token);
-    if (access_token && Date.now() < access_exp * 1000) {
+    if (Date.now() < access_exp * 1000) {
       setIsAuthenticated(true);
     } else {
       mutate(refresh_token);
