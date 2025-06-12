@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Box,
   Button,
@@ -25,21 +25,24 @@ const EmailVerification: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(60);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const timerRef = useRef<any | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { email } = useEmailStore();
   const { mutate: sendOtp } = useSendOtp();
   const { mutate: verifyOtp } = useVerifyOtp();
 
-  const sendOtpFunc = (e: string) => {
-    sendOtp(e);
-  };
+  const sendOtpFunc = useCallback(
+    (e: string) => {
+      sendOtp(e);
+    },
+    [sendOtp],
+  );
   useEffect(() => {
     if (!email) {
       navigate("/register");
     }
     sendOtpFunc(email);
-  }, [email, navigate]);
+  }, [email, navigate, sendOtpFunc]);
 
   const {
     control,
@@ -74,7 +77,7 @@ const EmailVerification: React.FC = () => {
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(timerRef.current);
+          clearInterval(timerRef.current as ReturnType<typeof setInterval>);
           return 0;
         }
         return prev - 1;
@@ -151,7 +154,13 @@ const EmailVerification: React.FC = () => {
                   onValueChange={(e) => field.onChange(e.value)}
                 >
                   <PinInput.HiddenInput />
-                  <PinInput.Control>
+                  <PinInput.Control
+                    display="flex"
+                    flexDirection="row"
+                    justifyContent={{ base: "center", md: "space-between" }}
+                    gap={5}
+                    ml={{ base: 0, md: 5 }}
+                  >
                     <PinInput.Input index={0} />
                     <PinInput.Input index={1} />
                     <PinInput.Input index={2} />
@@ -204,7 +213,7 @@ const EmailVerification: React.FC = () => {
 
           <Text fontSize="sm" textAlign="center" color="gray.600">
             Didn't receive the email? Check your spam folder or{" "}
-            <Link color="brand.500" href="#" onClick={() => navigate("/")}>
+            <Link color="brand.500" href="/register">
               try using a different email address
             </Link>
           </Text>

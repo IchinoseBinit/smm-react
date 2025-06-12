@@ -1,5 +1,4 @@
-// AuthContext.tsx
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { getTokenExpiry } from "../token";
 import { useRefreshToken } from "@/hooks/useAuthUser";
@@ -8,13 +7,13 @@ import { AuthContext } from "./authContext";
 interface Props {
   children: React.ReactNode;
 }
+
 export const AuthProvider = ({ children }: Props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { mutate } = useRefreshToken();
+  const [isLoading, setIsLoading] = useState(true);
 
-  const recheckAuth = useCallback(() => {
-    setIsLoading(true);
+  useEffect(() => {
     const access_token = Cookies.get("access_token");
     const refresh_token = Cookies.get("refresh_token");
 
@@ -24,7 +23,7 @@ export const AuthProvider = ({ children }: Props) => {
       return;
     }
 
-    if (access_token && Date.now() < getTokenExpiry(access_token) * 1000) {
+    if (access_token && new Date() < getTokenExpiry(access_token)) {
       setIsAuthenticated(true);
       setIsLoading(false);
       return;
@@ -42,14 +41,8 @@ export const AuthProvider = ({ children }: Props) => {
     });
   }, [mutate]);
 
-  useEffect(() => {
-    recheckAuth();
-  }, [recheckAuth]);
-
   return (
-    <AuthContext.Provider
-      value={{ user: null, isAuthenticated, recheckAuth, isLoading }}
-    >
+    <AuthContext.Provider value={{ user: null, isAuthenticated, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

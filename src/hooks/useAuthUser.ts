@@ -11,57 +11,37 @@ import {
 import { toaster } from "@/components/ui/toaster";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
-import type {
-  changePsw,
-  LoginUserData,
-  RegisterResponse,
-  RegisterUserData,
-} from "@/types/user";
+import type { changePsw, LoginUserData, RegisterUserData } from "@/types/user";
 import { getTokenExpiry } from "@/lib/token";
-import { useAuth } from "./useAuth";
 
 const useRegisterUser = () => {
   const navigate = useNavigate();
   return useMutation({
     mutationFn: (newUser: RegisterUserData) => registerUser(newUser),
-    onSuccess: (data: RegisterResponse) => {
+    onSuccess: () => {
       // navigate to dashboard (use your router here)
       navigate("/verify-otp");
-      toaster.create({
-        title: "Verification code sent",
-        description: `We've sent a verification code to ${data.email}`,
-        duration: 5000,
-      });
     },
-    onError: (error: { email: [string] }) => {
-      // you can parse error.message or error.validationErrors
-      console.error("Registration failed:", error.email);
-      if (error.email[0] === "user with this email already exists.") {
-        toaster.error({
-          title: "User already exists",
-          description: "Please try with a different email",
-          duration: 5000,
-        });
-      } else {
-        toaster.error({
-          title: "Error",
-          description: "Something went wrong. Please try again.",
-          duration: 5000,
-        });
-      }
+    onError: (error: Error) => {
+      console.log(error);
+      toaster.error({
+        title: "Login failed",
+        description: error.message,
+      });
     },
   });
 };
 
 const useLoginUser = () => {
-  const { recheckAuth } = useAuth();
   return useMutation({
     mutationFn: (loginData: LoginUserData) => loginUser(loginData),
     onSuccess: (data) => {
       // navigate to dashboard (use your router here)
       const { access, refresh } = data;
+
       const access_exp = getTokenExpiry(access);
       const refresh_exp = getTokenExpiry(refresh);
+
       Cookies.set("access_token", access, {
         expires: access_exp,
       });
@@ -72,34 +52,18 @@ const useLoginUser = () => {
         title: "Login successful",
         duration: 5000,
       });
-      recheckAuth();
     },
-
-    onError: (error: { error: string }) => {
-      if (typeof error === "object") {
-        if (error.error === "Email not found.") {
-          toaster.error({
-            title: "Email not found",
-            description: "Please check your email and try again",
-          });
-        } else if (error.error === "Password not matched.") {
-          toaster.error({
-            title: "Incorrect password",
-            description: "Please check your password and try again",
-          });
-        } else {
-          toaster.error({
-            title: "Unexpected Error",
-            description: "Please try again",
-          });
-        }
-      }
+    onError: (error: Error) => {
+      console.log(error);
+      toaster.error({
+        title: "Login failed",
+        description: error.message,
+      });
     },
   });
 };
 
 const useRefreshToken = () => {
-  const navigate = useNavigate();
   return useMutation({
     mutationFn: (refresh_token: string) => refreshToken(refresh_token),
     onSuccess: (data) => {
@@ -113,23 +77,13 @@ const useRefreshToken = () => {
       Cookies.set("refresh_token", refresh, {
         expires: refresh_exp,
       });
-      navigate("/");
     },
 
-    onError: (error: { code?: string; detail?: string }) => {
-      const code = error?.code;
-      const detail = error?.detail;
-
-      if (code === "token_not_valid") {
-        Cookies.remove("access_token");
-        Cookies.remove("refresh_token");
-        navigate("/login");
-      }
-
+    onError: (error: Error) => {
+      console.log(error);
       toaster.error({
-        title: "Error",
-        description: detail || "An unexpected error occurred.",
-        duration: 5000,
+        title: "Refresh token failed",
+        description: error.message,
       });
     },
   });
@@ -147,55 +101,34 @@ const useSendOtp = () => {
         duration: 5000,
       });
     },
-    onError: (error: { error: string }) => {
-      // you can parse error.message or error.validationErrors
-      console.error("Registration failed:", error.error);
-      if (error.error === "User not found") {
-        toaster.error({
-          title: "User doesn't exists!",
-          description: "Please try with a different email",
-          duration: 5000,
-        });
-      } else {
-        toaster.error({
-          title: "Error",
-          description: "Something went wrong. Please try again.",
-          duration: 5000,
-        });
-      }
+    onError: (error: Error) => {
+      console.log(error);
+      toaster.error({
+        title: "Send Otp failed",
+        description: error.message,
+      });
     },
   });
 };
 
 // verify otp
 const useVerifyOtp = () => {
-  const navigate = useNavigate();
   return useMutation({
     mutationFn: (d: { email: string; otp: string }) => verifyOtp(d),
     onSuccess: () => {
       // navigate to dashboard (use your router here)
-      navigate("/login");
       toaster.success({
         title: "Email verified!",
         description: "Your account has been successfully created",
         duration: 5000,
       });
     },
-    onError: (error: { error: string }) => {
-      // you can parse error.message or error.validationErrors
-      if (error.error === "Invalid email or OTP") {
-        toaster.error({
-          title: "Invalid email or OTP",
-          description: "Please try again",
-          duration: 5000,
-        });
-      } else {
-        toaster.error({
-          title: "Error",
-          description: "Something went wrong. Please try again.",
-          duration: 5000,
-        });
-      }
+    onError: (error: Error) => {
+      console.log(error);
+      toaster.error({
+        title: "Verify Otp failed",
+        description: error.message,
+      });
     },
   });
 };
@@ -212,22 +145,12 @@ const useChangePassword = () => {
       });
       navigate("/login");
     },
-    onError: (error: { error: string }) => {
-      // you can parse error.message or error.validationErrors
-      console.error("password changed failed:", error);
-      if (error.error === "Invalid email or OTP") {
-        toaster.error({
-          title: "Invalid email or OTP",
-          description: "Please try again",
-          duration: 5000,
-        });
-      } else {
-        toaster.error({
-          title: "Error",
-          description: "Something went wrong. Please try again.",
-          duration: 5000,
-        });
-      }
+    onError: (error: Error) => {
+      console.log(error);
+      toaster.error({
+        title: "change password failed",
+        description: error.message,
+      });
     },
   });
 };

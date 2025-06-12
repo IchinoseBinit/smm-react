@@ -20,8 +20,9 @@ const registerUser = async (
     );
     return data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string }>;
-    throw error.response?.data || { message: error.message };
+    const error = err as AxiosError<{ error: string }>;
+    const message = error.response?.data?.error || error.message;
+    throw new Error(message);
   }
 };
 
@@ -33,8 +34,9 @@ const loginUser = async (userData: LoginUserData): Promise<LoginResponse> => {
     );
     return data;
   } catch (err) {
-    const error = err as AxiosError;
-    throw error.response?.data ?? { message: error.message };
+    const error = err as AxiosError<{ error: string }>;
+    const message = error.response?.data?.error || error.message;
+    throw new Error(message);
   }
 };
 
@@ -46,20 +48,21 @@ const refreshToken = async (refreshToken: string): Promise<LoginResponse> => {
     );
     return data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string }>;
-    throw error.response?.data || { message: error.message };
+    const error = err as AxiosError<{ error: string }>;
+    const message = error.response?.data?.error || error.message;
+    throw new Error(message);
   }
 };
 // send otp
+
 const sendOtp = async (email: string) => {
   try {
-    const { data } = await axios.post(API_ROUTES.AUTH.SEND_OTP, {
-      email,
-    });
+    const { data } = await axios.post(API_ROUTES.AUTH.SEND_OTP, { email });
     return data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string }>;
-    throw error.response?.data || { message: error.message };
+    const error = err as AxiosError<{ error: string }>;
+    const message = error.response?.data?.error || error.message;
+    throw new Error(message);
   }
 };
 
@@ -76,8 +79,9 @@ const verifyOtp = async (d: otpProps) => {
     });
     return data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string }>;
-    throw error.response?.data || { message: error.message };
+    const error = err as AxiosError<{ error: string }>;
+    const message = error.response?.data?.error || error.message;
+    throw new Error(message);
   }
 };
 
@@ -87,8 +91,9 @@ const changePassword = async (Data: changePsw) => {
     const { data } = await axios.post(API_ROUTES.AUTH.UPDATE_PSW, Data);
     return data;
   } catch (err) {
-    const error = err as AxiosError<{ message: string }>;
-    throw error.response?.data || { message: error.message };
+    const error = err as AxiosError<{ error: string }>;
+    const message = error.response?.data?.error || error.message;
+    throw new Error(message);
   }
 };
 

@@ -11,7 +11,7 @@ import {
 } from "react-icons/fi";
 
 const navItems = [
-  { label: "Dashboard", icon: FiHome, href: "dashboard" },
+  { label: "Dashboard", icon: FiHome, href: "/" },
   { label: "Analytics", icon: FiBarChart2, href: "analytics" },
   { label: "Publishing", icon: FiEdit2, href: "publishing" },
   { label: "Engagement", icon: FiUsers, href: "engagement" },

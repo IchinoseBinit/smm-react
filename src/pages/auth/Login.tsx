@@ -8,20 +8,9 @@ import {
 } from "@chakra-ui/react";
 import LoginForm from "./_components/LoginForm";
 import { LuZap } from "react-icons/lu";
-import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router";
-import { useEffect } from "react";
 
 function Login() {
   const isMobile = useBreakpointValue({ base: true, lg: false });
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
-    }
-  }, [isAuthenticated, navigate]);
-
   return (
     <Box minH="100vh" bg="white" className="light">
       <Flex direction={{ base: "column", lg: "row" }} minH="100vh">
@@ -52,7 +41,7 @@ function Login() {
 
         {/* Image Section - Only shown on larger screens */}
         {!isMobile && (
-          <Box flex="1" bg="blue.600" position="relative" overflow="hidden">
+          <Box flex="1" bg="gray.700" position="relative" overflow="hidden">
             <Box
               position="absolute"
               inset={0}

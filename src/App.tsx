@@ -1,42 +1,42 @@
-import { Route, Routes, useNavigate } from "react-router";
-import Register from "./pages/auth/Register";
-import EmailVerification from "./pages/auth/EmailVerification";
-import Login from "./pages/auth/Login";
-import SendOtp from "./pages/auth/SendOtp";
-import ResetPsw from "./pages/auth/ResetPsw";
-import {
-  ProtectedRoutesWithAuth,
-  ProtectedRoutesWithUI,
-} from "./lib/ProtectedRoutes";
-import Dashboard from "./pages/dashboard/Dashboard";
+import { Routes, Route, Navigate } from "react-router";
 import { useAuth } from "./hooks/useAuth";
-import { useEffect } from "react";
+import { ProtectedRoutesWithAuth } from "./lib/ProtectedRoutes";
+import Login from "./pages/auth/Login";
+import Dashboard from "./pages/dashboard/Dashboard";
+import DashboardLayout from "./pages/dashboard/layout";
+import Analytics from "./pages/dashboard/Analytics";
 
-const App = () => {
-  const navigate = useNavigate();
-  const { isLoading, isAuthenticated, recheckAuth } = useAuth();
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
-    }
-  }, [isLoading, isAuthenticated, navigate, recheckAuth]);
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+function App() {
+  const { user, isLoading } = useAuth();
+  if (isLoading) return;
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/verify-otp" element={<EmailVerification />} />
-      <Route path="/reset-password/send-opt" element={<SendOtp />} />
-      <Route path="/reset-password" element={<ResetPsw />} />
-
-      <Route element={<ProtectedRoutesWithAuth />}>
-        <Route element={<ProtectedRoutesWithUI />}>
-          <Route path="/" element={<Dashboard />} />
+    <>
+      <Routes>
+        <Route
+          path="/login"
+          element={user ? <Navigate to="/" replace /> : <Login />}
+        />
+        <Route element={<ProtectedRoutesWithAuth />}>
+          <Route
+            path="/"
+            element={
+              <DashboardLayout>
+                <Dashboard />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <DashboardLayout>
+                <Analytics />
+              </DashboardLayout>
+            }
+          />
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </>
   );
-};
+}
+
 export default App;
