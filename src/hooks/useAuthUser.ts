@@ -63,12 +63,12 @@ const useLoginUser = () => {
       const access_exp = getTokenExpiry(access);
       const refresh_exp = getTokenExpiry(refresh);
       Cookies.set("access_token", access, {
-        secure: true,
+        secure: false,
         sameSite: "Strict",
         expires: access_exp,
       });
       Cookies.set("refresh_token", refresh, {
-        secure: true,
+        secure: false,
         sameSite: "Strict",
         expires: refresh_exp,
       });
@@ -112,12 +112,12 @@ const useRefreshToken = () => {
       const access_exp = getTokenExpiry(access);
       const refresh_exp = getTokenExpiry(refresh);
       Cookies.set("access_token", access, {
-        secure: true,
+        secure: false,
         sameSite: "Strict",
         expires: access_exp,
       });
       Cookies.set("refresh_token", refresh, {
-        secure: true,
+        secure: false,
         sameSite: "Strict",
         expires: refresh_exp,
       });
