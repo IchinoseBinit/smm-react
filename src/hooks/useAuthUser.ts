@@ -79,35 +79,24 @@ const useLoginUser = () => {
       recheckAuth();
     },
 
-    onError: (error: {
-      email?: string;
-      password?: string[];
-      message?: string;
-    }) => {
-      console.error("Login failed:", error);
-
+    onError: (error: { error: string }) => {
       if (typeof error === "object") {
-        if (error.email) {
+        if (error.error === "Email not found.") {
           toaster.error({
-            title: "Login Error",
-            description: error.email,
+            title: "Email not found",
+            description: "Please check your email and try again",
           });
-        } else if (Array.isArray(error.password)) {
+        } else if (error.error === "Password not matched.") {
           toaster.error({
             title: "Incorrect password",
-            description: error.password[0],
+            description: "Please check your password and try again",
           });
-        } else if (error.message) {
+        } else {
           toaster.error({
-            title: "Error",
-            description: error.message,
+            title: "Unexpected Error",
+            description: "Please try again",
           });
         }
-      } else {
-        toaster.error({
-          title: "Unexpected Error",
-          description: "Please try again",
-        });
       }
     },
   });

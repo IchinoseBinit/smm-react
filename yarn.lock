@@ -236,6 +236,11 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.27.1"
 
+"@chakra-ui/charts@^3.20.0":
+  version "3.20.0"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/charts/-/charts-3.20.0.tgz#19ca9c9c86ab1ee1d59068f0a5c246178bc1a108"
+  integrity sha512-sbDKBwZ+kpTtTnc6hFEQbF10lXUjw/u8/ukvXX7lELWF4FEs3DtpQoWfygdMYLo5i/ifDdz2RDrVvUU9NdfXYg==
+
 "@chakra-ui/react@^3.19.2":
   version "3.19.2"
   resolved "https://registry.yarnpkg.com/@chakra-ui/react/-/react-3.19.2.tgz#7c88106413f53d93734a308d1acefedbdbc4d9b4"

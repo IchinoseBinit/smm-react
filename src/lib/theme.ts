@@ -128,6 +128,12 @@ const config = defineConfig({
               _dark: "{colors.black}",
             },
           },
+          MUTED: {
+            value: {
+              _light: "{colors.primary.50}",
+              _dark: "{colors.primary.800}",
+            },
+          },
         },
         // Text
         fg: {
@@ -183,6 +189,31 @@ const config = defineConfig({
             value: {
               _light: "{colors.secondary.700}",
               _dark: "{colors.secondary.300}",
+            },
+          },
+        },
+        navbarBg: {
+          DEFAULT: {
+            value: {
+              _light: "{colors.white}",
+              _dark: "{colors.primary.800}",
+            },
+          },
+        },
+        navbarFg: {
+          DEFAULT: {
+            value: {
+              _light: "{colors.primary.900}",
+              _dark: "{colors.primary.50}",
+            },
+          },
+        },
+        // (optional) Sidebar
+        sidebarBg: {
+          DEFAULT: {
+            value: {
+              _light: "{colors.white}",
+              _dark: "{colors.primary.900}",
             },
           },
         },

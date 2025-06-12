@@ -10,21 +10,36 @@ interface Props {
 }
 export const AuthProvider = ({ children }: Props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { mutate } = useRefreshToken();
+
   const recheckAuth = useCallback(() => {
+    setIsLoading(true);
     const access_token = Cookies.get("access_token");
     const refresh_token = Cookies.get("refresh_token");
 
-    if (!access_token || !refresh_token) {
+    if (!refresh_token) {
       setIsAuthenticated(false);
+      setIsLoading(false);
       return;
     }
-    const access_exp = getTokenExpiry(access_token);
-    if (Date.now() < access_exp * 1000) {
+
+    if (access_token && Date.now() < getTokenExpiry(access_token) * 1000) {
       setIsAuthenticated(true);
-    } else {
-      mutate(refresh_token);
+      setIsLoading(false);
+      return;
     }
+
+    mutate(refresh_token, {
+      onSuccess: () => {
+        setIsAuthenticated(true);
+        setIsLoading(false);
+      },
+      onError: () => {
+        setIsAuthenticated(false);
+        setIsLoading(false);
+      },
+    });
   }, [mutate]);
 
   useEffect(() => {
@@ -32,7 +47,9 @@ export const AuthProvider = ({ children }: Props) => {
   }, [recheckAuth]);
 
   return (
-    <AuthContext.Provider value={{ user: null, isAuthenticated, recheckAuth }}>
+    <AuthContext.Provider
+      value={{ user: null, isAuthenticated, recheckAuth, isLoading }}
+    >
       {children}
     </AuthContext.Provider>
   );
