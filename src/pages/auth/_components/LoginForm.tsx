@@ -18,6 +18,7 @@ import { z } from "zod";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import { useLoginUser } from "@/hooks/useAuthUser";
 import { useNavigate } from "react-router";
+import { useAuth } from "@/hooks/useAuth";
 
 // Define the validation schema with Zod
 const loginSchema = z.object({
@@ -38,6 +39,7 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { mutateAsync, isPending } = useLoginUser();
   const navigate = useNavigate();
+  const { setIsAuthenticated } = useAuth();
 
   // Initialize React Hook Form with Zod validation
   const {
@@ -51,6 +53,7 @@ const LoginForm = () => {
   // Form submission handler
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     await mutateAsync(data);
+    setIsAuthenticated(true);
     navigate("/");
   };
 

@@ -7,14 +7,14 @@ import DashboardLayout from "./pages/dashboard/layout";
 import Analytics from "./pages/dashboard/Analytics";
 
 function App() {
-  const { user, isLoading } = useAuth();
-  if (isLoading) return;
+  const { isAuthenticated, isLoading } = useAuth();
+  if (isLoading) return null;
   return (
     <>
       <Routes>
         <Route
           path="/login"
-          element={user ? <Navigate to="/" replace /> : <Login />}
+          element={isAuthenticated ? <Navigate to="/" replace /> : <Login />}
         />
         <Route element={<ProtectedRoutesWithAuth />}>
           <Route
