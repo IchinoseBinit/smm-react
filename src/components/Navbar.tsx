@@ -63,7 +63,7 @@ export function Navbar() {
 
           <Menu.Root>
             <Menu.Trigger asChild>
-              <Button variant="outline" size="sm">
+              <Button rounded="full" w="10">
                 <Avatar.Root>
                   <Avatar.Fallback name="Segun Adebayo" />
                   <Avatar.Image src="https://cdn.myanimelist.net/r/84x124/images/characters/9/105421.webp?s=269ff1b2bb9abe3ac1bc443d3a76e863" />

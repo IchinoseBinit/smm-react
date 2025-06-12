@@ -8,7 +8,7 @@ import type {
   RegisterResponse,
   RegisterUserData,
 } from "@/types/user";
-import { API_ROUTES } from "@/constants/apiRoutes";
+import { API_ROUTES } from "@/lib/constants/apiRoutes";
 
 const registerUser = async (
   userData: RegisterUserData,

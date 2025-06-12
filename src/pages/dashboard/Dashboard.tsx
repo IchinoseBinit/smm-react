@@ -1,4 +1,4 @@
-import { MainContent } from "@/components/MainContent";
+import { MainContent } from "@/pages/dashboard/_components/MainContent";
 import { Navbar } from "@/components/Navbar";
 import { Sidebar } from "@/components/Sidebar";
 import { Box, Grid, GridItem } from "@chakra-ui/react";
