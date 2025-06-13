@@ -9,18 +9,21 @@ import {
   FiKey,
   FiPhone,
 } from "react-icons/fi";
+import { useLocation } from "react-router";
 
 const navItems = [
   { label: "Dashboard", icon: FiHome, href: "/" },
-  { label: "Analytics", icon: FiBarChart2, href: "analytics" },
-  { label: "Publishing", icon: FiEdit2, href: "publishing" },
-  { label: "Engagement", icon: FiUsers, href: "engagement" },
-  { label: "Listening", icon: FiMic, href: "listening" },
-  { label: "Advertising", icon: FiPhone, href: "advertising" },
-  { label: "Accounts", icon: FiKey, href: "accounts" },
+  { label: "Analytics", icon: FiBarChart2, href: "/analytics" },
+  { label: "Publishing", icon: FiEdit2, href: "/publishing" },
+  { label: "Engagement", icon: FiUsers, href: "/engagement" },
+  { label: "Listening", icon: FiMic, href: "/listening" },
+  { label: "Advertising", icon: FiPhone, href: "/advertising" },
+  { label: "Accounts", icon: FiKey, href: "/accounts" },
 ];
 
 export function Sidebar() {
+  const location = useLocation();
+  const path = location.pathname; // current route path
   return (
     <Flex
       as="aside"
@@ -34,7 +37,7 @@ export function Sidebar() {
     >
       {/* Nav links */}
       {navItems.map((item) => {
-        const isActive = item.label === item.href;
+        const isActive = item.href === path;
         return (
           <Link
             key={item.label}
@@ -46,7 +49,11 @@ export function Sidebar() {
               w: "full",
               _dark: { bg: "primary.700" },
             }}
-            bg={isActive ? "primary.50" : "transparent"}
+            bg={
+              isActive
+                ? { base: "primary.100", _dark: "primary.700" }
+                : "transparent"
+            }
           >
             <HStack px={6} py={3} spaceX={3} borderRadius="md">
               <Icon as={item.icon} boxSize={5} />
