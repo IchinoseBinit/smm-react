@@ -14,7 +14,7 @@ import { useLocation } from "react-router";
 const navItems = [
   { label: "Dashboard", icon: FiHome, href: "/" },
   { label: "Analytics", icon: FiBarChart2, href: "/analytics" },
-  { label: "Publishing", icon: FiEdit2, href: "/publishing" },
+  { label: "Create", icon: FiEdit2, href: "/create" },
   { label: "Engagement", icon: FiUsers, href: "/engagement" },
   { label: "Listening", icon: FiMic, href: "/listening" },
   { label: "Advertising", icon: FiPhone, href: "/advertising" },
@@ -34,6 +34,7 @@ export function Sidebar() {
       w={{ base: 0, md: 60 }} // 240px on md+, hidden on base
       display={{ base: "none", md: "flex" }}
       mt={5}
+      h="full"
     >
       {/* Nav links */}
       {navItems.map((item) => {
@@ -43,17 +44,18 @@ export function Sidebar() {
             key={item.label}
             href={item.href}
             mb={1}
+            ml={2}
             _hover={{
               textDecor: "none",
-              bg: "primary.100",
-              w: "full",
+              bg: "primary.50",
               _dark: { bg: "primary.700" },
             }}
             bg={
               isActive
-                ? { base: "primary.100", _dark: "primary.700" }
+                ? { base: "primary.50", _dark: "primary.700" }
                 : "transparent"
             }
+            borderRadius="lg"
           >
             <HStack px={6} py={3} spaceX={3} borderRadius="md">
               <Icon as={item.icon} boxSize={5} />

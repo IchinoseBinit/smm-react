@@ -109,8 +109,8 @@ const config = defineConfig({
         sm: { value: "4px" },
         md: { value: "8px" },
         lg: { value: "12px" },
-        xl: { value: "16px" },
-        full: { value: "9999px" },
+        xl: { value: "132px" },
+        full: { value: "40px" },
       },
 
       borderWidths: {
@@ -171,6 +171,12 @@ const config = defineConfig({
             value: {
               _light: "{colors.secondary.500}",
               _dark: "{colors.secondary.300}",
+            },
+          },
+          SOFT: {
+            value: {
+              _light: "{colors.primary.200}",
+              _dark: "{colors.primary.700}",
             },
           },
         },

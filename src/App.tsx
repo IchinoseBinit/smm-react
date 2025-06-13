@@ -9,6 +9,7 @@ import SendOtp from "./pages/auth/SendOtp";
 import EmailVerification from "./pages/auth/EmailVerification";
 import Register from "./pages/auth/Register";
 import ResetPsw from "./pages/auth/ResetPsw";
+import Create from "./pages/dashboard/create/Create";
 
 function App() {
   return (
@@ -34,6 +35,14 @@ function App() {
             element={
               <DashboardLayout>
                 <Analytics />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/create"
+            element={
+              <DashboardLayout>
+                <Create />
               </DashboardLayout>
             }
           />

@@ -21,6 +21,7 @@ export default function DashboardLayout({
         <GridItem area="navbar">
           <Navbar />
         </GridItem>
+
         <GridItem area="sidebar" display={{ base: "none", md: "block" }}>
           <Sidebar />
         </GridItem>
