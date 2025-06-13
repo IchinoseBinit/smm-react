@@ -12,7 +12,7 @@ import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import RegisterForm from "./_components/RegisterForm";
 
-function Login() {
+function Register() {
   const isMobile = useBreakpointValue({ base: true, lg: false });
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -99,4 +99,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;
