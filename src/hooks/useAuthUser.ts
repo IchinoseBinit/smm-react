@@ -134,7 +134,6 @@ const useVerifyOtp = () => {
 };
 //change password
 const useChangePassword = () => {
-  const navigate = useNavigate();
   return useMutation({
     mutationFn: (d: changePsw) => changePassword(d),
     onSuccess: () => {
@@ -143,7 +142,6 @@ const useChangePassword = () => {
         description: "Password changed successfully",
         duration: 5000,
       });
-      navigate("/login");
     },
     onError: (error: Error) => {
       console.log(error);

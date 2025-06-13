@@ -21,7 +21,7 @@ export default function ResetPsw() {
   const [showPassword, setShowPassword] = useState(false);
   const { email } = useEmailStore();
   const navigate = useNavigate();
-  const { mutate, isPending } = useChangePassword();
+  const { mutateAsync, isPending } = useChangePassword();
 
   useEffect(() => {
     if (!email) {
@@ -65,12 +65,13 @@ export default function ResetPsw() {
     return "Strong";
   };
 
-  const onSubmit = (data: ResetPswFormData) => {
-    mutate({
+  const onSubmit = async (data: ResetPswFormData) => {
+    await mutateAsync({
       email: data.email,
       otp: data.otp,
-      password: data.password,
+      new_password: data.password,
     });
+    navigate("/login");
   };
   return (
     <Box

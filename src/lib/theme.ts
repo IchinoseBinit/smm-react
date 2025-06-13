@@ -109,8 +109,8 @@ const config = defineConfig({
         sm: { value: "4px" },
         md: { value: "8px" },
         lg: { value: "12px" },
-        xl: { value: "132px" },
-        full: { value: "40px" },
+        xl: { value: "23px" },
+        full: { value: "9999px" },
       },
 
       borderWidths: {

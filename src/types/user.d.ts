@@ -35,7 +35,7 @@ type otpSend = {
 type changePsw = {
   email: string;
   otp: string;
-  password: string;
+  new_password: string;
 };
 export {
   RegisterResponse,
