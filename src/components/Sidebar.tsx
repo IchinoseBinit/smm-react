@@ -18,7 +18,7 @@ const navItems = [
   { label: "Engagement", icon: FiUsers, href: "/engagement" },
   { label: "Listening", icon: FiMic, href: "/listening" },
   { label: "Advertising", icon: FiPhone, href: "/advertising" },
-  { label: "Accounts", icon: FiKey, href: "/accounts" },
+  { label: "Accounts", icon: FiKey, href: "/account" },
 ];
 
 export function Sidebar() {
@@ -38,7 +38,7 @@ export function Sidebar() {
     >
       {/* Nav links */}
       {navItems.map((item) => {
-        const isActive = item.href === path;
+        const isActive = path === item.href || path.startsWith(`${item.href}/`);
         return (
           <Link
             key={item.label}

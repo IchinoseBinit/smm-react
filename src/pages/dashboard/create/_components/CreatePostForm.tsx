@@ -16,7 +16,6 @@ import {
 import { useForm } from "react-hook-form";
 import { LuUpload } from "react-icons/lu";
 import { FileUploadList } from "./FileUploadList";
-import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6";
 
 export default function CreatePostForm() {
   const {
@@ -64,7 +63,7 @@ export default function CreatePostForm() {
         </Field.Root>
 
         <Box p={2} spaceY={6}>
-          <Heading fontSize="fontSizes.4xl"> Media</Heading>
+          <Heading fontSize="fontSizes.4xl">Media</Heading>
           <FileUpload.Root maxW="3xl" alignItems="stretch" maxFiles={10}>
             <FileUpload.HiddenInput />
             <FileUpload.Dropzone>
@@ -106,7 +105,7 @@ export default function CreatePostForm() {
           <Text mb={2} fontWeight="medium" color="fg.DEFAULT">
             Connected Accounts
           </Text>
-          <HStack spaceX={4}>
+          {/* <HStack spaceX={4}>
             <Button variant="outline" flex={1} borderColor="border.DEFAULT">
               <Icon size="md" color={{ base: "black", _dark: "white" }}>
                 <FaXTwitter />
@@ -125,7 +124,7 @@ export default function CreatePostForm() {
               </Icon>
               Instagram
             </Button>
-          </HStack>
+          </HStack> */}
         </Box>
 
         <HStack spaceX={4}>

@@ -10,6 +10,9 @@ import EmailVerification from "./pages/auth/EmailVerification";
 import Register from "./pages/auth/Register";
 import ResetPsw from "./pages/auth/ResetPsw";
 import Create from "./pages/dashboard/create/Create";
+import Account from "./pages/dashboard/account/Account";
+import AccConnect from "./pages/dashboard/account/AccConnect";
+import FacebookSuccessPage from "./pages/dashboard/account/FbSuccessPage";
 
 function App() {
   return (
@@ -46,7 +49,27 @@ function App() {
               </DashboardLayout>
             }
           />
+          <Route
+            path="/account"
+            element={
+              <DashboardLayout>
+                <Account />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/account/connect"
+            element={
+              <DashboardLayout>
+                <AccConnect />
+              </DashboardLayout>
+            }
+          />
         </Route>
+        <Route
+          path="/auth/facebook/success"
+          element={<FacebookSuccessPage />}
+        />
       </Routes>
     </>
   );

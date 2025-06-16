@@ -7,7 +7,7 @@ import {
   registerUser,
   sendOtp,
   verifyOtp,
-} from "../api/userService";
+} from "../api/authService";
 import { toaster } from "@/components/ui/toaster";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";

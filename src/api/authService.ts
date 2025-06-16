@@ -1,6 +1,5 @@
 // src/api/userService.ts
 import type { AxiosError } from "axios";
-import axios from "./axiosConfig";
 import type {
   changePsw,
   LoginResponse,
@@ -9,12 +8,13 @@ import type {
   RegisterUserData,
 } from "@/types/user";
 import { API_ROUTES } from "@/lib/constants/apiRoutes";
+import axiosInstance from "./axiosConfig";
 
 const registerUser = async (
   userData: RegisterUserData,
 ): Promise<RegisterResponse> => {
   try {
-    const { data } = await axios.post<RegisterResponse>(
+    const { data } = await axiosInstance.post<RegisterResponse>(
       API_ROUTES.AUTH.REGISTER,
       userData,
     );
@@ -28,7 +28,7 @@ const registerUser = async (
 
 const loginUser = async (userData: LoginUserData): Promise<LoginResponse> => {
   try {
-    const { data } = await axios.post<LoginResponse>(
+    const { data } = await axiosInstance.post<LoginResponse>(
       API_ROUTES.AUTH.LOGIN,
       userData,
     );
@@ -42,7 +42,7 @@ const loginUser = async (userData: LoginUserData): Promise<LoginResponse> => {
 
 const refreshToken = async (refreshToken: string): Promise<LoginResponse> => {
   try {
-    const { data } = await axios.post<LoginResponse>(
+    const { data } = await axiosInstance.post<LoginResponse>(
       API_ROUTES.AUTH.REFRESH_TOKEN,
       { refresh: refreshToken },
     );
@@ -57,7 +57,9 @@ const refreshToken = async (refreshToken: string): Promise<LoginResponse> => {
 
 const sendOtp = async (email: string) => {
   try {
-    const { data } = await axios.post(API_ROUTES.AUTH.SEND_OTP, { email });
+    const { data } = await axiosInstance.post(API_ROUTES.AUTH.SEND_OTP, {
+      email,
+    });
     return data;
   } catch (err) {
     const error = err as AxiosError<{ error: string }>;
@@ -73,7 +75,7 @@ type otpProps = {
 //verify otp
 const verifyOtp = async (d: otpProps) => {
   try {
-    const { data } = await axios.post(API_ROUTES.AUTH.UPDATE_PSW, {
+    const { data } = await axiosInstance.post(API_ROUTES.AUTH.UPDATE_PSW, {
       email: d.email,
       otp: d.otp.split(",").join(""),
     });
@@ -88,7 +90,7 @@ const verifyOtp = async (d: otpProps) => {
 // update password
 const changePassword = async (Data: changePsw) => {
   try {
-    const { data } = await axios.post(API_ROUTES.AUTH.UPDATE_PSW, Data);
+    const { data } = await axiosInstance.post(API_ROUTES.AUTH.UPDATE_PSW, Data);
     return data;
   } catch (err) {
     const error = err as AxiosError<{ error: string }>;

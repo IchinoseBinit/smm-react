@@ -8,4 +8,11 @@ export const API_ROUTES = {
     SEND_OTP: `${api}/user/auth/password-reset/`,
     UPDATE_PSW: `${api}/user/auth/confirm-password/`,
   },
+  USER: {
+    CONNECT_ACC: {
+      FACEBOOK: `/v1/auth/social/facebook/login/`,
+      TWITTER: "",
+      INSTAGRAM: "",
+    },
+  },
 };
