@@ -1,9 +1,38 @@
-import { Box, Button, Heading, Text, VStack, Icon } from "@chakra-ui/react";
+import { Box, VStack, Icon, Heading, Text, Button } from "@chakra-ui/react";
 import { FaFacebook } from "react-icons/fa";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
-const FacebookSuccessPage = () => {
+export default function FacebookRedirectHandler() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const status = searchParams.get("status");
+
+  const renderContent = () => {
+    switch (status) {
+      case "success":
+        return {
+          title: "Facebook Connected",
+          description: "Your Facebook account has been successfully linked.",
+          color: "blue.500",
+        };
+      case "false":
+      case "error":
+        return {
+          title: "Facebook Connection Failed",
+          description:
+            "Facebook linking was cancelled or failed. Please try again.",
+          color: "red.500",
+        };
+      default:
+        return {
+          title: "Unknown Status",
+          description: "We couldn't verify your Facebook connection.",
+          color: "gray.500",
+        };
+    }
+  };
+
+  const { title, description, color } = renderContent();
 
   return (
     <Box
@@ -27,17 +56,17 @@ const FacebookSuccessPage = () => {
         <Icon
           as={FaFacebook}
           boxSize={12}
-          color="blue.500"
+          color={color}
           transition="transform 0.2s"
           _hover={{ transform: "scale(1.1)" }}
         />
 
         <Heading size="lg" color="fg.DEFAULT" display="flex" gap={2}>
-          Facebook Connected
+          {title}
         </Heading>
 
         <Text fontSize="md" color="fg.MUTED">
-          Your Facebook account has been successfully linked.
+          {description}
         </Text>
 
         <Button
@@ -55,6 +84,4 @@ const FacebookSuccessPage = () => {
       </VStack>
     </Box>
   );
-};
-
-export default FacebookSuccessPage;
+}

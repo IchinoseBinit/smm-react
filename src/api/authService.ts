@@ -6,7 +6,7 @@ import type {
   LoginUserData,
   RegisterResponse,
   RegisterUserData,
-} from "@/types/user";
+} from "@/types/auth";
 import { API_ROUTES } from "@/lib/constants/apiRoutes";
 import axiosInstance from "./axiosConfig";
 

@@ -65,11 +65,8 @@ function App() {
               </DashboardLayout>
             }
           />
+          <Route path="/auth/facebook" element={<FacebookSuccessPage />} />
         </Route>
-        <Route
-          path="/auth/facebook/success"
-          element={<FacebookSuccessPage />}
-        />
       </Routes>
     </>
   );

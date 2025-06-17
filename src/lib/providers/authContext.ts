@@ -1,7 +1,8 @@
+import type { JwtUser } from "@/types/user";
 import { createContext } from "react";
 
 type AuthContextType = {
-  user: null;
+  user: JwtUser | null;
   isAuthenticated: boolean;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   isLoading: boolean;

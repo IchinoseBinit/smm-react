@@ -11,9 +11,10 @@ import {
 import { toaster } from "@/components/ui/toaster";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
-import type { changePsw, LoginUserData, RegisterUserData } from "@/types/user";
+import type { changePsw, LoginUserData, RegisterUserData } from "@/types/auth";
 import { getTokenExpiry } from "@/lib/token";
 
+const isProd = window.location.hostname !== "localhost";
 const useRegisterUser = () => {
   const navigate = useNavigate();
   return useMutation({
@@ -44,13 +45,17 @@ const useLoginUser = () => {
 
       Cookies.set("access_token", access, {
         expires: access_exp,
+        secure: isProd,
+        sameSite: isProd ? "None" : "Lax",
       });
       Cookies.set("refresh_token", refresh, {
         expires: refresh_exp,
+        secure: isProd,
+        sameSite: isProd ? "None" : "Lax",
       });
       toaster.success({
         title: "Login successful",
-        duration: 5000,
+        duration: 3000,
       });
     },
     onError: (error: Error) => {
@@ -73,9 +78,13 @@ const useRefreshToken = () => {
       const refresh_exp = getTokenExpiry(refresh);
       Cookies.set("access_token", access, {
         expires: access_exp,
+        secure: isProd,
+        sameSite: isProd ? "None" : "Lax",
       });
       Cookies.set("refresh_token", refresh, {
         expires: refresh_exp,
+        secure: isProd,
+        sameSite: isProd ? "None" : "Lax",
       });
     },
 
@@ -98,7 +107,7 @@ const useSendOtp = () => {
       toaster.success({
         title: "Otp code sent",
         description: "please check your email",
-        duration: 5000,
+        duration: 3000,
       });
     },
     onError: (error: Error) => {
@@ -120,7 +129,7 @@ const useVerifyOtp = () => {
       toaster.success({
         title: "Email verified!",
         description: "Your account has been successfully created",
-        duration: 5000,
+        duration: 3000,
       });
     },
     onError: (error: Error) => {
@@ -140,7 +149,7 @@ const useChangePassword = () => {
       toaster.success({
         title: "Success",
         description: "Password changed successfully",
-        duration: 5000,
+        duration: 3000,
       });
     },
     onError: (error: Error) => {

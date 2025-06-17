@@ -1,0 +1,14 @@
+.timepicker {
+    width: 100%;
+    font-size: 0.875rem;
+    padding: 8px 36px 8px 12px;
+    border: 1px solid var(--chakra-colors-border-DEFAULT);
+    border-radius: 6px;
+    background-color: var(--chakra-colors-bg-DEFAULT);
+    color: var(--chakra-colors-fg-DEFAULT);
+}
+
+.timepicker:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--chakra-colors-border-FOCUS);
+}

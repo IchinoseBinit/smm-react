@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/useAuth";
 import { Box, Button, Heading, HStack, Icon } from "@chakra-ui/react";
 import {
   FaArrowLeft,
@@ -8,6 +9,9 @@ import {
 import { useNavigate } from "react-router";
 
 export default function AccConnect() {
+  const { user } = useAuth();
+
+  const socialUrl = `https://socially.work/v1/auth/social/facebook/login/?user_id=${user?.user_id}`;
   const navigate = useNavigate();
   return (
     <Box spaceY={5} mt={10}>
@@ -31,10 +35,7 @@ export default function AccConnect() {
             loadingText="Connecting"
             flex={1}
             borderColor="border.DEFAULT"
-            onClick={() =>
-              (window.location.href =
-                "https://socially.work/v1/auth/social/facebook/login/")
-            }
+            onClick={() => (window.location.href = socialUrl)}
           >
             <Icon size="md" color="blue.500">
               <FaFacebook />

@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import {
   Box,
   Text,
-  Input,
   Button,
   HStack,
   Tag,
@@ -16,6 +15,7 @@ import {
 import { useForm } from "react-hook-form";
 import { LuUpload } from "react-icons/lu";
 import { FileUploadList } from "./FileUploadList";
+import DateTime from "./DateTime";
 
 export default function CreatePostForm() {
   const {
@@ -127,44 +127,7 @@ export default function CreatePostForm() {
           </HStack> */}
         </Box>
 
-        <HStack spaceX={4}>
-          <Field.Root required>
-            <Field.Label fontSize="sm" color="fg.DEFAULT" mb={1}>
-              Select Date
-            </Field.Label>
-            <Input
-              type="date"
-              {...register("date", { required: true })}
-              bg="bg.MUTED"
-              borderColor="border.DEFAULT"
-              borderWidth="thin"
-              rounded="md"
-              fontSize="sm"
-              px={3}
-              py={2}
-              _focusVisible={{ borderColor: "border.FOCUS" }}
-            />
-          </Field.Root>
-
-          <Field.Root required>
-            <Field.Label fontSize="sm" color="fg.DEFAULT" mb={1}>
-              Select Time
-            </Field.Label>
-            <Input
-              type="time"
-              {...register("time", { required: true })}
-              bg="bg.MUTED"
-              borderColor="border.DEFAULT"
-              borderWidth="thin"
-              rounded="md"
-              fontSize="sm"
-              px={3}
-              py={2}
-              _focusVisible={{ borderColor: "border.FOCUS" }}
-            />
-          </Field.Root>
-        </HStack>
-
+        <DateTime setValue={setValue} />
         <Button
           type="submit"
           alignSelf="flex-end"
