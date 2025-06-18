@@ -127,7 +127,7 @@ export default function CreatePostForm() {
           </HStack> */}
         </Box>
 
-        <DateTime setValue={setValue} />
+        <DateTime register={register} />
         <Button
           type="submit"
           alignSelf="flex-end"

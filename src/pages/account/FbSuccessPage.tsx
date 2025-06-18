@@ -70,7 +70,7 @@ export default function FacebookRedirectHandler() {
         </Text>
 
         <Button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/account")}
           variant="solid"
           colorScheme="primary"
           size="lg"
@@ -79,7 +79,7 @@ export default function FacebookRedirectHandler() {
           transition="transform 0.2s"
           _hover={{ transform: "scale(1.02)" }}
         >
-          Go to Home
+          Go to Account
         </Button>
       </VStack>
     </Box>

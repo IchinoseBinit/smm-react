@@ -33,6 +33,11 @@ export const AuthProvider = ({ children }: Props) => {
       return;
     }
 
+    if (new Date() > getTokenExpiry(refresh_token)) {
+      setIsAuthenticated(false);
+      setIsLoading(false);
+      return;
+    }
     mutate(refresh_token, {
       onSuccess: () => {
         setIsAuthenticated(true);
