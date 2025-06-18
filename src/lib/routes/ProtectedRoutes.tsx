@@ -6,7 +6,7 @@ const ProtectedRoutesWithAuth = () => {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
-  if (isLoading) return null;
+  if (isLoading) return <div>Loading...</div>;
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
