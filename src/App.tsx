@@ -76,10 +76,11 @@
 
 // new configure
 
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Routes, Route } from "react-router";
 import { ProtectedRoutesWithAuth } from "./lib/routes/ProtectedRoutes";
 import { AuthRoute } from "./lib/routes/PageRoutes";
+import { Box, ProgressCircle } from "@chakra-ui/react";
 
 const Login = lazy(() => import("./pages/auth/Login"));
 const Register = lazy(() => import("./pages/auth/Register"));
@@ -95,6 +96,25 @@ const AccConnect = lazy(() => import("./pages/account/AccConnect"));
 const FacebookSuccessPage = lazy(() => import("./pages/account/FbSuccessPage"));
 
 function App() {
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setIsInitialLoading(false), 1000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  if (isInitialLoading) {
+    return (
+      <Box h="100vh" display="flex" justifyContent="center" alignItems="center">
+        <ProgressCircle.Root value={null} size="sm">
+          <ProgressCircle.Circle>
+            <ProgressCircle.Track />
+            <ProgressCircle.Range />
+          </ProgressCircle.Circle>
+        </ProgressCircle.Root>
+      </Box>
+    );
+  }
   return (
     <Suspense fallback={<div>Loading…</div>}>
       <Routes>
