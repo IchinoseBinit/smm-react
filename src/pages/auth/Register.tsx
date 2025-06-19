@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import RegisterForm from "./_components/RegisterForm";
+import "./Auth.css";
 
 function Register() {
   const isMobile = useBreakpointValue({ base: true, lg: false });
@@ -36,9 +37,42 @@ function Register() {
           alignItems={{ base: "center", lg: "unset" }}
           justifyContent={{ base: "center", lg: "unset" }}
         >
+          <Box
+            flex="1"
+            p={{ base: 8, lg: 12 }}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            overflowY="scroll"
+            className="hide-scrollbar"
+          >
+            <Box w="full" maxW="lg">
+              <Flex align="center" mb={8}>
+                <Icon
+                  as={LuZap}
+                  _dark={{ color: "secondary.500" }}
+                  color="secondary.500"
+                  boxSize={8}
+                  mr={2}
+                />
+                <Text fontSize="2xl" fontWeight="bold" color="gray.900">
+                  Socially
+                </Text>
+              </Flex>
+              <RegisterForm />
+            </Box>
+          </Box>
           {/* Image Section - Only shown on larger screens */}
           {!isMobile && (
-            <Box flex="1" bg="gray.800" position="relative" overflow="hidden">
+            <Box flex="1" bg="gray.700" position="relative" overflow="hidden">
+              <Box
+                position="absolute"
+                inset={0}
+                bgGradient="linear(to-br, blue.600, blue.800)"
+                opacity={0.9}
+                zIndex={1}
+              />
+
               <Box
                 position="relative"
                 zIndex={2}
@@ -49,7 +83,6 @@ function Register() {
                 h="full"
                 display="flex"
                 flexDirection="column"
-                alignItems="center"
                 justifyContent="center"
               >
                 <Text
@@ -68,7 +101,7 @@ function Register() {
 
               <Image
                 src="https://img.freepik.com/free-vector/gradient-network-connection-background_23-2148865392.jpg"
-                alt="Hands holding smartphone with social media icons"
+                alt="Digital marketing illustration"
                 position="absolute"
                 inset={0}
                 objectFit="cover"
@@ -78,21 +111,6 @@ function Register() {
               />
             </Box>
           )}
-          <Box w="full" maxW="md" overflow="scroll" mt={2}>
-            <Flex align="center" mb={1}>
-              <Icon
-                as={LuZap}
-                _dark={{ color: "secondary.500" }}
-                color="secondary.500"
-                boxSize={8}
-                mr={2}
-              />
-              <Text fontSize="2xl" fontWeight="bold" color="gray.900">
-                Socially
-              </Text>
-            </Flex>
-            <RegisterForm />
-          </Box>
         </Box>
       </Flex>
     </Box>
