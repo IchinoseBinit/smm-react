@@ -17,7 +17,7 @@ export default function DateTime({ register }: { register: any }) {
         <Field.Label fontSize="sm" color="fg.DEFAULT" mb={1}>
           Select Date
         </Field.Label>
-        <Box position="relative" w="240px">
+        <Box position="relative">
           <DatePicker
             selected={date}
             onChange={(d: any) => setDate(d)}
@@ -30,12 +30,12 @@ export default function DateTime({ register }: { register: any }) {
           <Icon
             as={FaCalendarAlt}
             position="absolute"
-            right="1.5rem"
             top="50%"
             transform="translateY(-50%)"
             color="fg.MUTED"
             pointerEvents="none"
             boxSize="1rem"
+            right={2.5}
           />
         </Box>
       </Field.Root>

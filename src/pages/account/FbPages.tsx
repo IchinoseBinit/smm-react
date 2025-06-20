@@ -1,5 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
-import { useFbAcc } from "@/hooks/useUser";
+import { useFbAccPages } from "@/hooks/useUser";
 import { Box, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate } from "react-router";
@@ -8,7 +8,7 @@ export default function FbPages() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const userId = user?.user_id ?? "";
-  const { data, isLoading } = useFbAcc(userId);
+  const { data, isLoading } = useFbAccPages(userId);
 
   if (isLoading) return <div>Loading...</div>;
   return (
@@ -34,12 +34,12 @@ export default function FbPages() {
         Your Facebook Pages
       </Heading>
       <VStack spaceY={4} align="stretch">
-        {data.pages.length === 0 && (
+        {data?.pages?.length === 0 && (
           <Text color="gray.500" textAlign="center">
-            No Facebook pages connected.
+            No Facebook pages .
           </Text>
         )}
-        {data.pages.map(
+        {data?.pages?.map(
           ({
             page_id,
             name,

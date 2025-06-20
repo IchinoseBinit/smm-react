@@ -13,6 +13,7 @@ export const API_ROUTES = {
   CONNECT_ACC: {
     FACEBOOK: {
       URL: `/v1/auth/social/facebook/login/`,
+      ACCOUNT: `${thirdPartyApi}/auth/social/account/list/`,
       PAGES: `${thirdPartyApi}/auth/social/facebook/pages/user/`,
     },
     TWITTER: "",
