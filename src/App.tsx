@@ -13,6 +13,7 @@ import Create from "./pages/create/Create";
 import Account from "./pages/account/Account";
 import AccConnect from "./pages/account/AccConnect";
 import FacebookSuccessPage from "./pages/account/FbSuccessPage";
+import FbPages from "./pages/account/FbPages";
 
 function App() {
   return (
@@ -62,6 +63,14 @@ function App() {
             element={
               <DashboardLayout>
                 <AccConnect />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/account/facebook/pages"
+            element={
+              <DashboardLayout>
+                <FbPages />
               </DashboardLayout>
             }
           />

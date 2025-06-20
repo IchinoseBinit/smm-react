@@ -16,8 +16,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { signupSchema, type SignupFormData } from "@/lib/zod/AuthSchema";
-import { LuArrowLeft, LuEye, LuEyeOff } from "react-icons/lu";
-import { useNavigate } from "react-router";
+import { LuEye, LuEyeOff } from "react-icons/lu";
 import { useRegisterUser } from "@/hooks/useAuthUser";
 import useEmailStore from "@/lib/store/useEmailStore";
 
@@ -25,7 +24,6 @@ const RegisterForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { mutate, isPending } = useRegisterUser();
-  const navigate = useNavigate();
   const { setEmail } = useEmailStore();
 
   const calculatePasswordStrength = (password: string): number => {
@@ -98,11 +96,7 @@ const RegisterForm: React.FC = () => {
       transition="all 0.3s ease"
     >
       <Flex align="center" mb={7}>
-        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} mr={2}>
-          <LuArrowLeft size={16} />
-          Back
-        </Button>
-        <Heading size="xl">Create Account</Heading>
+        <Heading size="2xl">Create Account</Heading>
       </Flex>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -349,7 +343,8 @@ const RegisterForm: React.FC = () => {
           fontWeight="medium"
           textDecoration="underline"
           fontSize="sm"
-          href="#"
+          href="https://socially.work/privacy_policy"
+          target="_blank"
         >
           Privacy Policy
         </Link>

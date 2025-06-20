@@ -55,7 +55,8 @@ const useLoginUser = () => {
       });
       toaster.success({
         title: "Login successful",
-        duration: 3000,
+        duration: 2000,
+        closable: true,
       });
     },
     onError: (error: Error) => {
@@ -63,6 +64,7 @@ const useLoginUser = () => {
       toaster.error({
         title: "Login failed",
         description: error.message,
+        closable: true,
       });
     },
   });

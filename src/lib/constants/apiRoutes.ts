@@ -1,5 +1,6 @@
 // src/lib/apiRoutes.ts
 const api = "/v1/api";
+const thirdPartyApi = "/v1";
 export const API_ROUTES = {
   AUTH: {
     REGISTER: `${api}/user/register/`,
@@ -8,11 +9,13 @@ export const API_ROUTES = {
     SEND_OTP: `${api}/user/auth/password-reset/`,
     UPDATE_PSW: `${api}/user/auth/confirm-password/`,
   },
-  USER: {
-    CONNECT_ACC: {
-      FACEBOOK: `/v1/auth/social/facebook/login/`,
-      TWITTER: "",
-      INSTAGRAM: "",
+  USER: {},
+  CONNECT_ACC: {
+    FACEBOOK: {
+      URL: `/v1/auth/social/facebook/login/`,
+      PAGES: `${thirdPartyApi}/auth/social/facebook/pages/user/`,
     },
+    TWITTER: "",
+    INSTAGRAM: "",
   },
 };
