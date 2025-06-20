@@ -68,7 +68,7 @@ export default function Account() {
           >
             Connected facebook accounts
           </Text>
-          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+          <SimpleGrid columns={{ base: 1, md: 3 }}>
             {data?.map((acc: any) => {
               return (
                 <Grid
@@ -83,7 +83,7 @@ export default function Account() {
                   }}
                   onClick={() => navigate("/account/facebook/pages")}
                   boxShadow="md"
-                  w="15rem"
+                  w="20rem"
                 >
                   <Flex gap={3}>
                     <Icon as={FaFacebook} boxSize={6} color="blue.600" />
