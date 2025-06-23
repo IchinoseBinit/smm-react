@@ -1,5 +1,5 @@
 import { Box, Flex, Grid, Icon, SimpleGrid, Text } from "@chakra-ui/react";
-import { FaFacebook } from "react-icons/fa6";
+import { FaYoutube } from "react-icons/fa6";
 
 export default function YoutubeAccount({
   social_name,
@@ -17,7 +17,6 @@ export default function YoutubeAccount({
         Connected youtube accounts
       </Text>
       <SimpleGrid columns={{ base: 1, md: 3 }}>
-        return (
         <Grid
           p={4}
           mt={5}
@@ -32,7 +31,7 @@ export default function YoutubeAccount({
           w="20rem"
         >
           <Flex gap={3}>
-            <Icon as={FaFacebook} boxSize={6} color="blue.600" />
+            <Icon as={FaYoutube} boxSize={6} color="red.600" />
             <Text
               fontWeight="semibold"
               color={{ base: "primary.800", _dark: "white" }}
@@ -43,7 +42,6 @@ export default function YoutubeAccount({
             </Text>
           </Flex>
         </Grid>
-        );
       </SimpleGrid>
     </Box>
   );
