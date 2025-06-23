@@ -15,6 +15,7 @@ export const toaster = createToaster({
   max: 3,
   overlap: true,
   offsets: "20px",
+  duration: 2000,
 });
 
 export const Toaster = () => {

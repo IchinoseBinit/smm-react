@@ -1,30 +1,21 @@
-import { useAuth } from "@/hooks/useAuth";
-import { useFbAcc } from "@/hooks/useUser";
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  Heading,
-  Icon,
-  Image,
-  SimpleGrid,
-  Text,
-} from "@chakra-ui/react";
-import { FaFacebook } from "react-icons/fa6";
+import { Box, Button, Heading, Image, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router";
+import FacebookAccount from "./facebook/FacebookAccount";
+import { useAuthContext } from "@/hooks/useAuthContext";
+import TiktokAccount from "./titkok/TiktokAccount";
+import { useAccounts } from "@/features/accounts/hooks/useAccounts";
 
 export default function Account() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const userId = user?.user_id ?? "";
-  const { data, isLoading } = useFbAcc(userId);
+  const { data, isLoading } = useAccounts(userId);
 
   if (isLoading) return <div>Loading...</div>;
   return (
     <Box>
       <Heading size="2xl">Account</Heading>
-      {!data ? (
+      {data?.length === 0 ? (
         <Box
           boxSize={40}
           display="flex"
@@ -60,46 +51,25 @@ export default function Account() {
         </Box>
       ) : (
         <>
-          <Text
-            mt={5}
-            fontWeight="bold"
-            fontSize="md"
-            color={{ base: "primary.700", _dark: "white" }}
-          >
-            Connected facebook accounts
-          </Text>
-          <SimpleGrid columns={{ base: 1, md: 3 }}>
-            {data?.map((acc: any) => {
-              return (
-                <Grid
-                  key={acc.social_id}
-                  p={4}
-                  mt={5}
-                  borderRadius="2xl"
-                  bg={{ base: "blue.50", _dark: "primary.800" }}
-                  _hover={{
-                    bg: { base: "gray.100", _dark: "primary.700" },
-                    cursor: "pointer",
-                  }}
-                  onClick={() => navigate("/account/facebook/pages")}
-                  boxShadow="md"
-                  w="20rem"
-                >
-                  <Flex gap={3}>
-                    <Icon as={FaFacebook} boxSize={6} color="blue.600" />
-                    <Text
-                      fontWeight="semibold"
-                      color={{ base: "primary.800", _dark: "white" }}
-                    >
-                      <Box as="span" fontWeight="semibold">
-                        {acc.social_name}
-                      </Box>
-                    </Text>
-                  </Flex>
-                </Grid>
-              );
-            })}
-          </SimpleGrid>
+          {data?.map(
+            (d: { account_type: string; social_name: string; id: number }) => {
+              if (d.account_type === "FACEBOOK") {
+                return (
+                  <div key={d.id}>
+                    <FacebookAccount social_name={d.social_name} />
+                  </div>
+                );
+              } else if (d.account_type === "TIKTOK") {
+                return (
+                  <div key={d.id}>
+                    <TiktokAccount social_name={d.social_name} />
+                  </div>
+                );
+              }
+            },
+          )}
+
+          {/* <TiktokAccount data={tiktokData} /> */}
           <Box>
             <Button
               variant="subtle"

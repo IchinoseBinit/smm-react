@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { getTokenExpiry, getUserFromToken } from "../token";
-import { useRefreshToken } from "@/hooks/useAuthUser";
 import { AuthContext } from "./authContext";
 import type { JwtUser } from "@/types/user";
+import { useRefreshToken } from "@/features/auth/hooks/useAuth";
 
 interface Props {
   children: React.ReactNode;

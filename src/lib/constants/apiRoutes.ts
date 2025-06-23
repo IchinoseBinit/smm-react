@@ -11,12 +11,16 @@ export const API_ROUTES = {
   },
   USER: {},
   CONNECT_ACC: {
+    ALL_ACCOUNTS: `${thirdPartyApi}/auth/social/account/list/`,
     FACEBOOK: {
       URL: `/v1/auth/social/facebook/login/`,
-      ACCOUNT: `${thirdPartyApi}/auth/social/account/list/`,
       PAGES: `${thirdPartyApi}/auth/social/facebook/pages/user/`,
     },
-    TWITTER: "",
-    INSTAGRAM: "",
+    TIKTOK: {
+      URL: `/v1/auth/social/tiktok/login/`,
+    },
+    YOUTUBE: {
+      URL: `/v1/auth/social/youtube/login/`,
+    },
   },
 };

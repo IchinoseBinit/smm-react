@@ -1,7 +1,10 @@
 import { toaster } from "@/components/ui/toaster";
-import { useSendOtp } from "@/hooks/useAuthUser";
+import { useSendOtp } from "@/features/auth/hooks/useAuth";
+import {
+  sendOtpSchema,
+  type SendOtpFormData,
+} from "@/features/auth/lib/schema";
 import useEmailStore from "@/lib/store/useEmailStore";
-import { sendOtpSchema, type SendOtpFormData } from "@/lib/zod/AuthSchema";
 import {
   Box,
   Button,

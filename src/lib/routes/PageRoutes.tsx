@@ -1,8 +1,8 @@
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthContext } from "@/hooks/useAuthContext";
 import { Navigate, Route } from "react-router";
 
 const AuthRoute = (path: string, element: React.ReactNode) => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuthContext();
   if (isLoading) return null;
 
   return (

@@ -15,10 +15,10 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { signupSchema, type SignupFormData } from "@/lib/zod/AuthSchema";
 import { LuEye, LuEyeOff } from "react-icons/lu";
-import { useRegisterUser } from "@/hooks/useAuthUser";
 import useEmailStore from "@/lib/store/useEmailStore";
+import { useRegisterUser } from "../../hooks/useAuth";
+import { signupSchema, type SignupFormData } from "../../lib/schema";
 
 const RegisterForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -90,6 +90,7 @@ const RegisterForm: React.FC = () => {
     <Box
       bg="white"
       p={5}
+      mt={10}
       w="100%"
       maxW="md"
       mx="auto"

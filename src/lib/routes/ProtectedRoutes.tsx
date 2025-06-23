@@ -1,9 +1,9 @@
 import { Navigate, Outlet, useLocation } from "react-router";
-import { useAuth } from "@/hooks/useAuth";
 import { UiProvider } from "../providers/uiProvider";
+import { useAuthContext } from "@/hooks/useAuthContext";
 
 const ProtectedRoutesWithAuth = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuthContext();
   const location = useLocation();
 
   if (isLoading) return;

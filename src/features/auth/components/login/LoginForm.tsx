@@ -16,10 +16,9 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { LuEye, LuEyeOff } from "react-icons/lu";
-import { useLoginUser } from "@/hooks/useAuthUser";
 import { useNavigate } from "react-router";
-import { useAuth } from "@/hooks/useAuth";
-
+import { useAuthContext } from "@/hooks/useAuthContext";
+import { useLoginUser } from "../../hooks/useAuth";
 // Define the validation schema with Zod
 const loginSchema = z.object({
   email: z
@@ -39,7 +38,7 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { mutateAsync, isPending } = useLoginUser();
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useAuth();
+  const { setIsAuthenticated } = useAuthContext();
 
   // Initialize React Hook Form with Zod validation
   const {

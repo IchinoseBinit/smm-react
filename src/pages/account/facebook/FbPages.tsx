@@ -1,12 +1,12 @@
-import { useAuth } from "@/hooks/useAuth";
-import { useFbAccPages } from "@/hooks/useUser";
+import { useFbAccPages } from "@/features/accounts/hooks/useAccounts";
+import { useAuthContext } from "@/hooks/useAuthContext";
 import { Box, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useNavigate } from "react-router";
 
 export default function FbPages() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const userId = user?.user_id ?? "";
   const { data, isLoading } = useFbAccPages(userId);
 

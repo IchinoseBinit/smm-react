@@ -10,10 +10,12 @@ import EmailVerification from "./pages/auth/EmailVerification";
 import Register from "./pages/auth/Register";
 import ResetPsw from "./pages/auth/ResetPsw";
 import Create from "./pages/create/Create";
-import Account from "./pages/account/Account";
 import AccConnect from "./pages/account/AccConnect";
-import FacebookSuccessPage from "./pages/account/FbSuccessPage";
-import FbPages from "./pages/account/FbPages";
+import FacebookSuccessPage from "./pages/account/facebook/FbSuccessPage";
+import FbPages from "./pages/account/facebook/FbPages";
+import TiktokSuccessPage from "./pages/account/titkok/TkSuccessPage";
+import Account from "./pages/account/Account";
+import YoutubeSuccessPage from "./pages/account/youtube/YtSuccessPage";
 
 function App() {
   return (
@@ -51,18 +53,18 @@ function App() {
             }
           />
           <Route
-            path="/account"
-            element={
-              <DashboardLayout>
-                <Account />
-              </DashboardLayout>
-            }
-          />
-          <Route
             path="/account/connect"
             element={
               <DashboardLayout>
                 <AccConnect />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              <DashboardLayout>
+                <Account />
               </DashboardLayout>
             }
           />
@@ -75,6 +77,8 @@ function App() {
             }
           />
           <Route path="/auth/facebook" element={<FacebookSuccessPage />} />
+          <Route path="/auth/tiktok" element={<TiktokSuccessPage />} />
+          <Route path="/auth/youtube" element={<YoutubeSuccessPage />} />
         </Route>
       </Routes>
     </>

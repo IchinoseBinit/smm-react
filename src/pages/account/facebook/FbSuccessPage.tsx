@@ -2,7 +2,7 @@ import { Box, VStack, Icon, Heading, Text, Button } from "@chakra-ui/react";
 import { FaFacebook } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router";
 
-export default function FacebookRedirectHandler() {
+export default function FacebookSuccessPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const status = searchParams.get("status");

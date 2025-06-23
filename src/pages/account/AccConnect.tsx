@@ -1,17 +1,14 @@
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthContext } from "@/hooks/useAuthContext";
 import { Box, Button, Heading, HStack, Icon } from "@chakra-ui/react";
-import {
-  FaArrowLeft,
-  FaFacebook,
-  FaXTwitter,
-  FaYoutube,
-} from "react-icons/fa6";
+import { FaArrowLeft, FaFacebook, FaTiktok, FaYoutube } from "react-icons/fa6";
 import { useNavigate } from "react-router";
 
 export default function AccConnect() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
-  const socialUrl = `https://socially.work/v1/auth/social/facebook/login/?user_id=${user?.user_id}`;
+  const facebookUrl = `https://socially.work/v1/auth/social/facebook/login/?user_id=${user?.user_id}`;
+  const tiktokUrl = `https://socially.work/v1/auth/social/tiktok/login/?user_id=${user?.user_id}`;
+  const youtubeUrl = `https://socially.work/v1/auth/social/youtube/login/?user_id=${user?.user_id}`;
   const navigate = useNavigate();
   return (
     <Box spaceY={5} mt={10}>
@@ -35,20 +32,30 @@ export default function AccConnect() {
             loadingText="Connecting"
             flex={1}
             borderColor="border.DEFAULT"
-            onClick={() => (window.location.href = socialUrl)}
+            onClick={() => (window.location.href = facebookUrl)}
           >
             <Icon size="md" color="blue.500">
               <FaFacebook />
             </Icon>
             Facebook
           </Button>
-          <Button variant="outline" flex={1} borderColor="border.DEFAULT">
+          <Button
+            variant="outline"
+            flex={1}
+            borderColor="border.DEFAULT"
+            onClick={() => (window.location.href = tiktokUrl)}
+          >
             <Icon size="md" color={{ base: "black", _dark: "white" }}>
-              <FaXTwitter />
+              <FaTiktok />
             </Icon>
-            Twitter
+            Tiktok
           </Button>
-          <Button variant="outline" flex={1} borderColor="border.DEFAULT">
+          <Button
+            variant="outline"
+            flex={1}
+            borderColor="border.DEFAULT"
+            onClick={() => (window.location.href = youtubeUrl)}
+          >
             <Icon size="md" color="red.600">
               <FaYoutube />
             </Icon>

@@ -15,10 +15,13 @@ import { useNavigate } from "react-router";
 import { toaster } from "@/components/ui/toaster";
 import { LuArrowLeft, LuRefreshCw } from "react-icons/lu";
 import useEmailStore from "@/lib/store/useEmailStore";
-import { verifyOtpSchema, type VerifyOtpFormData } from "@/lib/zod/AuthSchema";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSendOtp, useVerifyOtp } from "@/hooks/useAuthUser";
+import { useSendOtp, useVerifyOtp } from "@/features/auth/hooks/useAuth";
+import {
+  verifyOtpSchema,
+  type VerifyOtpFormData,
+} from "@/features/auth/lib/schema";
 
 const EmailVerification: React.FC = () => {
   const navigate = useNavigate();

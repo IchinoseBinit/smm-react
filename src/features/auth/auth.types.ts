@@ -37,9 +37,10 @@ type changePsw = {
   otp: string;
   new_password: string;
 };
-export {
-  RegisterResponse,
+
+export type {
   RegisterUserData,
+  RegisterResponse,
   LoginUserData,
   LoginResponse,
   TokenError,
