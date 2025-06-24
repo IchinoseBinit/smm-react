@@ -3,7 +3,6 @@ import { ProtectedRoutesWithAuth } from "./lib/routes/ProtectedRoutes";
 import Login from "./pages/auth/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
 import DashboardLayout from "./pages/layout";
-import Analytics from "./pages/dashboard/Analytics";
 import { AuthRoute } from "./lib/routes/PageRoutes";
 import SendOtp from "./pages/auth/SendOtp";
 import EmailVerification from "./pages/auth/EmailVerification";
@@ -11,11 +10,11 @@ import Register from "./pages/auth/Register";
 import ResetPsw from "./pages/auth/ResetPsw";
 import Create from "./pages/create/Create";
 import AccConnect from "./pages/account/AccConnect";
-import FacebookSuccessPage from "./pages/account/facebook/FbSuccessPage";
-import FbPages from "./pages/account/facebook/FbPages";
-import TiktokSuccessPage from "./pages/account/titkok/TkSuccessPage";
+import FacebookSuccessPage from "./features/accounts/components/facebook/FbSuccessPage";
+import TiktokSuccessPage from "./features/accounts/components/titkok/TkSuccessPage";
 import Account from "./pages/account/Account";
-import YoutubeSuccessPage from "./pages/account/youtube/YtSuccessPage";
+import YoutubeSuccessPage from "./features/accounts/components/youtube/YtSuccessPage";
+import FbPages from "./pages/account/FbPages";
 
 function App() {
   return (
@@ -36,14 +35,7 @@ function App() {
               </DashboardLayout>
             }
           />
-          <Route
-            path="/analytics"
-            element={
-              <DashboardLayout>
-                <Analytics />
-              </DashboardLayout>
-            }
-          />
+
           <Route
             path="/create"
             element={

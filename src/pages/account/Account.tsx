@@ -1,14 +1,11 @@
 import { Box, Button, Heading, Image, Text } from "@chakra-ui/react";
-import { useNavigate } from "react-router";
-import FacebookAccount from "./facebook/FacebookAccount";
-import { useAuthContext } from "@/hooks/useAuthContext";
-import TiktokAccount from "./titkok/TiktokAccount";
+import FacebookAccount from "../../features/accounts/components/facebook/FacebookAccount";
+import TiktokAccount from "../../features/accounts/components/titkok/TiktokAccount";
 import { useAccounts } from "@/features/accounts/hooks/useAccounts";
+import { useAuthUtils } from "@/hooks/useAuthUtils";
 
 export default function Account() {
-  const navigate = useNavigate();
-  const { user } = useAuthContext();
-  const userId = user?.user_id ?? "";
+  const { navigate, userId } = useAuthUtils();
   const { data, isLoading } = useAccounts(userId);
 
   if (isLoading) return <div>Loading...</div>;

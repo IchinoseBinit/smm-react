@@ -3,7 +3,7 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
-import "./DateTime.css";
+import "../css/DateTime.css";
 
 export default function DateTime({ register }: { register: any }) {
   const [date, setDate] = useState();

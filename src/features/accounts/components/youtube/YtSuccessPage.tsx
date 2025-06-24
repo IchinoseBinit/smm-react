@@ -1,8 +1,8 @@
 import { Box, VStack, Icon, Heading, Text, Button } from "@chakra-ui/react";
-import { FaTiktok } from "react-icons/fa6";
+import { FaYoutube } from "react-icons/fa6";
 import { useNavigate, useSearchParams } from "react-router";
 
-export default function TiktokSuccessPage() {
+export default function YoutubeSuccessPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const status = searchParams.get("status");
@@ -11,23 +11,23 @@ export default function TiktokSuccessPage() {
     switch (status) {
       case "success":
         return {
-          title: "Tiktok Connected",
+          title: "Youtube Connected",
           description: "Your Tiktok account has been successfully linked.",
-          color: "blue.500",
+          color: "red.600",
         };
       case "false":
       case "error":
         return {
-          title: "Tiktok Connection Failed",
+          title: "Youtube Connection Failed",
           description:
-            "Tiktok linking was cancelled or failed. Please try again.",
+            "Youtube linking was cancelled or failed. Please try again.",
           color: "red.500",
         };
       default:
         return {
           title: "Unknown Status",
-          description: "We couldn't verify your Tiktok connection.",
-          color: "gray.500",
+          description: "We couldn't verify your Youtube connection.",
+          color: "gray.600",
         };
     }
   };
@@ -54,7 +54,7 @@ export default function TiktokSuccessPage() {
         w="full"
       >
         <Icon
-          as={FaTiktok}
+          as={FaYoutube}
           boxSize={12}
           color={color}
           transition="transform 0.2s"

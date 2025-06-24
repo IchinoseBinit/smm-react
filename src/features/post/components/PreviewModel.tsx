@@ -14,27 +14,34 @@ export function VideoPreviewDialog({
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open}>
       <Portal>
+        <Dialog.Backdrop />
         <Dialog.Positioner>
           <Dialog.Content
-            bg="gray.900"
-            maxW="2xl"
-            borderRadius="md"
+            bg={{ base: "gray.50", _dark: "gray.900" }}
+            maxW="3xl"
+            borderRadius="lg"
             overflow="hidden"
           >
-            <Box
-              position="relative"
-              p={4}
-              borderBottomWidth="1px"
-              borderColor="gray.700"
-            >
-              <Dialog.Title color="white" fontSize="md" fontWeight="semibold">
+            <Box position="relative" p={4} borderColor="gray.700">
+              <Dialog.Title
+                color={{ base: "black", _dark: "white" }}
+                fontSize="md"
+                fontWeight="semibold"
+              >
                 Video Preview
               </Dialog.Title>
-              <Dialog.CloseTrigger asChild>
+              <Dialog.CloseTrigger
+                asChild
+                color={{ base: "black", _dark: "white" }}
+                _hover={{
+                  base: { bg: "primary.100" },
+                  _dark: { bg: "primary.800" },
+                }}
+              >
                 <CloseButton
                   position="absolute"
-                  top="1rem"
                   right="1rem"
+                  size="sm"
                   color="white"
                   onClick={onClose}
                 />

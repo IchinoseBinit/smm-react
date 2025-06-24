@@ -1,5 +1,5 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
-import CreatePostForm from "./_components/CreatePostForm";
+import CreatePostForm from "../../features/post/components/CreatePostForm";
 
 export default function Create() {
   return (

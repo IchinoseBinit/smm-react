@@ -7,7 +7,7 @@ import {
   useFileUploadContext,
 } from "@chakra-ui/react";
 import { LuX } from "react-icons/lu";
-import { useVideoPreview } from "./useVideoPreview";
+import { useVideoPreview } from "../hooks/useVideoPreview";
 import { VideoPreviewDialog } from "./PreviewModel";
 
 export const FileUploadList = () => {
@@ -51,15 +51,12 @@ export const FileUploadList = () => {
                   alignItems="center"
                   justifyContent="center"
                   opacity={isMobile ? 1 : 0}
-                  _hover={isMobile ? {} : { opacity: 1 }}
+                  _hover={isMobile ? {} : { opacity: 1, cursor: "pointer" }}
                   borderRadius={8}
                   transition="opacity 0.2s"
+                  onClick={() => handlePreview(file)}
                 >
-                  <Button
-                    size="sm"
-                    colorScheme="teal"
-                    onClick={() => handlePreview(file)}
-                  >
+                  <Button size="sm" colorScheme="teal">
                     Preview
                   </Button>
                 </Box>
