@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router";
 import { UiProvider } from "../providers/uiProvider";
 import { useAuthContext } from "@/hooks/useAuthContext";
+import { Suspense } from "react";
 
 const ProtectedRoutesWithAuth = () => {
   const { isAuthenticated, isLoading } = useAuthContext();
@@ -12,7 +13,9 @@ const ProtectedRoutesWithAuth = () => {
   }
   return (
     <UiProvider>
-      <Outlet />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Outlet />
+      </Suspense>
     </UiProvider>
   );
 };

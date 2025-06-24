@@ -1,5 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { AuthBanner } from "@/features/auth/components/login/LoginAuthBanner";
+import AuthBanner from "@/features/auth/components/login/LoginAuthBanner";
 import { LoginFormSection } from "@/features/auth/components/login/LoginFormSection";
 
 function Login() {

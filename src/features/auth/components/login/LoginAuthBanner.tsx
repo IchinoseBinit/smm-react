@@ -2,7 +2,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { Box, Image, Text } from "@chakra-ui/react";
 
 /* Image Section - Only shown on larger screens */
-export const AuthBanner = () => {
+const AuthBanner = () => {
   const isMobile = useIsMobile();
   return (
     <>
@@ -57,3 +57,5 @@ export const AuthBanner = () => {
     </>
   );
 };
+
+export default AuthBanner;
