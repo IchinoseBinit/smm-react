@@ -1,6 +1,6 @@
 import { useFbAccPages } from "@/features/accounts/hooks/useAccounts";
 import { useAuthUtils } from "@/hooks/useAuthUtils";
-import { Box, Heading, HStack, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, Text, VStack } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa6";
 
 export default function FbPages() {
@@ -11,18 +11,16 @@ export default function FbPages() {
   if (isLoading) return <div>Loading...</div>;
   return (
     <Box p={6} maxW="lg" borderRadius="md">
-      <HStack
-        m={1}
-        p={1}
-        boxShadow="sm"
-        w={70}
-        fontWeight="lg"
+      <Button
+        variant="subtle"
+        flex={1}
+        borderColor="border.DEFAULT"
+        size="xs"
         onClick={() => navigate(-1)}
-        cursor="pointer"
       >
         <FaArrowLeft />
         Back
-      </HStack>
+      </Button>
       <Heading
         mt={10}
         mb={4}

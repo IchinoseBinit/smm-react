@@ -11,7 +11,7 @@ export default function AccConnect() {
   const youtubeUrl = getSocialUrl("youtube", userId);
 
   return (
-    <Box spaceY={5} mt={10}>
+    <Box spaceY={5} mt={5}>
       <Box>
         <Button
           variant="subtle"

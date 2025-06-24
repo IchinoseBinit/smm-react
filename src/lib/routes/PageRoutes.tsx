@@ -1,16 +1,32 @@
+import { Route, Navigate, Routes } from "react-router";
 import { useAuthContext } from "@/hooks/useAuthContext";
-import { Navigate, Route } from "react-router";
+import Register from "@/pages/auth/Register";
+import Login from "@/pages/auth/Login";
+import SendOtp from "@/pages/auth/SendOtp";
+import ResetPsw from "@/pages/auth/ResetPsw";
+import EmailVerification from "@/pages/auth/EmailVerification";
+import { Skeleton } from "@chakra-ui/react";
 
-const AuthRoute = (path: string, element: React.ReactNode) => {
+const authRoutes = [
+  { path: "/register", element: <Register /> },
+  { path: "/login", element: <Login /> },
+  { path: "/reset-password/send-opt", element: <SendOtp /> },
+  { path: "/reset-password", element: <ResetPsw /> },
+  { path: "/verify-otp", element: <EmailVerification /> },
+];
+
+export const AuthRoutes = () => {
   const { isAuthenticated, isLoading } = useAuthContext();
-  if (isLoading) return null;
+
+  if (isLoading) return <Skeleton height="300px" borderRadius="md" />;
+
+  if (isAuthenticated) return <Navigate to="/" replace />;
 
   return (
-    <Route
-      path={path}
-      element={isAuthenticated ? <Navigate to="/" replace /> : element}
-    />
+    <Routes>
+      {authRoutes.map(({ path, element }) => (
+        <Route key={path} path={path} element={element} />
+      ))}
+    </Routes>
   );
 };
-
-export { AuthRoute };

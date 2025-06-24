@@ -2,13 +2,7 @@ import { lazy } from "react";
 import { Routes, Route } from "react-router";
 import { ProtectedRoutesWithAuth } from "./lib/routes/ProtectedRoutes";
 import { flatRoute, layoutRoute } from "./lib/routes/route";
-import { AuthRoute } from "./lib/routes/PageRoutes";
-
-import Register from "./pages/auth/Register";
-import Login from "./pages/auth/Login";
-import SendOtp from "./pages/auth/SendOtp";
-import EmailVerification from "./pages/auth/EmailVerification";
-import ResetPsw from "./pages/auth/ResetPsw";
+import { AuthRoutes } from "./lib/routes/PageRoutes";
 
 export const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
 export const Create = lazy(() => import("./pages/create/Create"));
@@ -29,11 +23,7 @@ function App() {
   return (
     <>
       <Routes>
-        {AuthRoute("/register", <Register />)}
-        {AuthRoute("/login", <Login />)}
-        {AuthRoute("/reset-password/send-opt", <SendOtp />)}
-        {AuthRoute("/reset-password", <ResetPsw />)}
-        {AuthRoute("/verify-otp", <EmailVerification />)}
+        <Route path="/*" element={<AuthRoutes />} />
 
         <Route element={<ProtectedRoutesWithAuth />}>
           {layoutRoute({ path: "/", component: <Dashboard /> })}
