@@ -1,4 +1,12 @@
-import { Box, Button, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Image,
+  Skeleton,
+  Text,
+} from "@chakra-ui/react";
 import FacebookAccount from "../../features/accounts/components/facebook/FacebookAccount";
 import TiktokAccount from "../../features/accounts/components/titkok/TiktokAccount";
 import { useAccounts } from "@/features/accounts/hooks/useAccounts";
@@ -9,7 +17,12 @@ export default function Account() {
   const { navigate, userId } = useAuthUtils();
   const { data, isLoading } = useAccounts(userId);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div>
+        <Skeleton height="50px" width="180px" borderRadius="md" />
+      </div>
+    );
   return (
     <Box mt={10}>
       <Flex justify="space-between">

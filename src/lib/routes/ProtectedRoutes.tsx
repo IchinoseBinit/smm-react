@@ -2,7 +2,7 @@ import { Navigate, Outlet, useLocation } from "react-router";
 import { UiProvider } from "../providers/uiProvider";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { Suspense } from "react";
-import { Skeleton } from "@chakra-ui/react";
+import { Center, Skeleton, Spinner } from "@chakra-ui/react";
 
 const ProtectedRoutesWithAuth = () => {
   const { isAuthenticated, isLoading } = useAuthContext();
@@ -14,7 +14,13 @@ const ProtectedRoutesWithAuth = () => {
   }
   return (
     <UiProvider>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense
+        fallback={
+          <Center minH="200px">
+            <Spinner color="teal.500" size="lg" />
+          </Center>
+        }
+      >
         <Outlet />
       </Suspense>
     </UiProvider>

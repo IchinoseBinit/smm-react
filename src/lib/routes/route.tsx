@@ -1,4 +1,5 @@
 import DashboardLayout from "@/pages/layout";
+import { Center, Spinner } from "@chakra-ui/react";
 import { Suspense } from "react";
 import { Route } from "react-router";
 
@@ -15,7 +16,15 @@ export const layoutRoute = ({
         path={path}
         element={
           <DashboardLayout>
-            <Suspense fallback={<div>Loading...</div>}>{component}</Suspense>
+            <Suspense
+              fallback={
+                <Center minH="200px">
+                  <Spinner color="teal.500" size="lg" />
+                </Center>
+              }
+            >
+              {component}
+            </Suspense>
           </DashboardLayout>
         }
       />
