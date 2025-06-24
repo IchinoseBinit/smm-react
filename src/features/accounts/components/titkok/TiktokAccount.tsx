@@ -31,7 +31,11 @@ export default function TiktokAccount({
           w="20rem"
         >
           <Flex gap={3}>
-            <Icon as={FaTiktok} boxSize={6} color="white" />
+            <Icon
+              as={FaTiktok}
+              boxSize={6}
+              color={{ base: "black", _dark: "white" }}
+            />
             <Text
               fontWeight="semibold"
               color={{ base: "primary.800", _dark: "white" }}

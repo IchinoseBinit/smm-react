@@ -1,8 +1,9 @@
-import { Box, Button, Heading, Image, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import FacebookAccount from "../../features/accounts/components/facebook/FacebookAccount";
 import TiktokAccount from "../../features/accounts/components/titkok/TiktokAccount";
 import { useAccounts } from "@/features/accounts/hooks/useAccounts";
 import { useAuthUtils } from "@/hooks/useAuthUtils";
+import YoutubeAccount from "@/features/accounts/components/youtube/YoutubeAccount";
 
 export default function Account() {
   const { navigate, userId } = useAuthUtils();
@@ -10,8 +11,20 @@ export default function Account() {
 
   if (isLoading) return <div>Loading...</div>;
   return (
-    <Box>
-      <Heading size="2xl">Account</Heading>
+    <Box mt={10}>
+      <Flex justify="space-between">
+        <Heading size="2xl">Account</Heading>
+        <Button
+          variant="subtle"
+          flex={1}
+          borderColor="border.DEFAULT"
+          borderRadius="xl"
+          maxW={52}
+          onClick={() => navigate("/account/connect")}
+        >
+          Connect another account
+        </Button>
+      </Flex>
       {data?.length === 0 ? (
         <Box
           boxSize={40}
@@ -62,23 +75,17 @@ export default function Account() {
                     <TiktokAccount social_name={d.social_name} />
                   </div>
                 );
+              } else if (d.account_type === "YOUTUBE") {
+                return (
+                  <div key={d.id}>
+                    <YoutubeAccount social_name={d.social_name} />
+                  </div>
+                );
               }
             },
           )}
 
           {/* <TiktokAccount data={tiktokData} /> */}
-          <Box>
-            <Button
-              variant="subtle"
-              flex={1}
-              borderColor="border.DEFAULT"
-              borderRadius="xl"
-              mt={5}
-              onClick={() => navigate("/account/connect")}
-            >
-              Connect another account
-            </Button>
-          </Box>
         </>
       )}
     </Box>
