@@ -4,6 +4,7 @@ import {
   Flex,
   Heading,
   Image,
+  SimpleGrid,
   Skeleton,
   Text,
 } from "@chakra-ui/react";
@@ -16,6 +17,19 @@ import YoutubeAccount from "@/features/accounts/components/youtube/YoutubeAccoun
 export default function Account() {
   const { navigate, userId } = useAuthUtils();
   const { data, isLoading } = useAccounts(userId);
+
+  type AccountType = "FACEBOOK" | "TIKTOK" | "YOUTUBE";
+
+  const types: Record<AccountType, boolean> = {
+    FACEBOOK: false,
+    TIKTOK: false,
+    YOUTUBE: false,
+  };
+
+  data?.forEach((d: { account_type: AccountType }) => {
+    types[d.account_type] = true;
+  });
+  console.log(data);
 
   if (isLoading)
     return (
@@ -74,28 +88,76 @@ export default function Account() {
         </Box>
       ) : (
         <>
-          {data?.map(
-            (d: { account_type: string; social_name: string; id: number }) => {
-              if (d.account_type === "FACEBOOK") {
-                return (
-                  <div key={d.id}>
-                    <FacebookAccount social_name={d.social_name} />
-                  </div>
-                );
-              } else if (d.account_type === "TIKTOK") {
-                return (
-                  <div key={d.id}>
-                    <TiktokAccount social_name={d.social_name} />
-                  </div>
-                );
-              } else if (d.account_type === "YOUTUBE") {
-                return (
-                  <div key={d.id}>
-                    <YoutubeAccount social_name={d.social_name} />
-                  </div>
-                );
-              }
-            },
+          {types.FACEBOOK && (
+            <>
+              <Text
+                mt={5}
+                fontWeight="bold"
+                fontSize="md"
+                color={{ base: "primary.700", _dark: "white" }}
+              >
+                Connected facebook accounts
+              </Text>
+              <SimpleGrid columns={{ base: 1, md: 3 }} gridGap={10} mt={5}>
+                {data
+                  .filter((d) => d.account_type === "FACEBOOK")
+                  .map((d) => (
+                    <FacebookAccount
+                      key={d.id}
+                      social_name={d.social_name}
+                      thumbnail_url={d.thumbnail_url}
+                    />
+                  ))}
+              </SimpleGrid>
+            </>
+          )}
+
+          {types.TIKTOK && (
+            <>
+              <Text
+                mt={5}
+                fontWeight="bold"
+                fontSize="md"
+                color={{ base: "primary.700", _dark: "white" }}
+              >
+                Connected tiktok accounts
+              </Text>
+              <SimpleGrid columns={{ base: 1, md: 3 }} gridGap={10} mt={5}>
+                {data
+                  .filter((d) => d.account_type === "TIKTOK")
+                  .map((d) => (
+                    <TiktokAccount
+                      key={d.id}
+                      social_name={d.social_name}
+                      thumnail_url={d.thumbnail_url}
+                    />
+                  ))}
+              </SimpleGrid>
+            </>
+          )}
+
+          {types.YOUTUBE && (
+            <>
+              <Text
+                mt={5}
+                fontWeight="bold"
+                fontSize="md"
+                color={{ base: "primary.700", _dark: "white" }}
+              >
+                Connected youtube accounts
+              </Text>
+              <SimpleGrid columns={{ base: 1, md: 3 }} gridGap={10} mt={5}>
+                {data
+                  .filter((d) => d.account_type === "YOUTUBE")
+                  .map((d) => (
+                    <YoutubeAccount
+                      key={d.id}
+                      social_name={d.social_name}
+                      thumbnail_url={d.thumbnail_url}
+                    />
+                  ))}
+              </SimpleGrid>
+            </>
           )}
 
           {/* <TiktokAccount data={tiktokData} /> */}
