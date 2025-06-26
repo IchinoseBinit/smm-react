@@ -100,8 +100,8 @@ export default function Account() {
               </Text>
               <SimpleGrid columns={{ base: 1, md: 3 }} gridGap={10} mt={5}>
                 {data
-                  .filter((d) => d.account_type === "FACEBOOK")
-                  .map((d) => (
+                  .filter((d: any) => d.account_type === "FACEBOOK")
+                  .map((d: any) => (
                     <FacebookAccount
                       key={d.id}
                       social_name={d.social_name}
@@ -124,8 +124,8 @@ export default function Account() {
               </Text>
               <SimpleGrid columns={{ base: 1, md: 3 }} gridGap={10} mt={5}>
                 {data
-                  .filter((d) => d.account_type === "TIKTOK")
-                  .map((d) => (
+                  .filter((d: any) => d.account_type === "TIKTOK")
+                  .map((d: any) => (
                     <TiktokAccount
                       key={d.id}
                       social_name={d.social_name}
@@ -148,8 +148,8 @@ export default function Account() {
               </Text>
               <SimpleGrid columns={{ base: 1, md: 3 }} gridGap={10} mt={5}>
                 {data
-                  .filter((d) => d.account_type === "YOUTUBE")
-                  .map((d) => (
+                  .filter((d: any) => d.account_type === "YOUTUBE")
+                  .map((d: any) => (
                     <YoutubeAccount
                       key={d.id}
                       social_name={d.social_name}
