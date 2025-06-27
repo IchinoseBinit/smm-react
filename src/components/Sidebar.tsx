@@ -5,10 +5,10 @@ import {
   FiBarChart2,
   FiEdit2,
   FiUsers,
-  FiMic,
   FiKey,
-  FiPhone,
+  FiCalendar,
 } from "react-icons/fi";
+import { MdManageAccounts } from "react-icons/md";
 import { useLocation } from "react-router";
 
 const navItems = [
@@ -16,8 +16,8 @@ const navItems = [
   { label: "Analytics", icon: FiBarChart2, href: "/analytics" },
   { label: "Create", icon: FiEdit2, href: "/create" },
   { label: "Engagement", icon: FiUsers, href: "/engagement" },
-  { label: "Listening", icon: FiMic, href: "/listening" },
-  { label: "Advertising", icon: FiPhone, href: "/advertising" },
+  { label: "Calendar", icon: FiCalendar, href: "/calendar" },
+  { label: "Manager", icon: MdManageAccounts, href: "/manager" },
   { label: "Accounts", icon: FiKey, href: "/account" },
 ];
 

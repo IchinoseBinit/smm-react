@@ -9,6 +9,10 @@ export const Create = lazy(() => import("./pages/create/Create"));
 export const AccConnect = lazy(() => import("./pages/account/AccConnect"));
 export const Account = lazy(() => import("./pages/account/Account"));
 export const FbPages = lazy(() => import("./pages/account/FbPages"));
+export const Calendar = lazy(() => import("./pages/calendar/Calendar"));
+
+export const Manager = lazy(() => import("./pages/manager/Manager"));
+
 export const FacebookSuccessPage = lazy(
   () => import("./features/accounts/components/facebook/FbSuccessPage"),
 );
@@ -33,6 +37,14 @@ function App() {
             component: <AccConnect />,
           })}
           {layoutRoute({ path: "/account", component: <Account /> })}
+          {layoutRoute({
+            path: "/calendar",
+            component: <Calendar />,
+          })}
+          {layoutRoute({
+            path: "/manager",
+            component: <Manager />,
+          })}
           {layoutRoute({
             path: "/account/facebook/pages",
             component: <FbPages />,
