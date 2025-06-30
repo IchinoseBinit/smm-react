@@ -52,18 +52,16 @@ export const formatTime = (date: Date): string => {
   return format(date, "h:mm a");
 };
 
-export const getEventPosition = (start: Date, end: Date) => {
-  const startHour = getHours(start);
-  const startMinutes = getMinutes(start);
-  const endHour = getHours(end);
-  const endMinutes = getMinutes(end);
+const ROW_HEIGHT = 54; // must match autoRows="54px"
 
-  const startPosition = startHour + startMinutes / 60;
-  const duration = endHour + endMinutes / 60 - startPosition;
+export const getEventPosition = (start: Date, end: Date) => {
+  const startPos = getHours(start) + getMinutes(start) / 60;
+  const endPos = getHours(end) + getMinutes(end) / 60;
+  const duration = endPos - startPos;
 
   return {
-    top: `${startPosition * 60}px`, // 60px per hour
-    height: `${duration * 60}px`,
+    top: `${startPos * ROW_HEIGHT}px`,
+    height: `${duration * ROW_HEIGHT}px`,
   };
 };
 

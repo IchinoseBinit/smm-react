@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Grid, Box, Text } from "@chakra-ui/react";
 import { EventCard } from "./EventCard";
 import { addHours, isSameDay, setHours } from "date-fns";
@@ -8,32 +8,23 @@ import { getEventPosition } from "../lib/dateUtils";
 interface TimeGridProps {
   timeSlots: TimeSlot[];
   weekDays: WeekDay[];
-  events: CalendarEvent[];
-  eventData: CalendarEvent[];
-  onEventClick: (event: CalendarEvent) => void;
+  event: CalendarEvent[];
   onOpen: (e: CalendarEvent) => void;
+  onEventClick: (event: CalendarEvent) => void;
 }
 
 export const TimeGrid: React.FC<TimeGridProps> = ({
   timeSlots,
   weekDays,
-  // events,
-  onEventClick,
   onOpen,
-  eventData,
+  event,
+  onEventClick,
 }) => {
-  const [selectedSlot, setSelectedSlot] = useState<{
-    date: Date;
-    hour: number;
-  } | null>(null);
   const getEventsForDay = (day: Date) => {
-    const x = eventData.filter((event) => isSameDay(event.start, day));
+    const x = event.filter((event) => isSameDay(event.start, day));
     return x;
   };
-  console.log(selectedSlot);
   const handleClick = (day: Date, hour: number) => {
-    setSelectedSlot({ date: day, hour });
-
     const eventData = {
       id: "",
       title: "",
@@ -44,6 +35,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
     onOpen(eventData);
   };
 
+  // console.log("ok", eventData);
   return (
     <Box flex={1} mt={5}>
       <Grid
@@ -107,13 +99,21 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
                 )} */}
                 {/* Your EventCard rendering stays as-is */}
                 {getEventsForDay(day.date)
-                  .filter(
-                    (ev) =>
-                      Math.floor(ev.start.getHours()) === timeSlots[i].hour,
-                  )
+                  .filter((ev) => {
+                    // only those in this cell’s date+hour block
+
+                    const cellStart = new Date(day.date);
+                    cellStart.setHours(timeSlots[i].hour, 0, 0, 0);
+                    const cellEnd = new Date(cellStart);
+                    cellEnd.setHours(cellEnd.getHours() + 1);
+
+                    console.log("cellStart:", cellStart, "ev.start:", ev.start);
+
+                    return ev.start >= cellStart && ev.start < cellEnd;
+                  })
                   .map((ev) => {
-                    console.log("getEventsForDay:", getEventsForDay(day.date));
                     const pos = getEventPosition(ev.start, ev.end);
+                    console.log(pos);
                     return (
                       <EventCard
                         key={ev.id}
@@ -123,7 +123,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
                           top: pos.top,
                           height: pos.height,
                           left: "4px",
-                          right: "4px",
+                          width: "calc(100% - 8px)",
                           zIndex: 5,
                         }}
                         onClick={() => onEventClick(ev)}

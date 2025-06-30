@@ -25,7 +25,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
   currentDate,
   events,
   onDateChange,
-  // onEventCreate,
+  onEventCreate,
   // onEventUpdate,
   onEventDelete,
 }) => {
@@ -34,7 +34,6 @@ export const WeekView: React.FC<WeekViewProps> = ({
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [event, setEvents] = useState<CalendarEvent[]>([]);
   const weekDays = useMemo(() => getWeekDays(currentDate), [currentDate]);
   const timeSlots = useMemo(() => getTimeSlots(), []);
 
@@ -51,28 +50,10 @@ export const WeekView: React.FC<WeekViewProps> = ({
     setIsModalOpen(true);
   };
 
-  const handleEventClick = (event: CalendarEvent) => {
-    console.log("hey open model", event);
-    // setSelectedEvent(event);
-    // setIsModalOpen(true);
-  };
-
   const handleEventSave = (
     eventData: Omit<CalendarEvent, "id"> | CalendarEvent,
   ) => {
-    if ("id" in eventData) {
-      // Update existing event
-      setEvents((prev) =>
-        prev.map((ev) => (ev.id === eventData.id ? eventData : ev)),
-      );
-    } else {
-      // Add new event
-      const newEvent: CalendarEvent = {
-        ...eventData,
-        id: crypto.randomUUID(), // or use your own ID generator
-      };
-      setEvents((prev) => [...prev, newEvent]);
-    }
+    onEventCreate(eventData);
   };
 
   const handleModalOpen = (event: CalendarEvent) => {
@@ -100,10 +81,9 @@ export const WeekView: React.FC<WeekViewProps> = ({
         <TimeGrid
           timeSlots={timeSlots}
           weekDays={weekDays}
-          events={events}
-          eventData={event}
-          onEventClick={handleEventClick}
+          event={events}
           onOpen={handleModalOpen}
+          onEventClick={handleEventSave}
         />
       </Box>
 

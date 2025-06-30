@@ -43,31 +43,26 @@ export const EventModal: React.FC<EventModalProps> = ({
   }, [event]);
 
   const handleSave = () => {
-    const today = new Date();
-    const [startHours, startMinutes] = startTime.split(":").map(Number);
-    const [endHours, endMinutes] = endTime.split(":").map(Number);
+    // use the incoming event.start (the cell’s date) or fallback to now
+    const baseDate = event?.start ?? new Date();
+    const [sh, sm] = startTime.split(":").map(Number);
+    const [eh, em] = endTime.split(":").map(Number);
 
-    const start = new Date(today);
-    start.setHours(startHours, startMinutes, 0, 0);
+    const start = new Date(baseDate);
+    start.setHours(sh, sm, 0, 0);
 
-    const end = new Date(today);
-    end.setHours(endHours, endMinutes, 0, 0);
+    const end = new Date(baseDate);
+    end.setHours(eh, em, 0, 0);
 
-    const eventData = {
-      title,
-      start,
-      end,
-    };
+    const eventData = { title, start, end };
 
-    if (event) {
+    if (event?.id) {
       onSave({ ...event, ...eventData });
     } else {
       onSave(eventData);
     }
 
     onClose();
-
-    alert(`event ${event ? "updated" : "created"}`);
   };
 
   // const handleDelete = () => {
@@ -173,7 +168,7 @@ export const EventModal: React.FC<EventModalProps> = ({
                 onClick={handleSave}
                 disabled={!title.trim()}
               >
-                {event ? "Update" : "Create"}
+                create
               </Button>
             </Dialog.Footer>
           </Dialog.Content>

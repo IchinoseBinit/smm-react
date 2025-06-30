@@ -3,15 +3,7 @@ import type { CalendarEvent } from "../calendar.types";
 
 export const useCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [events, setEvents] = useState<CalendarEvent[]>([
-    {
-      id: "1",
-      title: "ok, 1pm",
-      start: new Date(2025, 0, 25, 13, 0), // January 25, 2025 at 1:00 PM
-      end: new Date(2025, 0, 25, 14, 0), // January 25, 2025 at 2:00 PM
-      color: "#3b82f6",
-    },
-  ]);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
 
   const handleDateChange = useCallback((date: Date) => {
     setCurrentDate(date);

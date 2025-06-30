@@ -14,11 +14,10 @@ export const EventCard: React.FC<EventCardProps> = ({
   style,
   onClick,
 }) => {
-  console.log(event);
   return (
     <Box
       style={style}
-      bg={event.color || "accent.500"}
+      bg="black"
       color="white"
       borderRadius="sm"
       p={2}
