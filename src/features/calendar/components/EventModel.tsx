@@ -16,6 +16,7 @@ interface EventModalProps {
   onClose: () => void;
   event?: CalendarEvent | null;
   onSave: (event: Omit<CalendarEvent, "id"> | CalendarEvent) => void;
+  onUpdate: (event: CalendarEvent) => void;
   onDelete?: (eventId: string) => void;
 }
 
@@ -24,6 +25,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   onClose,
   event,
   onSave,
+  onUpdate,
   // onDelete,
 }) => {
   const [title, setTitle] = useState("");
@@ -35,15 +37,10 @@ export const EventModal: React.FC<EventModalProps> = ({
       setTitle(event.title);
       setStartTime(format(event.start, "HH:mm"));
       setEndTime(format(event.end, "HH:mm"));
-    } else {
-      setTitle("");
-      setStartTime("09:00");
-      setEndTime("10:00");
     }
   }, [event]);
 
   const handleSave = () => {
-    // use the incoming event.start (the cell’s date) or fallback to now
     const baseDate = event?.start ?? new Date();
     const [sh, sm] = startTime.split(":").map(Number);
     const [eh, em] = endTime.split(":").map(Number);
@@ -54,14 +51,18 @@ export const EventModal: React.FC<EventModalProps> = ({
     const end = new Date(baseDate);
     end.setHours(eh, em, 0, 0);
 
-    const eventData = { title, start, end };
+    const eventData = {
+      id: event?.id ?? crypto.randomUUID(), // Only generate new ID if creating
+      title,
+      start,
+      end,
+    };
 
     if (event?.id) {
-      onSave({ ...event, ...eventData });
+      onUpdate?.(eventData); // call update if editing
     } else {
-      onSave(eventData);
+      onSave(eventData); // call save if creating
     }
-
     onClose();
   };
 
@@ -92,7 +93,7 @@ export const EventModal: React.FC<EventModalProps> = ({
                 fontWeight="semibold"
                 color="fg.DEFAULT"
               >
-                {event ? "Edit Event" : "Create Event"}
+                {event?.id ? "Edit Event" : "Create Event"}
               </Dialog.Title>
             </Dialog.Header>
 
@@ -168,7 +169,7 @@ export const EventModal: React.FC<EventModalProps> = ({
                 onClick={handleSave}
                 disabled={!title.trim()}
               >
-                create
+                {event?.id ? "Update" : "Create"}
               </Button>
             </Dialog.Footer>
           </Dialog.Content>

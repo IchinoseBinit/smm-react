@@ -26,7 +26,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
   events,
   onDateChange,
   onEventCreate,
-  // onEventUpdate,
+  onEventUpdate,
   onEventDelete,
 }) => {
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
@@ -83,7 +83,6 @@ export const WeekView: React.FC<WeekViewProps> = ({
           weekDays={weekDays}
           event={events}
           onOpen={handleModalOpen}
-          onEventClick={handleEventSave}
         />
       </Box>
 
@@ -92,6 +91,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
         onClose={handleModalClose}
         event={selectedEvent}
         onSave={handleEventSave}
+        onUpdate={onEventUpdate}
         onDelete={onEventDelete}
       />
     </Box>
