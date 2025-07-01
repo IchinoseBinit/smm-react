@@ -1,27 +1,17 @@
-import { lazy } from "react";
 import { Routes, Route } from "react-router";
 import { ProtectedRoutesWithAuth } from "./lib/routes/ProtectedRoutes";
 import { flatRoute, layoutRoute } from "./lib/routes/route";
 import { AuthRoutes } from "./lib/routes/PageRoutes";
-
-export const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
-export const Create = lazy(() => import("./pages/create/Create"));
-export const AccConnect = lazy(() => import("./pages/account/AccConnect"));
-export const Account = lazy(() => import("./pages/account/Account"));
-export const FbPages = lazy(() => import("./pages/account/FbPages"));
-export const Calendar = lazy(() => import("./pages/calendar/Calendar"));
-
-export const Manager = lazy(() => import("./pages/manager/Manager"));
-
-export const FacebookSuccessPage = lazy(
-  () => import("./features/accounts/components/facebook/FbSuccessPage"),
-);
-export const TiktokSuccessPage = lazy(
-  () => import("./features/accounts/components/titkok/TkSuccessPage"),
-);
-export const YoutubeSuccessPage = lazy(
-  () => import("./features/accounts/components/youtube/YtSuccessPage"),
-);
+import Account from "./pages/account/Account";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Create from "./pages/create/Create";
+import Calendar from "./pages/calendar/Calendar";
+import AccConnect from "./pages/account/AccConnect";
+import FbPages from "./pages/account/FbPages";
+import Manager from "./pages/manager/Manager";
+import FacebookSuccessPage from "./features/accounts/components/facebook/FbSuccessPage";
+import TiktokSuccessPage from "./features/accounts/components/titkok/TkSuccessPage";
+import YoutubeSuccessPage from "./features/accounts/components/youtube/YtSuccessPage";
 
 function App() {
   return (
@@ -33,11 +23,6 @@ function App() {
           {layoutRoute({ path: "/", component: <Dashboard /> })}
           {layoutRoute({ path: "/create", component: <Create /> })}
           {layoutRoute({
-            path: "/account/connect",
-            component: <AccConnect />,
-          })}
-          {layoutRoute({ path: "/account", component: <Account /> })}
-          {layoutRoute({
             path: "/calendar",
             component: <Calendar />,
           })}
@@ -46,10 +31,17 @@ function App() {
             component: <Manager />,
           })}
           {layoutRoute({
+            path: "/account",
+            component: <Account />,
+          })}
+          {layoutRoute({
+            path: "/account/connect",
+            component: <AccConnect />,
+          })}
+          {layoutRoute({
             path: "/account/facebook/pages",
             component: <FbPages />,
           })}
-
           {flatRoute({
             path: "/auth/facebook",
             component: <FacebookSuccessPage />,

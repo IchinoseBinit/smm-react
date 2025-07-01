@@ -5,7 +5,7 @@ import Login from "@/pages/auth/Login";
 import SendOtp from "@/pages/auth/SendOtp";
 import ResetPsw from "@/pages/auth/ResetPsw";
 import EmailVerification from "@/pages/auth/EmailVerification";
-import { Skeleton } from "@chakra-ui/react";
+import { InitialAppLoading } from "../loadings";
 
 const authRoutes = [
   { path: "/register", element: <Register /> },
@@ -18,7 +18,7 @@ const authRoutes = [
 export const AuthRoutes = () => {
   const { isAuthenticated, isLoading } = useAuthContext();
 
-  if (isLoading) return <Skeleton height="300px" borderRadius="md" />;
+  if (isLoading) return <InitialAppLoading />;
 
   if (isAuthenticated) return <Navigate to="/" replace />;
 

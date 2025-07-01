@@ -2,13 +2,14 @@ import { Navigate, Outlet, useLocation } from "react-router";
 import { UiProvider } from "../providers/uiProvider";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { Suspense } from "react";
-import { Center, Skeleton, Spinner } from "@chakra-ui/react";
+import { Center, Spinner } from "@chakra-ui/react";
+import { InitialAppLoading } from "../loadings";
 
 const ProtectedRoutesWithAuth = () => {
   const { isAuthenticated, isLoading } = useAuthContext();
   const location = useLocation();
 
-  if (isLoading) return <Skeleton height="300px" borderRadius="md" />;
+  if (isLoading) return <InitialAppLoading />;
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
