@@ -14,7 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { filesSchema } from "../lib/zod";
 import useFileUpload from "../hooks/query/useFileUpload";
 import type { FileMeta, FilesPayload } from "../post.types";
-import axiosInstance from "@/services/axios";
+import axios from "axios";
 
 export const FileUploadList = () => {
   const isMobile = useIsMobile();
@@ -64,7 +64,7 @@ export const FileUploadList = () => {
         });
         formData.append("file", files[i]);
 
-        return axiosInstance.post(post.url, formData, {
+        return axios.post(post.url, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       }),
