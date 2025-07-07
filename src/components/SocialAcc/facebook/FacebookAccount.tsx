@@ -1,6 +1,6 @@
 import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react";
 import { FaFacebook } from "react-icons/fa6";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 
 export default function FacebookAccount({
   social_name,
@@ -9,7 +9,7 @@ export default function FacebookAccount({
   social_name: string;
   thumbnail_url: string | null;
 }) {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <Box>
@@ -22,7 +22,7 @@ export default function FacebookAccount({
           bg: { base: "gray.100", _dark: "primary.700" },
           cursor: "pointer",
         }}
-        onClick={() => navigate("/account/facebook/pages")}
+        // onClick={() => navigate("/account/facebook/pages")}
         boxShadow="md"
         w="20rem"
         position="relative"

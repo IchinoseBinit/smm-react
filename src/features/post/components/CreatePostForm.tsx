@@ -11,26 +11,59 @@ import {
   FileUpload,
   Icon,
   Heading,
+  Input,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { LuUpload } from "react-icons/lu";
 import { FileUploadList } from "./FileUploadList";
 import DateTime from "./DateTime";
+import { useAuthUtils } from "@/hooks/useAuthUtils";
+import { AccountSection } from "@/components/SocialAcc/AccountSection";
+import FacebookAccount from "@/components/SocialAcc/facebook/FacebookAccount";
+import TiktokAccount from "@/components/SocialAcc/tiktok/TiktokAccount";
+import YoutubeAccount from "@/components/SocialAcc/youtube/YoutubeAccount";
+import { useAllConnAccounts } from "@/hooks/useConnectedAccounts";
+import { CircularLoading } from "@/lib/loadings";
+import { useCreatePost } from "../hooks/query/usePost";
 
 export default function CreatePostForm() {
+  const { userId } = useAuthUtils();
+  const { data, isLoading } = useAllConnAccounts(userId);
+  const { mutate, isPending } = useCreatePost();
+  const accountConfigs = [
+    { type: "FACEBOOK" as AccountType, Component: FacebookAccount },
+    { type: "TIKTOK" as AccountType, Component: TiktokAccount },
+    { type: "YOUTUBE" as AccountType, Component: YoutubeAccount },
+  ];
+  const defaultValues = {
+    title: "",
+    description: "",
+    status: "scheduled", // or ""
+    scheduled_time: "",
+    medias: [
+      {
+        s3_url: "",
+        order: 0,
+      },
+    ],
+    platform_statuses: [
+      {
+        accountType: "",
+        social_account_id: null,
+      },
+    ],
+  };
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     setValue,
     formState: { isValid },
-  } = useForm({ mode: "onChange" });
+  } = useForm({ mode: "onChange", defaultValues });
 
-  const content = watch("content", "");
-
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
+  const content = watch("description", "");
+  const scheduledTime = watch("scheduled_time");
 
   const suggestions = [
     "#TechTrends",
@@ -42,18 +75,34 @@ export default function CreatePostForm() {
   const addTag = useCallback(
     (tag: string) => {
       const value = content.length ? `${content} ${tag}` : tag;
-      setValue("content", value, { shouldValidate: true });
+      setValue("description", value, { shouldValidate: true });
     },
     [content, setValue],
   );
 
+  const onSubmit = (data: any) => {
+    mutate(data);
+    reset(defaultValues);
+  };
+
+  if (isLoading) return <CircularLoading />;
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <VStack spaceY={10} align="stretch">
         <Field.Root required>
+          <Input
+            placeholder="write topic name!"
+            {...register("title", { required: true })}
+            maxW="30rem"
+            maxH="5lh"
+            size="xl"
+            variant="subtle"
+          />
+        </Field.Root>
+        <Field.Root required>
           <Textarea
             placeholder="What's on your mind?"
-            {...register("content", { required: true })}
+            {...register("description", { required: true })}
             maxW="30rem"
             maxH="5lh"
             size="xl"
@@ -75,7 +124,7 @@ export default function CreatePostForm() {
                 <Box color="fg.muted">.png, .jpg up to 5MB</Box>
               </FileUpload.DropzoneContent>
             </FileUpload.Dropzone>
-            <FileUploadList />
+            <FileUploadList setvalue={setValue} />
           </FileUpload.Root>
         </Box>
 
@@ -105,29 +154,24 @@ export default function CreatePostForm() {
           <Text mb={2} fontWeight="medium" color="fg.DEFAULT">
             Connected Accounts
           </Text>
-          {/* <HStack spaceX={4}>
-            <Button variant="outline" flex={1} borderColor="border.DEFAULT">
-              <Icon size="md" color={{ base: "black", _dark: "white" }}>
-                <FaXTwitter />
-              </Icon>
-              Twitter
-            </Button>
-            <Button variant="outline" flex={1} borderColor="border.DEFAULT">
-              <Icon size="md" color="blue.500">
-                <FaFacebook />
-              </Icon>
-              Facebook
-            </Button>
-            <Button variant="outline" flex={1} borderColor="border.DEFAULT">
-              <Icon size="md" color="pink.500">
-                <FaInstagram />
-              </Icon>
-              Instagram
-            </Button>
-          </HStack> */}
+          <>
+            {accountConfigs.map(({ type, Component }) => (
+              <AccountSection
+                key={type}
+                type={type}
+                data={data}
+                Component={Component}
+                setvalue={setValue}
+              />
+            ))}
+          </>
         </Box>
 
-        <DateTime register={register} />
+        <DateTime
+          register={register}
+          setvalue={setValue}
+          scheduled={scheduledTime}
+        />
         <Button
           type="submit"
           alignSelf="flex-end"
@@ -136,6 +180,8 @@ export default function CreatePostForm() {
           _hover={{ bg: "button.HOVER" }}
           _active={{ bg: "button.ACTIVE" }}
           disabled={!isValid}
+          loading={isPending}
+          loadingText="Posting..."
         >
           Schedule Post
         </Button>

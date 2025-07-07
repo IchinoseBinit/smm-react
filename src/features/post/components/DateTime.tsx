@@ -1,12 +1,19 @@
 import { Box, Field, Flex, Icon, Input } from "@chakra-ui/react";
-import { useState } from "react";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import "../css/DateTime.css";
+import { format } from "date-fns";
 
-export default function DateTime({ register }: { register: any }) {
-  const [date, setDate] = useState();
+export default function DateTime({
+  setvalue,
+  register,
+  scheduled,
+}: {
+  setvalue: any;
+  register: any;
+  scheduled: any;
+}) {
   return (
     <Flex
       direction={{ base: "column", md: "row" }}
@@ -19,13 +26,15 @@ export default function DateTime({ register }: { register: any }) {
         </Field.Label>
         <Box position="relative">
           <DatePicker
-            selected={date}
-            onChange={(d: any) => setDate(d)}
+            selected={scheduled ? new Date(scheduled) : null}
+            onChange={(d: any) => {
+              setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"));
+            }}
             calendarClassName="customDatepicker"
             dateFormat="MM/dd/yyyy"
             placeholderText="Select Start Date"
             showTimeInput={false}
-            customInput={<Input {...register("date")} pr="2.5rem" />}
+            customInput={<Input {...register("scheduled_time")} pr="2.5rem" />}
           />
           <Icon
             as={FaCalendarAlt}
@@ -46,8 +55,10 @@ export default function DateTime({ register }: { register: any }) {
 
         <Box position="relative" w="240px">
           <DatePicker
-            selected={date}
-            onChange={(d: any) => setDate(d)}
+            selected={scheduled ? new Date(scheduled) : null}
+            onChange={(d: any) => {
+              setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"));
+            }}
             showTimeSelect
             showTimeSelectOnly
             timeIntervals={15}
@@ -55,7 +66,7 @@ export default function DateTime({ register }: { register: any }) {
             dateFormat="HH:mm"
             placeholderText="Select Time"
             calendarClassName="customTimepicker"
-            customInput={<Input {...register("time")} pr="2.5rem" />}
+            customInput={<Input {...register("scheduled_time")} pr="2.5rem" />}
           />
         </Box>
       </Field.Root>

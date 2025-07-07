@@ -13,10 +13,10 @@ import { VideoPreviewDialog } from "./PreviewModel";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { filesSchema } from "../lib/zod";
 import useFileUpload from "../hooks/query/useFileUpload";
-import type { FileMeta, FilesPayload } from "../post.types";
+import type { FileMeta, FilesPayload } from "../types";
 import axios from "axios";
 
-export const FileUploadList = () => {
+export const FileUploadList = ({ setvalue }: { setvalue: any }) => {
   const isMobile = useIsMobile();
   const {
     open: isOpen,
@@ -74,8 +74,14 @@ export const FileUploadList = () => {
     const urls = presignedResponse.presigned_posts.map(
       (post: any) => post.url + post.fields.key,
     );
-    console.log(urls);
-  }, [files, validateFiles, mutateAsync]);
+    // Convert to medias format
+    const medias = urls.map((url: any, index: any) => ({
+      s3_url: url,
+      order: index,
+    }));
+    console.log(medias);
+    setvalue("medias", medias);
+  }, [files, validateFiles, mutateAsync, setvalue]);
 
   useEffect(() => {
     if (files.length === 0) {
