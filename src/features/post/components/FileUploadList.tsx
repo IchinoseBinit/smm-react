@@ -14,6 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { filesSchema } from "../lib/zod";
 import useFileUpload from "../hooks/query/useFileUpload";
 import type { FileMeta, FilesPayload } from "../post.types";
+import axiosInstance from "@/services/axios";
 
 export const FileUploadList = () => {
   const isMobile = useIsMobile();
@@ -51,7 +52,29 @@ export const FileUploadList = () => {
 
     const payload: FilesPayload = { files: fileArr };
 
-    await mutateAsync(payload);
+    // Step 1: get presigned URLs
+    const presignedResponse: any = await mutateAsync(payload);
+
+    // Step 2: upload files to S3
+    await Promise.all(
+      presignedResponse.presigned_posts.map((post: any, i: any) => {
+        const formData = new FormData();
+        Object.entries(post.fields).forEach(([key, value]) => {
+          formData.append(key, value as string);
+        });
+        formData.append("file", files[i]);
+
+        return axiosInstance.post(post.url, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }),
+    );
+
+    console.log("All files uploaded to S3");
+    const urls = presignedResponse.presigned_posts.map(
+      (post: any) => post.url + post.fields.key,
+    );
+    console.log(urls);
   }, [files, validateFiles, mutateAsync]);
 
   useEffect(() => {

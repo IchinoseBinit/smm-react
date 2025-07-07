@@ -2,7 +2,7 @@ const api = "/v1/api";
 
 const API_URL = {
   FILES: {
-    UPLOAD: `${api}/media/api/generate-presigned-posts/`,
+    UPLOAD: `${api}/media/generate-presigned-posts/`,
   },
 };
 
