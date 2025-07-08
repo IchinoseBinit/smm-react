@@ -75,6 +75,7 @@ export default function CreatePostForm() {
     watch,
     reset,
     setValue,
+    getValues,
     formState: { isValid },
   } = useForm({ mode: "onChange", defaultValues });
 
@@ -112,9 +113,9 @@ export default function CreatePostForm() {
         });
         formData.append("file", files[i]);
 
-        return axios.post(post.url, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        // return axios.post(post.url, formData, {
+        //   headers: { "Content-Type": "multipart/form-data" },
+        // });
       }),
     );
     console.log("All files uploaded to S3");
@@ -130,9 +131,10 @@ export default function CreatePostForm() {
     setValue("medias", medias);
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async () => {
     await uploadFiles();
-    mutate(data);
+    const latestData = getValues(); // This now includes updated "medias"
+    mutate(latestData);
     reset(defaultValues);
   };
 
