@@ -5,8 +5,7 @@ import { handleError, handleSuccess } from "@/features/auth/lib/utils";
 const useCreatePost = () => {
   return useMutation({
     mutationFn: createPost,
-    onSuccess: (data: any) => {
-      console.log(data);
+    onSuccess: () => {
       handleSuccess("Post created successfully", "");
     },
     onError: (error: Error) => handleError("create post failed", error),

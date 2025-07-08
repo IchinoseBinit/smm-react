@@ -20,7 +20,7 @@ export default function DateTime({
       w="80%"
       gap={{ base: "4", md: "0" }}
     >
-      <Field.Root required w="full">
+      <Field.Root w="full">
         <Field.Label fontSize="sm" color="fg.DEFAULT" mb={1}>
           Select Date
         </Field.Label>
@@ -48,7 +48,7 @@ export default function DateTime({
           />
         </Box>
       </Field.Root>
-      <Field.Root required w="240px">
+      <Field.Root w="240px">
         <Field.Label fontSize="sm" color="fg.DEFAULT" mb={1}>
           Select Time
         </Field.Label>

@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Text,
@@ -12,29 +12,45 @@ import {
   Icon,
   Heading,
   Input,
+  useFileUploadContext,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { LuUpload } from "react-icons/lu";
 import { FileUploadList } from "./FileUploadList";
 import DateTime from "./DateTime";
 import { useAuthUtils } from "@/hooks/useAuthUtils";
-import { AccountSection } from "@/components/SocialAcc/AccountSection";
+import { PostAccountSection } from "@/components/SocialAcc/AccountSection";
 import FacebookAccount from "@/components/SocialAcc/facebook/FacebookAccount";
 import TiktokAccount from "@/components/SocialAcc/tiktok/TiktokAccount";
 import YoutubeAccount from "@/components/SocialAcc/youtube/YoutubeAccount";
 import { useAllConnAccounts } from "@/hooks/useConnectedAccounts";
 import { CircularLoading } from "@/lib/loadings";
 import { useCreatePost } from "../hooks/query/usePost";
+import useFileUpload from "../hooks/query/useFileUpload";
+import { useUploadStore } from "../lib/store/filePayload";
+import axios from "axios";
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils();
   const { data, isLoading } = useAllConnAccounts(userId);
+  const [itemArr, setItemArr] = useState<any[]>([]);
   const { mutate, isPending } = useCreatePost();
-  const accountConfigs = [
-    { type: "FACEBOOK" as AccountType, Component: FacebookAccount },
-    { type: "TIKTOK" as AccountType, Component: TiktokAccount },
-    { type: "YOUTUBE" as AccountType, Component: YoutubeAccount },
-  ];
+  const fileUpload = useFileUploadContext();
+  const files = useMemo(
+    () => fileUpload.acceptedFiles,
+    [fileUpload.acceptedFiles],
+  );
+  const { payload } = useUploadStore();
+  const { mutateAsync } = useFileUpload();
+  const accountConfigs = useMemo(
+    () => [
+      { type: "FACEBOOK" as AccountType, Component: FacebookAccount },
+      { type: "TIKTOK" as AccountType, Component: TiktokAccount },
+      { type: "YOUTUBE" as AccountType, Component: YoutubeAccount },
+    ],
+    [],
+  );
   const defaultValues = {
     title: "",
     description: "",
@@ -80,7 +96,42 @@ export default function CreatePostForm() {
     [content, setValue],
   );
 
-  const onSubmit = (data: any) => {
+  useEffect(() => {
+    setValue("platform_statuses", itemArr);
+  }, [itemArr, setValue]);
+  const uploadFiles = async () => {
+    // Step 1: get presigned URLs
+    const presignedResponse: any = await mutateAsync(payload);
+
+    // Step 2: upload files to S3
+    await Promise.all(
+      presignedResponse.presigned_posts.map((post: any, i: any) => {
+        const formData = new FormData();
+        Object.entries(post.fields).forEach(([key, value]) => {
+          formData.append(key, value as string);
+        });
+        formData.append("file", files[i]);
+
+        return axios.post(post.url, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }),
+    );
+    console.log("All files uploaded to S3");
+    const urls = presignedResponse.presigned_posts.map(
+      (post: any) => post.url + post.fields.key,
+    );
+    // Convert to medias format
+    const medias = urls.map((url: any, index: any) => ({
+      s3_url: url,
+      order: index,
+    }));
+    console.log(medias);
+    setValue("medias", medias);
+  };
+
+  const onSubmit = async (data: any) => {
+    await uploadFiles();
     mutate(data);
     reset(defaultValues);
   };
@@ -124,7 +175,7 @@ export default function CreatePostForm() {
                 <Box color="fg.muted">.png, .jpg up to 5MB</Box>
               </FileUpload.DropzoneContent>
             </FileUpload.Dropzone>
-            <FileUploadList setvalue={setValue} />
+            <FileUploadList />
           </FileUpload.Root>
         </Box>
 
@@ -154,17 +205,20 @@ export default function CreatePostForm() {
           <Text mb={2} fontWeight="medium" color="fg.DEFAULT">
             Connected Accounts
           </Text>
-          <>
+
+          <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={10} mt={2}>
             {accountConfigs.map(({ type, Component }) => (
-              <AccountSection
+              <PostAccountSection
                 key={type}
                 type={type}
                 data={data}
                 Component={Component}
                 setvalue={setValue}
+                ItemArr={itemArr}
+                setItemArr={setItemArr}
               />
             ))}
-          </>
+          </SimpleGrid>
         </Box>
 
         <DateTime

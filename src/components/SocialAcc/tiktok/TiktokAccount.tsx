@@ -4,9 +4,11 @@ import { FaTiktok } from "react-icons/fa6";
 export default function TiktokAccount({
   social_name,
   thumnail_url,
+  selected,
 }: {
   social_name: string;
   thumnail_url: string | null;
+  selected?: boolean;
 }) {
   return (
     <Box>
@@ -23,6 +25,9 @@ export default function TiktokAccount({
         boxShadow="md"
         w="20rem"
         position="relative"
+        border="2px solid"
+        borderColor={selected ? "blue.400" : "transparent"}
+        transition="all 0.2s"
       >
         <Flex gap={3}>
           <Icon

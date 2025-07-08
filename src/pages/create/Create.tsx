@@ -1,4 +1,4 @@
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box, FileUpload, Heading, Text } from "@chakra-ui/react";
 import CreatePostForm from "../../features/post/components/CreatePostForm";
 
 export default function Create() {
@@ -12,7 +12,9 @@ export default function Create() {
           Craft your content and engage your audience
         </Text>
       </Box>
-      <CreatePostForm />
+      <FileUpload.Root>
+        <CreatePostForm />
+      </FileUpload.Root>
     </Box>
   );
 }

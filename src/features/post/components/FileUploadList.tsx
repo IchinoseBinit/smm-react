@@ -12,11 +12,10 @@ import { useVideoPreview } from "../hooks/useVideoPreview";
 import { VideoPreviewDialog } from "./PreviewModel";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { filesSchema } from "../lib/zod";
-import useFileUpload from "../hooks/query/useFileUpload";
 import type { FileMeta, FilesPayload } from "../types";
-import axios from "axios";
+import { useUploadStore } from "../lib/store/filePayload";
 
-export const FileUploadList = ({ setvalue }: { setvalue: any }) => {
+export const FileUploadList = () => {
   const isMobile = useIsMobile();
   const {
     open: isOpen,
@@ -24,7 +23,6 @@ export const FileUploadList = ({ setvalue }: { setvalue: any }) => {
     previewSrc,
     handlePreview,
   } = useVideoPreview();
-  const { mutateAsync } = useFileUpload();
   const [error, setError] = useState("");
   const fileUpload = useFileUploadContext();
   const files = useMemo(
@@ -51,37 +49,9 @@ export const FileUploadList = ({ setvalue }: { setvalue: any }) => {
     }));
 
     const payload: FilesPayload = { files: fileArr };
-
-    // Step 1: get presigned URLs
-    const presignedResponse: any = await mutateAsync(payload);
-
-    // Step 2: upload files to S3
-    await Promise.all(
-      presignedResponse.presigned_posts.map((post: any, i: any) => {
-        const formData = new FormData();
-        Object.entries(post.fields).forEach(([key, value]) => {
-          formData.append(key, value as string);
-        });
-        formData.append("file", files[i]);
-
-        return axios.post(post.url, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      }),
-    );
-
-    console.log("All files uploaded to S3");
-    const urls = presignedResponse.presigned_posts.map(
-      (post: any) => post.url + post.fields.key,
-    );
-    // Convert to medias format
-    const medias = urls.map((url: any, index: any) => ({
-      s3_url: url,
-      order: index,
-    }));
-    console.log(medias);
-    setvalue("medias", medias);
-  }, [files, validateFiles, mutateAsync, setvalue]);
+    // set files
+    useUploadStore.getState().setPayload(payload);
+  }, [files, validateFiles]);
 
   useEffect(() => {
     if (files.length === 0) {
@@ -156,7 +126,16 @@ export const FileUploadList = ({ setvalue }: { setvalue: any }) => {
                 file={file}
                 key={file.name}
               >
-                <FileUpload.ItemPreviewImage />
+                <Box overflow="hidden" w="auto" boxSize="52" p="2">
+                  <FileUpload.ItemPreviewImage
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                </Box>
+
                 <Float placement="top-end">
                   <FileUpload.ItemDeleteTrigger
                     boxSize="4"

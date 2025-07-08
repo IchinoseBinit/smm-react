@@ -8,6 +8,8 @@ interface AccountSectionProps {
   Component: React.FC<any>;
   label?: string;
   setvalue?: any;
+  ItemArr?: any;
+  setItemArr?: any;
 }
 
 export const AccountSection = ({
@@ -23,7 +25,7 @@ export const AccountSection = ({
   if (!data || !filtered.length) return null; // or loading/skeleton if needed
 
   return (
-    <>
+    <Box>
       {label && (
         <Text
           mt={5}
@@ -56,6 +58,46 @@ export const AccountSection = ({
           </Box>
         ))}
       </SimpleGrid>
+    </Box>
+  );
+};
+
+export const PostAccountSection = ({
+  type,
+  data,
+  Component,
+  setvalue,
+  setItemArr,
+}: AccountSectionProps) => {
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const filtered = data.filter((d: any) => d.account_type === type);
+
+  if (!data || !filtered.length) return null;
+
+  return (
+    <>
+      {filtered.map((d: any) => {
+        const isSelected = selectedId === d.id;
+        return (
+          <Box
+            key={d.id}
+            borderRadius="md"
+            cursor="pointer"
+            onClick={() => {
+              // append to the previous array
+              setItemArr((prev: any) => [
+                ...prev,
+                { accountType: d.account_type, social_account_id: d.id },
+              ]);
+
+              // your existing single‑select logic
+              setSelectedId(d.id);
+            }}
+          >
+            <Component {...d} setvalue={setvalue} selected={isSelected} />
+          </Box>
+        );
+      })}
     </>
   );
 };

@@ -4,14 +4,17 @@ import { FaYoutube } from "react-icons/fa6";
 export default function YoutubeAccount({
   social_name,
   thumbnail_url,
+  selected,
 }: {
   social_name: string;
   thumbnail_url: string | null;
+  selected?: boolean;
 }) {
   return (
     <Box>
       <Box
         p={4}
+        mt={5}
         borderRadius="2xl"
         bg={{ base: "blue.50", _dark: "primary.800" }}
         _hover={{
@@ -19,8 +22,11 @@ export default function YoutubeAccount({
           cursor: "pointer",
         }}
         boxShadow="md"
-        w="full"
+        w="20rem"
         position="relative"
+        border="2px solid"
+        borderColor={selected ? "blue.400" : "transparent"}
+        transition="all 0.2s"
       >
         <Flex gap={3}>
           <Icon as={FaYoutube} boxSize={6} color="red.600" />
