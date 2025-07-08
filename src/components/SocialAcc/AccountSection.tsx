@@ -1,6 +1,6 @@
 // components/AccountSection.tsx
 import { Box, SimpleGrid, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface AccountSectionProps {
   type: AccountType;
@@ -10,6 +10,8 @@ interface AccountSectionProps {
   setvalue?: any;
   ItemArr?: any;
   setItemArr?: any;
+  clearSelectedAcc?: boolean;
+  onClearSelectComplete?: () => void;
 }
 
 export const AccountSection = ({
@@ -68,10 +70,18 @@ export const PostAccountSection = ({
   Component,
   setvalue,
   setItemArr,
+  clearSelectedAcc,
+  onClearSelectComplete,
 }: AccountSectionProps) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const filtered = data.filter((d: any) => d.account_type === type);
-
+  useEffect(() => {
+    if (clearSelectedAcc) {
+      setSelectedId(null);
+      setItemArr([]); // clear selected array too if needed
+      onClearSelectComplete?.(); // callback to parent to reset flag
+    }
+  }, [clearSelectedAcc, setItemArr, onClearSelectComplete]);
   if (!data || !filtered.length) return null;
 
   return (

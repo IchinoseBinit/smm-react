@@ -35,6 +35,8 @@ export default function CreatePostForm() {
   const { userId } = useAuthUtils();
   const { data, isLoading } = useAllConnAccounts(userId);
   const [itemArr, setItemArr] = useState<any[]>([]);
+  const [clearFiles, setClearFiles] = useState(false);
+  const [clearSelectedAcc, setClearSelectedAcc] = useState(false);
   const { mutate, isPending } = useCreatePost();
   const fileUpload = useFileUploadContext();
   const files = useMemo(
@@ -113,9 +115,9 @@ export default function CreatePostForm() {
         });
         formData.append("file", files[i]);
 
-        // return axios.post(post.url, formData, {
-        //   headers: { "Content-Type": "multipart/form-data" },
-        // });
+        return axios.post(post.url, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       }),
     );
     console.log("All files uploaded to S3");
@@ -136,6 +138,8 @@ export default function CreatePostForm() {
     const latestData = getValues(); // This now includes updated "medias"
     mutate(latestData);
     reset(defaultValues);
+    setClearFiles(true);
+    setClearSelectedAcc(true);
   };
 
   if (isLoading) return <CircularLoading />;
@@ -177,7 +181,10 @@ export default function CreatePostForm() {
                 <Box color="fg.muted">.png, .jpg up to 5MB</Box>
               </FileUpload.DropzoneContent>
             </FileUpload.Dropzone>
-            <FileUploadList />
+            <FileUploadList
+              clearFiles={clearFiles}
+              onClearComplete={() => setClearFiles(false)}
+            />
           </FileUpload.Root>
         </Box>
 
@@ -218,6 +225,8 @@ export default function CreatePostForm() {
                 setvalue={setValue}
                 ItemArr={itemArr}
                 setItemArr={setItemArr}
+                clearSelectedAcc={clearSelectedAcc}
+                onClearSelectComplete={() => setClearSelectedAcc(false)}
               />
             ))}
           </SimpleGrid>

@@ -15,7 +15,13 @@ import { filesSchema } from "../lib/zod";
 import type { FileMeta, FilesPayload } from "../types";
 import { useUploadStore } from "../lib/store/filePayload";
 
-export const FileUploadList = () => {
+export const FileUploadList = ({
+  clearFiles,
+  onClearComplete,
+}: {
+  clearFiles: boolean;
+  onClearComplete?: () => void;
+}) => {
   const isMobile = useIsMobile();
   const {
     open: isOpen,
@@ -60,6 +66,15 @@ export const FileUploadList = () => {
     }
     uploadFiles();
   }, [files, uploadFiles]);
+
+  useEffect(() => {
+    if (clearFiles) {
+      fileUpload.clearFiles();
+      onClearComplete?.(); // callback to parent to reset flag
+    }
+  }, [clearFiles, fileUpload, onClearComplete]);
+
+  console.log(files);
   return (
     <>
       {error && (
@@ -68,7 +83,8 @@ export const FileUploadList = () => {
         </Text>
       )}
       <FileUpload.ItemGroup display="flex" flexDirection="row">
-        {!error &&
+        {files.length > 0 &&
+          !error &&
           files.map((file) =>
             file.type.startsWith("video/") ? (
               <FileUpload.Item
