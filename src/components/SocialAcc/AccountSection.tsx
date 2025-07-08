@@ -84,14 +84,30 @@ export const PostAccountSection = ({
             borderRadius="md"
             cursor="pointer"
             onClick={() => {
-              // append to the previous array
-              setItemArr((prev: any) => [
-                ...prev,
-                { accountType: d.account_type, social_account_id: d.id },
-              ]);
+              const item = {
+                accountType: d.account_type,
+                social_account_id: d.id,
+              };
 
-              // your existing single‑select logic
-              setSelectedId(d.id);
+              setItemArr((prev: any[]) => {
+                const isAlreadySelected = prev.some(
+                  (i) =>
+                    i.social_account_id === d.id &&
+                    i.accountType === d.account_type,
+                );
+
+                const next = isAlreadySelected
+                  ? prev.filter(
+                      (i) =>
+                        i.social_account_id !== d.id ||
+                        i.accountType !== d.account_type,
+                    ) // remove
+                  : [...prev, item]; // add
+
+                return next;
+              });
+
+              setSelectedId((prev) => (prev === d.id ? null : d.id));
             }}
           >
             <Component {...d} setvalue={setvalue} selected={isSelected} />
