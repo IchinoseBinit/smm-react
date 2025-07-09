@@ -9,7 +9,7 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
-import type { CalendarEvent } from "../calendar.types";
+import type { CalendarEvent } from "../types";
 
 interface EventModalProps {
   isOpen: boolean;

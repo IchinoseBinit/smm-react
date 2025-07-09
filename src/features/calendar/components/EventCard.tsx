@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Text } from "@chakra-ui/react";
-import { formatTime } from "../lib/dateUtils";
-import type { CalendarEvent } from "../calendar.types";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { FaFacebook, FaTiktok, FaYoutube } from "react-icons/fa6";
+import { format } from "date-fns";
+import type { CalendarEvent } from "../types";
 
 interface EventCardProps {
   event: CalendarEvent;
@@ -14,15 +15,35 @@ export const EventCard: React.FC<EventCardProps> = ({
   style,
   clickEvent,
 }) => {
+  // Group by accountType + time string
+  const uniqueMap = new Map<
+    string,
+    { icon: React.ReactElement; time: string }
+  >();
+
+  event?.platform?.forEach((p) => {
+    const time = format(new Date(event.start), "h:mm a");
+    const key = `${p.accountType}-${time}`;
+
+    if (!uniqueMap.has(key)) {
+      let icon = null;
+      if (p.accountType === "YOUTUBE") icon = <FaYoutube color="red" />;
+      else if (p.accountType === "FACEBOOK") icon = <FaFacebook color="blue" />;
+      else if (p.accountType === "TIKTOK") icon = <FaTiktok color="black" />;
+
+      if (icon) uniqueMap.set(key, { icon, time });
+    }
+  });
+
   return (
     <Box
       style={style}
-      bg="black"
-      color="white"
+      bg={{ base: "white", _dark: "primary.800" }}
+      color={{ base: "black", _dark: "white" }}
       borderRadius="sm"
-      p={2}
+      p={3}
       cursor="pointer"
-      fontSize="xs"
+      fontSize="sm"
       fontWeight="medium"
       minH="24px"
       display="flex"
@@ -36,14 +57,23 @@ export const EventCard: React.FC<EventCardProps> = ({
       boxShadow="sm"
       onClick={() => clickEvent(event)}
     >
-      <Box>
-        <Text fontSize="xs" fontWeight="bold">
-          {event.title}
-        </Text>
-        <Text fontSize="xs" opacity={0.9}>
-          {formatTime(event.start)}
-        </Text>
-      </Box>
+      <Flex direction="column" gap={2}>
+        {[...uniqueMap.values()].map((item, i) => (
+          <Box
+            key={i}
+            bg="gray.100"
+            minW="8rem"
+            p={1}
+            shadow="sm"
+            display="flex"
+            alignItems="center"
+            gap={2}
+          >
+            {item.icon}
+            <Text fontSize="sm">{item.time}</Text>
+          </Box>
+        ))}
+      </Flex>
     </Box>
   );
 };

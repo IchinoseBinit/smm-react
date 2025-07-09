@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import type { CalendarEvent } from "../calendar.types";
+import type { CalendarEvent } from "../types";
 
 export const useCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());

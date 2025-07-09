@@ -12,7 +12,7 @@ import {
   getHours,
   getMinutes,
 } from "date-fns";
-import type { TimeSlot, WeekDay } from "../calendar.types";
+import type { TimeSlot, WeekDay } from "../types";
 
 export const getWeekDays = (date: Date): WeekDay[] => {
   const start = startOfWeek(date, { weekStartsOn: 0 }); // Sunday

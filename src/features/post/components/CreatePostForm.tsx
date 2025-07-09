@@ -120,7 +120,6 @@ export default function CreatePostForm() {
         });
       }),
     );
-    console.log("All files uploaded to S3");
     const urls = presignedResponse.presigned_posts.map(
       (post: any) => post.url + post.fields.key,
     );
@@ -129,7 +128,6 @@ export default function CreatePostForm() {
       s3_url: url,
       order: index,
     }));
-    console.log(medias);
     setValue("medias", medias);
   };
 
@@ -178,7 +176,7 @@ export default function CreatePostForm() {
               </Icon>
               <FileUpload.DropzoneContent>
                 <Box>Drag and drop files here</Box>
-                <Box color="fg.muted">.png, .jpg up to 5MB</Box>
+                <Box color="fg.muted">.png, .jpg,mp4</Box>
               </FileUpload.DropzoneContent>
             </FileUpload.Dropzone>
             <FileUploadList

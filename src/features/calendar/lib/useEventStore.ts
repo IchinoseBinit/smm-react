@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { CalendarEvent } from "../calendar.types";
+import type { CalendarEvent } from "../types";
 
 type EventState = {
   events: CalendarEvent[];

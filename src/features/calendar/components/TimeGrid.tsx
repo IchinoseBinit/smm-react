@@ -2,7 +2,9 @@ import React from "react";
 import { Grid, Box, Text } from "@chakra-ui/react";
 import { EventCard } from "./EventCard";
 import { addHours, isSameDay, setHours } from "date-fns";
-import type { CalendarEvent, TimeSlot, WeekDay } from "../calendar.types";
+import type { CalendarEvent, Post, TimeSlot, WeekDay } from "../types";
+import useGetPostsByDate from "../hooks/query/useGetPosts";
+import { CircularLoading } from "@/lib/loadings";
 
 interface TimeGridProps {
   timeSlots: TimeSlot[];
@@ -17,10 +19,33 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
   onOpen,
   event,
 }) => {
-  const getEventsForDay = (day: Date) => {
-    const x = event.filter((event) => isSameDay(event.start, day));
-    return x;
-  };
+  const { data, isLoading } = useGetPostsByDate({
+    from: "2025-07-7",
+    to: "2025-07-9",
+    userId: 4,
+  });
+  if (isLoading) return <CircularLoading />;
+
+  // right after you build calendarEvents …
+  const calendarEvents: CalendarEvent[] = data.map((post: Post) => {
+    const start = new Date(post.scheduled_time);
+    return {
+      id: String(post.id),
+      title: post.title,
+      start,
+      end: addHours(start, 1),
+      platform: post.platform_statuses,
+      scheduled_time: post.scheduled_time,
+    };
+  });
+
+  // merge your incoming `event` prop and the API events:
+  const allEvents = [...event, ...calendarEvents];
+
+  // then just filter against that in getEventsForDay:
+  const getEventsForDay = (day: Date) =>
+    allEvents.filter((e) => isSameDay(e.start, day));
+
   const handleClick = (day: Date, hour: number) => {
     const eventData = {
       id: "",
@@ -36,7 +61,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
     <Box flex={1} mt={5}>
       <Grid
         templateColumns="60px repeat(7, 1fr)"
-        autoRows="54px"
+        autoRows="94px"
         position="sticky"
         top="0"
         zIndex="1000"
@@ -62,7 +87,6 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
         ))}
 
         {/* Empty grid cells + events */}
-
         {weekDays.map((day, d) =>
           timeSlots.map((_, i) => {
             const cellStart = new Date(day.date);
@@ -101,7 +125,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
                   />
                 )} */}
                 {/* Your EventCard rendering stays as-is */}
-                {eventsInCell.map((ev) => (
+                {eventsInCell.map((ev: any) => (
                   <EventCard
                     key={ev.id}
                     event={ev}

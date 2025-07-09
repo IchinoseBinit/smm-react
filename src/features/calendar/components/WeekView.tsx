@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/react";
 import { CalendarHeader } from "./CalendarHeader";
 import { WeekHeader } from "./WeekHeader";
 import { TimeGrid } from "./TimeGrid";
-import type { CalendarEvent } from "../calendar.types";
+import type { CalendarEvent } from "../types";
 import {
   getNextWeek,
   getPrevWeek,

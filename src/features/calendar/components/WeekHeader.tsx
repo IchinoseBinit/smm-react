@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid, Box, Text, Circle } from "@chakra-ui/react";
-import type { WeekDay } from "../calendar.types";
+import type { WeekDay } from "../types";
 
 interface WeekHeaderProps {
   weekDays: WeekDay[];
