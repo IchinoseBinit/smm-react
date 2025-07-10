@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/react";
 import { CalendarHeader } from "./CalendarHeader";
 import { WeekHeader } from "./WeekHeader";
 import { TimeGrid } from "./TimeGrid";
-import type { CalendarEvent } from "../types";
+import type { CalendarEvent, PlatformCalendarGroup } from "../types";
 import {
   getNextWeek,
   getPrevWeek,
@@ -29,9 +29,8 @@ export const WeekView: React.FC<WeekViewProps> = ({
   onEventUpdate,
   onEventDelete,
 }) => {
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
-    null,
-  );
+  const [selectedEvent, setSelectedEvent] =
+    useState<PlatformCalendarGroup | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const weekDays = useMemo(() => getWeekDays(currentDate), [currentDate]);
@@ -56,7 +55,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
     onEventCreate(eventData);
   };
 
-  const handleModalOpen = (event: CalendarEvent) => {
+  const handleModalOpen = (event: PlatformCalendarGroup) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
   };

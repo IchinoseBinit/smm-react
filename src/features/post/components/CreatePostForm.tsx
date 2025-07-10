@@ -16,6 +16,7 @@ import {
   SimpleGrid,
   Accordion,
   Span,
+  Flex,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { LuUpload } from "react-icons/lu";
@@ -232,32 +233,35 @@ export default function CreatePostForm() {
           </SimpleGrid>
         </Box>
 
-        <DateTime
-          register={register}
-          setvalue={setValue}
-          scheduled={scheduledTime}
-        />
-
-        <Accordion.Root collapsible defaultValue={["schedule"]}>
+        <Accordion.Root collapsible defaultValue={[]}>
           <Accordion.Item value="schedule">
-            <Accordion.ItemTrigger>
-              <Span flex="1">Schedule Post</Span>
+            <Accordion.ItemTrigger _hover={{ cursor: "pointer" }}>
+              <Span flex="1">Schedule Post (Date/Time)</Span>
               <Accordion.ItemIndicator />
             </Accordion.ItemTrigger>
             <Accordion.ItemContent>
               <Accordion.ItemBody>
-                <Button
-                  type="submit"
-                  bg="secondary.500"
-                  color="button.DEFAULT"
-                  _hover={{ bg: "button.HOVER" }}
-                  _active={{ bg: "button.ACTIVE" }}
-                  disabled={!isValid}
-                  loading={isPending}
-                  loadingText="Posting..."
-                >
-                  Schedule Post
-                </Button>
+                <VStack spaceY={4} align="stretch">
+                  <DateTime
+                    register={register}
+                    setvalue={setValue}
+                    scheduled={scheduledTime}
+                  />
+                  <Flex justify="end">
+                    <Button
+                      type="submit"
+                      bg="secondary.500"
+                      color="button.DEFAULT"
+                      _hover={{ bg: "button.HOVER" }}
+                      _active={{ bg: "button.ACTIVE" }}
+                      disabled={!isValid}
+                      loading={isPending}
+                      loadingText="Posting..."
+                    >
+                      Schedule Post
+                    </Button>
+                  </Flex>
+                </VStack>
               </Accordion.ItemBody>
             </Accordion.ItemContent>
           </Accordion.Item>

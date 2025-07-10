@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Box, Text } from "@chakra-ui/react";
 import { EventCard } from "./EventCard";
-import { addHours, isSameDay, setHours } from "date-fns";
-import type { CalendarEvent, Post, TimeSlot, WeekDay } from "../types";
+import { addHours, isSameDay } from "date-fns";
+import type {
+  CalendarEvent,
+  PlatformCalendarGroup,
+  TimeSlot,
+  WeekDay,
+} from "../types";
 import useGetPostsByDate from "../hooks/query/useGetPosts";
 import { CircularLoading } from "@/lib/loadings";
 
@@ -10,13 +15,28 @@ interface TimeGridProps {
   timeSlots: TimeSlot[];
   weekDays: WeekDay[];
   event: CalendarEvent[];
-  onOpen: (e: CalendarEvent) => void;
+  onOpen: (e: PlatformCalendarGroup) => void;
 }
+
+type MergedPost = {
+  scheduled_time: string;
+  platforms: {
+    accountType: string;
+    social_account_id?: number;
+    facebook_page_id?: number;
+    posts: {
+      id: number;
+      title: string;
+      description: string;
+      medias: any[];
+      status: string;
+    }[];
+  }[];
+};
 
 export const TimeGrid: React.FC<TimeGridProps> = ({
   timeSlots,
   weekDays,
-  onOpen,
   event,
 }) => {
   const { data, isLoading } = useGetPostsByDate({
@@ -24,18 +44,78 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
     to: "2025-07-9",
     userId: 4,
   });
-  if (isLoading) return <CircularLoading />;
+  const [mergedPosts, setMergedPosts] = useState<MergedPost[]>([]);
+  useEffect(() => {
+    if (Array.isArray(data) && data.length > 0) {
+      mergeScheduledPosts(data);
+    }
+  }, [data]);
 
+  function mergeScheduledPosts(posts: any[]) {
+    const map = new Map();
+
+    for (const post of posts) {
+      const { scheduled_time, platform_statuses } = post;
+
+      for (const platform of platform_statuses) {
+        const key = `${scheduled_time}-${platform.accountType}-${platform.social_account_id || platform.facebook_page_id || ""}`;
+
+        if (!map.has(key)) {
+          map.set(key, {
+            scheduled_time,
+            accountType: platform.accountType,
+            social_account_id: platform.social_account_id,
+            facebook_page_id: platform.facebook_page_id,
+            posts: [],
+          });
+        }
+
+        map.get(key).posts.push({
+          id: post.id,
+          title: post.title,
+          description: post.description,
+          medias: post.medias,
+          status: post.status,
+        });
+      }
+    }
+
+    const groupedMap = new Map();
+
+    for (const value of map.values()) {
+      const timeKey = value.scheduled_time;
+      if (!groupedMap.has(timeKey)) {
+        groupedMap.set(timeKey, []);
+      }
+      groupedMap.get(timeKey).push({
+        accountType: value.accountType,
+        social_account_id: value.social_account_id,
+        facebook_page_id: value.facebook_page_id,
+        posts: value.posts,
+      });
+    }
+
+    const mergedResult: MergedPost[] = [];
+
+    for (const [scheduled_time, platforms] of groupedMap.entries()) {
+      mergedResult.push({ scheduled_time, platforms });
+    }
+
+    setMergedPosts(mergedResult);
+  }
+
+  if (isLoading) return <CircularLoading />;
   // right after you build calendarEvents …
-  const calendarEvents: CalendarEvent[] = data.map((post: Post) => {
+
+  const calendarEvents: CalendarEvent[] = mergedPosts.map((post, index) => {
     const start = new Date(post.scheduled_time);
+
     return {
-      id: String(post.id),
-      title: post.title,
+      id: String(index),
       start,
       end: addHours(start, 1),
-      platform: post.platform_statuses,
       scheduled_time: post.scheduled_time,
+      platform: post.platforms,
     };
   });
 
@@ -45,17 +125,6 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
   // then just filter against that in getEventsForDay:
   const getEventsForDay = (day: Date) =>
     allEvents.filter((e) => isSameDay(e.start, day));
-
-  const handleClick = (day: Date, hour: number) => {
-    const eventData = {
-      id: "",
-      title: "",
-      start: setHours(day, hour),
-      end: addHours(setHours(day, hour), 1),
-    };
-
-    onOpen(eventData);
-  };
 
   return (
     <Box flex={1} mt={5}>
@@ -102,11 +171,11 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
                 key={`${d}-${i}`}
                 gridColumn={d + 2}
                 gridRow={i + 1}
-                onClick={
-                  eventsInCell.length > 0
-                    ? undefined
-                    : () => handleClick(day.date, timeSlots[i].hour)
-                }
+                // onClick={
+                //   eventsInCell.length > 0
+                //     ? undefined
+                //     : () => handleClick(day.date, timeSlots[i].hour)
+                // }
                 position="relative"
                 border="1px solid"
                 borderColor={{ base: "primary.50", _dark: "primary.700" }}
@@ -126,11 +195,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
                 )} */}
                 {/* Your EventCard rendering stays as-is */}
                 {eventsInCell.map((ev: any) => (
-                  <EventCard
-                    key={ev.id}
-                    event={ev}
-                    clickEvent={() => onOpen(ev)}
-                  />
+                  <EventCard key={ev.id} event={ev} />
                 ))}
               </Box>
             );

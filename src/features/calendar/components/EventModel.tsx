@@ -1,177 +1,104 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import {
   Button,
   // CloseButton,
   Portal,
   Dialog,
-  Fieldset,
-  Input,
+  Text,
+  Box,
+  Flex,
+  VStack,
+  HStack,
 } from "@chakra-ui/react";
-import { format } from "date-fns";
-import type { CalendarEvent } from "../types";
+import type { CalendarEvent, PlatformCalendarGroup } from "../types";
+import { usePostModalStore } from "../lib/store/postModel.store";
 
 interface EventModalProps {
   isOpen: boolean;
   onClose: () => void;
-  event?: CalendarEvent | null;
+  event?: PlatformCalendarGroup | null;
   onSave: (event: Omit<CalendarEvent, "id"> | CalendarEvent) => void;
   onUpdate: (event: CalendarEvent) => void;
   onDelete?: (eventId: string) => void;
 }
 
-export const EventModal: React.FC<EventModalProps> = ({
-  isOpen,
-  onClose,
-  event,
-  onSave,
-  onUpdate,
-  // onDelete,
-}) => {
-  const [title, setTitle] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-
-  useEffect(() => {
-    if (event) {
-      setTitle(event.title);
-      setStartTime(format(event.start, "HH:mm"));
-      setEndTime(format(event.end, "HH:mm"));
-    }
-  }, [event]);
-
-  const handleSave = () => {
-    const baseDate = event?.start ?? new Date();
-    const [sh, sm] = startTime.split(":").map(Number);
-    const [eh, em] = endTime.split(":").map(Number);
-
-    const start = new Date(baseDate);
-    start.setHours(sh, sm, 0, 0);
-
-    const end = new Date(baseDate);
-    end.setHours(eh, em, 0, 0);
-
-    const eventData = {
-      id: event?.id ?? crypto.randomUUID(), // Only generate new ID if creating
-      title,
-      start,
-      end,
-    };
-
-    if (event?.id) {
-      onUpdate?.(eventData); // call update if editing
-    } else {
-      onSave(eventData); // call save if creating
-    }
-    onClose();
-  };
-
-  // const handleDelete = () => {
-  //   if (event && onDelete) {
-  //     onDelete(event.id);
-  //     onClose();
-  //   }
-  // };
+export const EventModal: React.FC<EventModalProps> = () => {
+  const { isOpen, selectedPlatform, closeModal } = usePostModalStore();
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={(val) => !val && onClose()}>
+    <Dialog.Root open={isOpen} onOpenChange={(val) => !val}>
       <Portal>
         <Dialog.Backdrop bg="blackAlpha.500" />
         <Dialog.Positioner>
           <Dialog.Content
             bg="bg.DEFAULT"
-            borderRadius="2xl"
+            borderRadius="md"
             boxShadow="lg"
             px={6}
             py={5}
-            maxW="sm"
+            maxW="md"
             w="full"
           >
-            <Dialog.Header mb={3}>
-              <Dialog.Title
-                fontSize="lg"
-                fontWeight="semibold"
-                color="fg.DEFAULT"
-              >
-                {event?.id ? "Edit Event" : "Create Event"}
-              </Dialog.Title>
-            </Dialog.Header>
+            {/* Header */}
+            <Flex justify="space-between" mb={4}>
+              <Text fontSize="lg" fontWeight="semibold">
+                {selectedPlatform?.platform ?? "No Platform"}
+              </Text>
+              <Text fontSize="sm" color="fg.MUTED">
+                {selectedPlatform?.time ?? "--"}
+              </Text>
+            </Flex>
 
-            <Dialog.Body display="flex" flexDirection="column" gap={4}>
-              <Fieldset.Root>
-                <Fieldset.Legend
-                  fontSize="sm"
-                  fontWeight="medium"
-                  color="fg.MUTED"
+            {/* Posts */}
+            <VStack align="stretch" spaceY={4}>
+              {selectedPlatform?.posts.map((post) => (
+                <Box
+                  key={post.id}
+                  p={3}
+                  border="1px solid"
+                  borderColor="border.SUBTLE"
+                  borderRadius="sm"
                 >
-                  Title
-                </Fieldset.Legend>
-                <Fieldset.Content>
-                  <Input
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Event title"
-                    size="sm"
-                  />
-                </Fieldset.Content>
-              </Fieldset.Root>
+                  <Text fontWeight="medium">{post.title}</Text>
+                  <Text fontSize="sm" color="fg.MUTED" mb={2}>
+                    {post.description}
+                  </Text>
 
-              <Fieldset.Root>
-                <Fieldset.Legend
-                  fontSize="sm"
-                  fontWeight="medium"
-                  color="fg.MUTED"
-                >
-                  Start Time
-                </Fieldset.Legend>
-                <Fieldset.Content>
-                  <Input
-                    type="time"
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                    size="sm"
-                  />
-                </Fieldset.Content>
-              </Fieldset.Root>
+                  {post.medias?.length > 0 && (
+                    <HStack spaceX={2} overflowX="auto">
+                      {post.medias.map((m, i) => (
+                        <Box
+                          key={i}
+                          w="50px"
+                          h="50px"
+                          borderRadius="sm"
+                          overflow="hidden"
+                          bg="gray.100"
+                        >
+                          <img
+                            src={m.s3_url}
+                            alt=""
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </Box>
+                      ))}
+                    </HStack>
+                  )}
+                </Box>
+              ))}
+            </VStack>
 
-              <Fieldset.Root>
-                <Fieldset.Legend
-                  fontSize="sm"
-                  fontWeight="medium"
-                  color="fg.MUTED"
-                >
-                  End Time
-                </Fieldset.Legend>
-                <Fieldset.Content>
-                  <Input
-                    type="time"
-                    value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
-                    size="sm"
-                  />
-                </Fieldset.Content>
-              </Fieldset.Root>
-            </Dialog.Body>
-
-            <Dialog.Footer
-              mt={5}
-              display="flex"
-              justifyContent="flex-end"
-              gap={3}
-            >
-              <Button variant="ghost" onClick={onClose}>
-                Cancel
+            {/* Footer */}
+            <Flex justify="flex-end" mt={5}>
+              <Button variant="ghost" onClick={closeModal}>
+                Close
               </Button>
-              <Button
-                bg="secondary.500"
-                color="white"
-                _hover={{ bg: "secondary.600" }}
-                onClick={handleSave}
-                disabled={!title.trim()}
-              >
-                {event?.id ? "Update" : "Create"}
-              </Button>
-            </Dialog.Footer>
+            </Flex>
           </Dialog.Content>
         </Dialog.Positioner>
       </Portal>
