@@ -14,6 +14,8 @@ import {
   Input,
   useFileUploadContext,
   SimpleGrid,
+  Accordion,
+  Span,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { LuUpload } from "react-icons/lu";
@@ -235,19 +237,31 @@ export default function CreatePostForm() {
           setvalue={setValue}
           scheduled={scheduledTime}
         />
-        <Button
-          type="submit"
-          alignSelf="flex-end"
-          bg="secondary.500"
-          color="button.DEFAULT"
-          _hover={{ bg: "button.HOVER" }}
-          _active={{ bg: "button.ACTIVE" }}
-          disabled={!isValid}
-          loading={isPending}
-          loadingText="Posting..."
-        >
-          Schedule Post
-        </Button>
+
+        <Accordion.Root collapsible defaultValue={["schedule"]}>
+          <Accordion.Item value="schedule">
+            <Accordion.ItemTrigger>
+              <Span flex="1">Schedule Post</Span>
+              <Accordion.ItemIndicator />
+            </Accordion.ItemTrigger>
+            <Accordion.ItemContent>
+              <Accordion.ItemBody>
+                <Button
+                  type="submit"
+                  bg="secondary.500"
+                  color="button.DEFAULT"
+                  _hover={{ bg: "button.HOVER" }}
+                  _active={{ bg: "button.ACTIVE" }}
+                  disabled={!isValid}
+                  loading={isPending}
+                  loadingText="Posting..."
+                >
+                  Schedule Post
+                </Button>
+              </Accordion.ItemBody>
+            </Accordion.ItemContent>
+          </Accordion.Item>
+        </Accordion.Root>
       </VStack>
     </Box>
   );
