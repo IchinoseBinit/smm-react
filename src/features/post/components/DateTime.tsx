@@ -4,6 +4,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import "../css/DateTime.css";
 import { format } from "date-fns";
+import { useScheduleStore } from "../lib/store/dateTime";
 
 export default function DateTime({
   setvalue,
@@ -14,6 +15,7 @@ export default function DateTime({
   register: any;
   scheduled: any;
 }) {
+  const setIsScheduled = useScheduleStore((s) => s.setIsScheduled);
   return (
     <Flex
       direction={{ base: "column", md: "row" }}
@@ -29,6 +31,7 @@ export default function DateTime({
             selected={scheduled ? new Date(scheduled) : null}
             onChange={(d: any) => {
               setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"));
+              setIsScheduled(!!d);
             }}
             calendarClassName="customDatepicker"
             dateFormat="MM/dd/yyyy"
@@ -58,6 +61,7 @@ export default function DateTime({
             selected={scheduled ? new Date(scheduled) : null}
             onChange={(d: any) => {
               setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"));
+              setIsScheduled(!!d);
             }}
             showTimeSelect
             showTimeSelectOnly

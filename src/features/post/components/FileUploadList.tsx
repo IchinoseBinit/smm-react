@@ -52,6 +52,7 @@ export const FileUploadList = ({
     const fileArr: FileMeta[] = files.map((file) => ({
       filename: file.name,
       type: file.type,
+      file,
     }));
 
     const payload: FilesPayload = { files: fileArr };
@@ -74,7 +75,6 @@ export const FileUploadList = ({
     }
   }, [clearFiles, fileUpload, onClearComplete]);
 
-  console.log(files);
   return (
     <>
       {error && (
@@ -100,7 +100,6 @@ export const FileUploadList = ({
                     style={{ width: "100%", height: "100%", borderRadius: 8 }}
                     controls={false}
                   />
-
                   <Box
                     position="absolute"
                     top="0"

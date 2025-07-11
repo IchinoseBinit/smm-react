@@ -12,7 +12,6 @@ import {
   Icon,
   Heading,
   Input,
-  useFileUploadContext,
   SimpleGrid,
   Accordion,
   Span,
@@ -33,19 +32,17 @@ import { useCreatePost } from "../hooks/query/usePost";
 import useFileUpload from "../hooks/query/useFileUpload";
 import { useUploadStore } from "../lib/store/filePayload";
 import axios from "axios";
+import { useScheduleStore } from "../lib/store/dateTime";
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils();
   const { data, isLoading } = useAllConnAccounts(userId);
+  const isScheduled = useScheduleStore((s) => s.isScheduled);
   const [itemArr, setItemArr] = useState<any[]>([]);
   const [clearFiles, setClearFiles] = useState(false);
   const [clearSelectedAcc, setClearSelectedAcc] = useState(false);
   const { mutate, isPending } = useCreatePost();
-  const fileUpload = useFileUploadContext();
-  const files = useMemo(
-    () => fileUpload.acceptedFiles,
-    [fileUpload.acceptedFiles],
-  );
+
   const { payload } = useUploadStore();
   const { mutateAsync } = useFileUpload();
   const accountConfigs = useMemo(
@@ -59,8 +56,9 @@ export default function CreatePostForm() {
   const defaultValues = {
     title: "",
     description: "",
-    status: "scheduled", // or ""
-    scheduled_time: "",
+    status: "", // or ""
+    scheduled_time: null,
+    is_photo: false,
     medias: [
       {
         s3_url: "",
@@ -74,6 +72,7 @@ export default function CreatePostForm() {
       },
     ],
   };
+
   const {
     register,
     handleSubmit,
@@ -101,10 +100,10 @@ export default function CreatePostForm() {
     },
     [content, setValue],
   );
-
   useEffect(() => {
     setValue("platform_statuses", itemArr);
   }, [itemArr, setValue]);
+
   const uploadFiles = async () => {
     // Step 1: get presigned URLs
     const presignedResponse: any = await mutateAsync(payload);
@@ -116,11 +115,9 @@ export default function CreatePostForm() {
         Object.entries(post.fields).forEach(([key, value]) => {
           formData.append(key, value as string);
         });
-        formData.append("file", files[i]);
+        formData.append("file", payload.files[i].file);
 
-        return axios.post(post.url, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        return axios.post(post.url, formData);
       }),
     );
     const urls = presignedResponse.presigned_posts.map(
@@ -135,9 +132,17 @@ export default function CreatePostForm() {
   };
 
   const onSubmit = async () => {
+    setValue("status", isScheduled ? "scheduled" : "published");
+    if (!isScheduled) setValue("scheduled_time", null); // clear if not scheduled
+
     await uploadFiles();
-    const latestData = getValues(); // This now includes updated "medias"
+
+    const isPhoto = payload.files.every((f) => f.type.startsWith("image/"));
+    setValue("is_photo", isPhoto); // ✅ here
+
+    const latestData = getValues();
     mutate(latestData);
+
     reset(defaultValues);
     setClearFiles(true);
     setClearSelectedAcc(true);
@@ -239,33 +244,37 @@ export default function CreatePostForm() {
               <Span flex="1">Schedule Post (Date/Time)</Span>
               <Accordion.ItemIndicator />
             </Accordion.ItemTrigger>
-            <Accordion.ItemContent>
+            <Accordion.ItemContent
+              overflow="visible"
+              position="relative"
+              zIndex={0}
+            >
               <Accordion.ItemBody>
-                <VStack spaceY={4} align="stretch">
+                <VStack spaceY={4} align="stretch" zIndex={50}>
                   <DateTime
                     register={register}
                     setvalue={setValue}
                     scheduled={scheduledTime}
                   />
-                  <Flex justify="end">
-                    <Button
-                      type="submit"
-                      bg="secondary.500"
-                      color="button.DEFAULT"
-                      _hover={{ bg: "button.HOVER" }}
-                      _active={{ bg: "button.ACTIVE" }}
-                      disabled={!isValid}
-                      loading={isPending}
-                      loadingText="Posting..."
-                    >
-                      Schedule Post
-                    </Button>
-                  </Flex>
                 </VStack>
               </Accordion.ItemBody>
             </Accordion.ItemContent>
           </Accordion.Item>
         </Accordion.Root>
+        <Flex justify="end">
+          <Button
+            type="submit"
+            bg="secondary.500"
+            color="button.DEFAULT"
+            _hover={{ bg: "button.HOVER" }}
+            _active={{ bg: "button.ACTIVE" }}
+            disabled={!isValid}
+            loading={isPending}
+            loadingText={isScheduled ? "Scheduling..." : "Posting..."}
+          >
+            {isScheduled ? "Schedule Post" : "Post"}
+          </Button>
+        </Flex>
       </VStack>
     </Box>
   );
