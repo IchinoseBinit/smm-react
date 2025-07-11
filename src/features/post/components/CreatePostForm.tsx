@@ -59,12 +59,7 @@ export default function CreatePostForm() {
     status: "scheduled", // or ""
     scheduled_time: null,
     is_photo: false,
-    medias: [
-      {
-        s3_url: "",
-        order: 0,
-      },
-    ],
+    medias: [],
     platform_statuses: [
       {
         accountType: "",
@@ -132,8 +127,8 @@ export default function CreatePostForm() {
   };
 
   const onSubmit = async () => {
-    // setValue("status", isScheduled ? "scheduled" : "published");
-    // if (!isScheduled) setValue("scheduled_time", null); // clear if not scheduled
+    setValue("status", isScheduled ? "scheduled" : "published");
+    if (!isScheduled) setValue("scheduled_time", null); // clear if not scheduled
 
     await uploadFiles();
 
@@ -142,6 +137,7 @@ export default function CreatePostForm() {
 
     const latestData = getValues();
     mutate(latestData);
+    console.log(latestData);
 
     reset(defaultValues);
     setClearFiles(true);
