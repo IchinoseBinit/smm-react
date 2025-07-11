@@ -119,8 +119,9 @@ export default function CreatePostForm() {
       (post: any) => post.url + post.fields.key,
     );
     // Convert to medias format
-    const medias = urls.map((url: any, index: any) => ({
-      s3_url: url,
+
+    const medias = urls.map((url: string, index: number) => ({
+      s3_url: encodeURI(url), // encode spaces → %20
       order: index,
     }));
     setValue("medias", medias);
