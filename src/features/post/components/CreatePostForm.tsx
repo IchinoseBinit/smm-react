@@ -128,7 +128,7 @@ export default function CreatePostForm() {
   };
 
   const onSubmit = async () => {
-    setValue("status", isScheduled ? "scheduled" : "published");
+    setValue("status", isScheduled ? "scheduled" : "posted");
     if (!isScheduled) setValue("scheduled_time", null); // clear if not scheduled
 
     await uploadFiles();
