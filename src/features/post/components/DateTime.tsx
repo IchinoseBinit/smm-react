@@ -30,7 +30,7 @@ export default function DateTime({
           <DatePicker
             selected={scheduled ? new Date(scheduled) : null}
             onChange={(d: any) => {
-              setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"));
+              setvalue("scheduled_time", format(d, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
               setIsScheduled(!!d);
             }}
             calendarClassName="customDatepicker"
@@ -60,7 +60,7 @@ export default function DateTime({
           <DatePicker
             selected={scheduled ? new Date(scheduled) : null}
             onChange={(d: any) => {
-              setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"));
+              setvalue("scheduled_time", format(d, "yyyy-MM-dd'T'HH:mm:ss'Z'"));
               setIsScheduled(!!d);
             }}
             showTimeSelect
