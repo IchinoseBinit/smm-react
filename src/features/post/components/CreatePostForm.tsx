@@ -56,7 +56,7 @@ export default function CreatePostForm() {
   const defaultValues = {
     title: "",
     description: "",
-    status: "", // or ""
+    status: "scheduled", // or ""
     scheduled_time: null,
     is_photo: false,
     medias: [
@@ -132,8 +132,8 @@ export default function CreatePostForm() {
   };
 
   const onSubmit = async () => {
-    setValue("status", isScheduled ? "scheduled" : "published");
-    if (!isScheduled) setValue("scheduled_time", null); // clear if not scheduled
+    // setValue("status", isScheduled ? "scheduled" : "published");
+    // if (!isScheduled) setValue("scheduled_time", null); // clear if not scheduled
 
     await uploadFiles();
 

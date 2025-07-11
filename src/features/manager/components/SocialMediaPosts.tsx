@@ -15,6 +15,7 @@ import useGetPostsByDate from "../hooks/query/useGetPosts";
 import type { Post } from "../types";
 import { FaFacebook, FaTiktok, FaYoutube } from "react-icons/fa6";
 import { CircularLoading } from "@/lib/loadings";
+import { useAuthUtils } from "@/hooks/useAuthUtils";
 
 export default function SocialMediaPosts() {
   const [from, setFrom] = useState(
@@ -22,10 +23,11 @@ export default function SocialMediaPosts() {
   );
   const [to, setTo] = useState(new Date().toISOString().split("T")[0]);
 
+  const { userId } = useAuthUtils();
   const { data, isLoading } = useGetPostsByDate({
     from: from as string,
     to,
-    userId: 4,
+    userId,
   });
 
   if (isLoading) return <CircularLoading />;

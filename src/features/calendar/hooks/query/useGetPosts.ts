@@ -8,7 +8,7 @@ const useGetPostsByDate = ({
 }: {
   from?: string;
   to?: string;
-  userId?: number;
+  userId?: string;
 }) => {
   return useQuery({
     queryKey: ["posts-by-date", from, to, userId],

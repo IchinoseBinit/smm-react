@@ -10,6 +10,7 @@ import type {
 } from "../types";
 import useGetPostsByDate from "../hooks/query/useGetPosts";
 import { CircularLoading } from "@/lib/loadings";
+import { useAuthUtils } from "@/hooks/useAuthUtils";
 
 interface TimeGridProps {
   timeSlots: TimeSlot[];
@@ -39,10 +40,11 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
   weekDays,
   event,
 }) => {
+  const { userId } = useAuthUtils();
   const { data, isLoading } = useGetPostsByDate({
     from: "2025-07-7",
     to: "2025-07-9",
-    userId: 4,
+    userId: userId,
   });
   const [mergedPosts, setMergedPosts] = useState<MergedPost[]>([]);
   useEffect(() => {
