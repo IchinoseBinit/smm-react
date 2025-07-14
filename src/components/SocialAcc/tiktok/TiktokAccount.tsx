@@ -1,5 +1,6 @@
 import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react";
 import { FaTiktok } from "react-icons/fa6";
+import { BsCheckCircleFill, BsCircle } from "react-icons/bs";
 
 export default function TiktokAccount({
   social_name,
@@ -21,7 +22,6 @@ export default function TiktokAccount({
           bg: { base: "gray.100", _dark: "primary.700" },
           cursor: "pointer",
         }}
-        // onClick={() => navigate("/account/facebook/pages")}
         boxShadow="md"
         w="20rem"
         position="relative"
@@ -29,6 +29,21 @@ export default function TiktokAccount({
         borderColor={selected ? "blue.400" : "transparent"}
         transition="all 0.2s"
       >
+        {/* Tick */}
+        <Box
+          position="absolute"
+          top="-8px"
+          right="-8px"
+          bg={{ base: "white", _dark: "primary.800" }}
+          borderRadius="full"
+        >
+          {selected ? (
+            <BsCheckCircleFill size={20} color="#4299e1" />
+          ) : (
+            <BsCircle size={20} color="#A0AEC0" />
+          )}
+        </Box>
+
         <Flex gap={3}>
           <Icon
             as={FaTiktok}
@@ -39,9 +54,7 @@ export default function TiktokAccount({
             fontWeight="semibold"
             color={{ base: "primary.800", _dark: "white" }}
           >
-            <Box as="span" fontWeight="semibold">
-              {social_name}
-            </Box>
+            <Box as="span">{social_name}</Box>
           </Text>
           {thumnail_url && (
             <Image

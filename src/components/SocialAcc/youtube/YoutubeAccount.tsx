@@ -1,5 +1,6 @@
 import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react";
 import { FaYoutube } from "react-icons/fa6";
+import { BsCheckCircleFill, BsCircle } from "react-icons/bs";
 
 export default function YoutubeAccount({
   social_name,
@@ -28,15 +29,28 @@ export default function YoutubeAccount({
         borderColor={selected ? "blue.400" : "transparent"}
         transition="all 0.2s"
       >
+        {/* Tick */}
+        <Box
+          position="absolute"
+          top="-8px"
+          right="-8px"
+          bg={{ base: "white", _dark: "primary.800" }}
+          borderRadius="full"
+        >
+          {selected ? (
+            <BsCheckCircleFill size={20} color="#4299e1" />
+          ) : (
+            <BsCircle size={20} color="#A0AEC0" />
+          )}
+        </Box>
+
         <Flex gap={3}>
           <Icon as={FaYoutube} boxSize={6} color="red.600" />
           <Text
             fontWeight="semibold"
             color={{ base: "primary.800", _dark: "white" }}
           >
-            <Box as="span" fontWeight="semibold">
-              {social_name}
-            </Box>
+            <Box as="span">{social_name}</Box>
           </Text>
 
           {thumbnail_url && (

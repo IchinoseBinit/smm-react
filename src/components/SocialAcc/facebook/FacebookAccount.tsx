@@ -1,6 +1,7 @@
 import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react";
 import { FaFacebook } from "react-icons/fa6";
 // import { useNavigate } from "react-router";
+import { BsCheckCircleFill, BsCircle } from "react-icons/bs";
 
 export default function FacebookAccount({
   social_name,
@@ -24,7 +25,6 @@ export default function FacebookAccount({
           bg: { base: "gray.100", _dark: "primary.700" },
           cursor: "pointer",
         }}
-        // onClick={() => navigate("/account/facebook/pages")}
         boxShadow="md"
         w="20rem"
         position="relative"
@@ -32,6 +32,22 @@ export default function FacebookAccount({
         borderColor={selected ? "blue.400" : "transparent"}
         transition="all 0.2s"
       >
+        {/* Tick circle */}
+        <Box
+          position="absolute"
+          top="-8px"
+          right="-8px"
+          bg={{ base: "white", _dark: "primary.800" }}
+          borderRadius="full"
+          zIndex="1"
+        >
+          {selected ? (
+            <BsCheckCircleFill size={20} color="#4299e1" /> // blue.400
+          ) : (
+            <BsCircle size={20} color="#A0AEC0" /> // gray.400
+          )}
+        </Box>
+
         <Flex gap={3}>
           <Icon as={FaFacebook} boxSize={6} color="blue.600" />
           <Text
@@ -42,6 +58,7 @@ export default function FacebookAccount({
               {social_name}
             </Box>
           </Text>
+
           {thumbnail_url && (
             <Image
               position="absolute"
