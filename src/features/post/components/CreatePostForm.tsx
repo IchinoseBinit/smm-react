@@ -33,15 +33,20 @@ import useFileUpload from "../hooks/query/useFileUpload";
 import { useUploadStore } from "../lib/store/filePayload";
 import axios from "axios";
 import { useScheduleStore } from "../lib/store/dateTime";
+import { useSuccessDialogStore } from "../lib/store/successDialog";
+import { SuccessDialog } from "./SuccessCreatePost";
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils();
   const { data, isLoading } = useAllConnAccounts(userId);
   const isScheduled = useScheduleStore((s) => s.isScheduled);
+  const setIsScheduled = useScheduleStore((s) => s.setIsScheduled);
   const [itemArr, setItemArr] = useState<any[]>([]);
   const [clearFiles, setClearFiles] = useState(false);
   const [clearSelectedAcc, setClearSelectedAcc] = useState(false);
-  const { mutate, isPending } = useCreatePost();
+  const [postLoading, setPostLoading] = useState(false);
+  const { mutateAsync: mutateCreatePost } = useCreatePost();
+  const { openDialog } = useSuccessDialogStore();
 
   const { payload } = useUploadStore();
   const { mutateAsync } = useFileUpload();
@@ -56,7 +61,7 @@ export default function CreatePostForm() {
   const defaultValues = {
     title: "",
     description: "",
-    status: "scheduled", // or ""
+    status: "", // or ""
     scheduled_time: null,
     is_photo: false,
     medias: [],
@@ -128,21 +133,33 @@ export default function CreatePostForm() {
   };
 
   const onSubmit = async () => {
-    setValue("status", isScheduled ? "scheduled" : "posted");
-    if (!isScheduled) setValue("scheduled_time", null); // clear if not scheduled
+    setPostLoading(true);
 
-    await uploadFiles();
+    try {
+      setValue("status", isScheduled ? "scheduled" : "published");
+      if (!isScheduled) setValue("scheduled_time", null); // clear if not scheduled
 
-    const isPhoto = payload.files.every((f) => f.type.startsWith("image/"));
-    setValue("is_photo", isPhoto); // ✅ here
+      await uploadFiles();
 
-    const latestData = getValues();
-    mutate(latestData);
-    console.log(latestData);
+      const isPhoto = payload.files.every((f) => f.type.startsWith("image/"));
+      setValue("is_photo", isPhoto); // ✅ here
 
-    reset(defaultValues);
-    setClearFiles(true);
-    setClearSelectedAcc(true);
+      const latestData = getValues();
+      await mutateCreatePost(latestData).then((res) => {
+        if (res?.success) {
+          openDialog({
+            status: isScheduled ? "scheduled" : "published",
+          });
+        }
+      });
+
+      reset(defaultValues);
+      setIsScheduled(false);
+      setClearFiles(true);
+      setClearSelectedAcc(true);
+    } finally {
+      setPostLoading(false);
+    }
   };
 
   if (isLoading) return <CircularLoading />;
@@ -266,13 +283,14 @@ export default function CreatePostForm() {
             _hover={{ bg: "button.HOVER" }}
             _active={{ bg: "button.ACTIVE" }}
             disabled={!isValid}
-            loading={isPending}
+            loading={postLoading}
             loadingText={isScheduled ? "Scheduling..." : "Posting..."}
           >
             {isScheduled ? "Schedule Post" : "Post"}
           </Button>
         </Flex>
       </VStack>
+      <SuccessDialog />
     </Box>
   );
 }
