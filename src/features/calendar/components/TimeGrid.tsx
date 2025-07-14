@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Box, Text } from "@chakra-ui/react";
 import { EventCard } from "./EventCard";
-import { addHours, isSameDay } from "date-fns";
+import { addHours, format, isSameDay } from "date-fns";
 import type {
   CalendarEvent,
   PlatformCalendarGroup,
@@ -15,7 +15,7 @@ import { useAuthUtils } from "@/hooks/useAuthUtils";
 interface TimeGridProps {
   timeSlots: TimeSlot[];
   weekDays: WeekDay[];
-  event: CalendarEvent[];
+  events: CalendarEvent[];
   onOpen: (e: PlatformCalendarGroup) => void;
 }
 
@@ -35,18 +35,16 @@ type MergedPost = {
   }[];
 };
 
-export const TimeGrid: React.FC<TimeGridProps> = ({
-  timeSlots,
-  weekDays,
-  event,
-}) => {
+export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
   const { userId } = useAuthUtils();
-  const { data, isLoading } = useGetPostsByDate({
-    from: "2025-07-7",
-    to: "2025-07-9",
-    userId: userId,
-  });
+  // derive from your weekDays prop
+  const from = format(weekDays[0].date, "yyyy-MM-dd");
+  const to = format(weekDays[weekDays.length - 1].date, "yyyy-MM-dd");
+
+  const { data, isLoading } = useGetPostsByDate({ from, to, userId });
+
   const [mergedPosts, setMergedPosts] = useState<MergedPost[]>([]);
+
   useEffect(() => {
     if (Array.isArray(data) && data.length > 0) {
       mergeScheduledPosts(data);
@@ -107,36 +105,35 @@ export const TimeGrid: React.FC<TimeGridProps> = ({
   }
 
   if (isLoading) return <CircularLoading />;
-  // right after you build calendarEvents …
 
-  const calendarEvents: CalendarEvent[] = mergedPosts.map((post, index) => {
-    const start = new Date(post.scheduled_time);
+  // Filter out posts with null scheduled_time and create calendarEvents
+  const calendarEvents: CalendarEvent[] = mergedPosts
+    .filter((post) => post.scheduled_time !== null) // Prevent 1970 dates
+    .map((post, index) => {
+      const start = new Date(post.scheduled_time);
+      return {
+        id: String(index),
+        start,
+        end: addHours(start, 1),
+        scheduled_time: post.scheduled_time,
+        platform: post.platforms,
+      };
+    });
 
-    return {
-      id: String(index),
-      start,
-      end: addHours(start, 1),
-      scheduled_time: post.scheduled_time,
-      platform: post.platforms,
-    };
-  });
+  // Merge with incoming events prop
+  const allEvents = [...calendarEvents];
 
-  // merge your incoming `event` prop and the API events:
-  const allEvents = [...event, ...calendarEvents];
-
-  // then just filter against that in getEventsForDay:
   const getEventsForDay = (day: Date) =>
-    allEvents.filter((e) => isSameDay(e.start, day));
+    allEvents.filter((e) => isSameDay(e.start, new Date(day.toDateString())));
 
   return (
-    <Box flex={1} mt={5}>
+    <Box flex={1} mt={5} overflowY="hidden">
       <Grid
         templateColumns="60px repeat(7, 1fr)"
         autoRows="94px"
         position="sticky"
         top="0"
         zIndex="1000"
-        p={1}
       >
         {/* Time labels */}
         {timeSlots.map((slot, i) => (

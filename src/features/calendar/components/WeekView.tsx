@@ -66,7 +66,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
   };
 
   return (
-    <Box spaceY={0} h="83vh" bg="bg.DEFAULT" overflow="hidden">
+    <Box bg="bg.DEFAULT">
       <CalendarHeader
         currentDate={currentDate}
         onPrevWeek={handlePrevWeek}
@@ -76,11 +76,11 @@ export const WeekView: React.FC<WeekViewProps> = ({
 
       <WeekHeader weekDays={weekDays} />
 
-      <Box h="23rem" overflowY="scroll">
+      <Box>
         <TimeGrid
           timeSlots={timeSlots}
           weekDays={weekDays}
-          event={events}
+          events={events}
           onOpen={handleModalOpen}
         />
       </Box>

@@ -10,7 +10,10 @@ interface EventCardProps {
   style?: React.CSSProperties;
 }
 
-export const EventCard: React.FC<EventCardProps> = ({ event, style }) => {
+export const EventCard: React.FC<EventCardProps> = ({
+  event,
+  style,
+}: EventCardProps) => {
   // Group by accountType + time string
   const { openModal } = usePostModalStore();
   const uniqueMap = new Map<
