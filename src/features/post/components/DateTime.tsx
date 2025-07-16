@@ -31,10 +31,12 @@ export default function DateTime({
             selected={scheduled ? new Date(scheduled) : null}
             onChange={(d: any) => {
               if (!d) {
-                setvalue("scheduled_time", null);
+                setvalue("scheduled_time", null, { shouldValidate: true });
                 setIsScheduled(false);
               } else {
-                setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"));
+                setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"), {
+                  shouldValidate: true,
+                });
                 setIsScheduled(true);
               }
             }}
@@ -66,10 +68,12 @@ export default function DateTime({
             selected={scheduled ? new Date(scheduled) : null}
             onChange={(d: any) => {
               if (!d) {
-                setvalue("scheduled_time", null);
+                setvalue("scheduled_time", null, { shouldValidate: true });
                 setIsScheduled(false);
               } else {
-                setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"));
+                setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"), {
+                  shouldValidate: true,
+                });
                 setIsScheduled(true);
               }
             }}

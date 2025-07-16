@@ -11,16 +11,24 @@ import { LuX } from "react-icons/lu";
 import { useVideoPreview } from "../hooks/useVideoPreview";
 import { VideoPreviewDialog } from "./PreviewModel";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { filesSchema } from "../lib/zod";
 import type { FileMeta, FilesPayload } from "../types";
 import { useUploadStore } from "../lib/store/filePayload";
+import { filesSchema } from "../lib/zod";
+import {
+  FacebookPostSchema,
+  TikTokMediaPostSchema,
+  YouTubeVideoSchema,
+} from "@/components/SocialAcc/zod";
+import { toaster } from "@/components/ui/toaster";
 
 export const FileUploadList = ({
   clearFiles,
   onClearComplete,
+  selectedPlatforms,
 }: {
   clearFiles: boolean;
   onClearComplete?: () => void;
+  selectedPlatforms: string[];
 }) => {
   const isMobile = useIsMobile();
   const {
@@ -36,15 +44,69 @@ export const FileUploadList = ({
     [fileUpload.acceptedFiles],
   );
 
-  const validateFiles = useCallback((files: File[]) => {
-    const result = filesSchema.safeParse(files);
-    if (!result.success) {
-      setError(result.error.issues[0].message);
-      return false;
-    }
-    setError("");
-    return true;
-  }, []);
+  const validateFiles = useCallback(
+    (files: File[]) => {
+      // Validate same file type (image/video)
+      const batch = filesSchema.safeParse(files);
+      if (!batch.success) {
+        setError(batch.error.issues[0].message);
+        return false;
+      }
+
+      // Pick schema based on platform
+      const fileSchema = selectedPlatforms.includes("TIKTOK")
+        ? TikTokMediaPostSchema
+        : selectedPlatforms.includes("FACEBOOK")
+          ? FacebookPostSchema
+          : selectedPlatforms.includes("YOUTUBE")
+            ? YouTubeVideoSchema
+            : null;
+
+      if (!fileSchema) {
+        toaster.error({
+          title: "Not allowed",
+          description: "please,select a platform",
+          closable: true,
+          duration: 4000,
+        });
+        fileUpload.clearFiles();
+        return false;
+      }
+
+      // Validate each file using imageFile/videoFile/photoFile fields
+
+      for (const file of files) {
+        const s: any = fileSchema.shape;
+        const tryParse = (key: string) => {
+          if (s[key]) {
+            try {
+              s[key].parse(file);
+              return true;
+            } catch (e: any) {
+              setError(e.errors?.[0]?.message);
+              return false;
+            }
+          }
+          return false;
+        };
+
+        const type = file.type.startsWith("video/")
+          ? ["videoFile"]
+          : file.type.startsWith("image/")
+            ? ["photoFile", "imageFile", "thumbnailFile"]
+            : [];
+
+        if (!type.some((key) => tryParse(key))) {
+          setError("Unsupported file");
+          return false;
+        }
+      }
+
+      setError("");
+      return true;
+    },
+    [selectedPlatforms],
+  );
 
   const uploadFiles = useCallback(async () => {
     if (!validateFiles(files)) return;

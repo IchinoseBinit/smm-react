@@ -35,6 +35,13 @@ import axios from "axios";
 import { useScheduleStore } from "../lib/store/dateTime";
 import { useSuccessDialogStore } from "../lib/store/successDialog";
 import { SuccessDialog } from "./SuccessCreatePost";
+import {
+  FacebookPostSchema,
+  TikTokMediaPostSchema,
+  YouTubeVideoSchema,
+} from "@/components/SocialAcc/zod";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils();
@@ -58,6 +65,18 @@ export default function CreatePostForm() {
     ],
     [],
   );
+  const selectedPlatforms = useMemo(
+    () => itemArr.map((item) => item.accountType),
+    [itemArr],
+  );
+
+  const formSchema = useMemo(() => {
+    if (selectedPlatforms.includes("YOUTUBE")) return YouTubeVideoSchema;
+    if (selectedPlatforms.includes("TIKTOK")) return TikTokMediaPostSchema;
+    if (selectedPlatforms.includes("FACEBOOK")) return FacebookPostSchema;
+    return z.any(); // fallback
+  }, [selectedPlatforms]);
+
   const defaultValues = {
     title: "",
     description: "",
@@ -81,7 +100,11 @@ export default function CreatePostForm() {
     setValue,
     getValues,
     formState: { isValid },
-  } = useForm({ mode: "onChange", defaultValues });
+  } = useForm({
+    mode: "onChange",
+    defaultValues,
+    resolver: zodResolver(formSchema),
+  });
 
   const content = watch("description", "");
   const scheduledTime = watch("scheduled_time");
@@ -101,7 +124,7 @@ export default function CreatePostForm() {
     [content, setValue],
   );
   useEffect(() => {
-    setValue("platform_statuses", itemArr);
+    setValue("platform_statuses", itemArr, { shouldValidate: true });
   }, [itemArr, setValue]);
 
   const uploadFiles = async () => {
@@ -126,23 +149,28 @@ export default function CreatePostForm() {
     // Convert to medias format
 
     const medias = urls.map((url: string, index: number) => ({
-      s3_url: encodeURI(url), // encode spaces → %20
+      s3_url: encodeURI(url),
       order: index,
     }));
-    setValue("medias", medias);
+    setValue("medias", medias, { shouldValidate: true });
   };
 
   const onSubmit = async () => {
     setPostLoading(true);
 
     try {
-      setValue("status", isScheduled ? "scheduled" : "published");
-      if (!isScheduled) setValue("scheduled_time", null); // clear if not scheduled
+      setValue("status", isScheduled ? "scheduled" : "published", {
+        shouldValidate: true,
+      });
+      if (!isScheduled) {
+        setValue("scheduled_time", null, { shouldValidate: true });
+      }
+      // clear if not scheduled
 
       await uploadFiles();
 
       const isPhoto = payload.files.every((f) => f.type.startsWith("image/"));
-      setValue("is_photo", isPhoto); // ✅ here
+      setValue("is_photo", isPhoto, { shouldValidate: true }); // ✅ here
 
       const latestData = getValues();
       await mutateCreatePost(latestData).then((res) => {
@@ -166,16 +194,40 @@ export default function CreatePostForm() {
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <VStack spaceY={10} align="stretch">
-        <Field.Root required>
-          <Input
-            placeholder="write topic name!"
-            {...register("title", { required: true })}
-            maxW="30rem"
-            maxH="5lh"
-            size="xl"
-            variant="subtle"
-          />
-        </Field.Root>
+        <Box>
+          <Text mb={2} fontWeight="medium" color="fg.DEFAULT">
+            Connected Accounts
+          </Text>
+
+          <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={10} mt={2}>
+            {accountConfigs.map(({ type, Component }) => (
+              <PostAccountSection
+                key={type}
+                type={type}
+                data={data}
+                Component={Component}
+                setvalue={setValue}
+                ItemArr={itemArr}
+                setItemArr={setItemArr}
+                clearSelectedAcc={clearSelectedAcc}
+                onClearSelectComplete={() => setClearSelectedAcc(false)}
+              />
+            ))}
+          </SimpleGrid>
+        </Box>
+        {(selectedPlatforms.includes("YOUTUBE") ||
+          selectedPlatforms.includes("TIKTOK")) && (
+          <Field.Root required>
+            <Input
+              placeholder="write topic name!"
+              {...register("title", { required: true })}
+              maxW="30rem"
+              maxH="5lh"
+              size="xl"
+              variant="subtle"
+            />
+          </Field.Root>
+        )}
         <Field.Root required>
           <Textarea
             placeholder="What's on your mind?"
@@ -204,6 +256,7 @@ export default function CreatePostForm() {
             <FileUploadList
               clearFiles={clearFiles}
               onClearComplete={() => setClearFiles(false)}
+              selectedPlatforms={selectedPlatforms}
             />
           </FileUpload.Root>
         </Box>
@@ -228,28 +281,6 @@ export default function CreatePostForm() {
               </Tag.Root>
             ))}
           </HStack>
-        </Box>
-
-        <Box>
-          <Text mb={2} fontWeight="medium" color="fg.DEFAULT">
-            Connected Accounts
-          </Text>
-
-          <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={10} mt={2}>
-            {accountConfigs.map(({ type, Component }) => (
-              <PostAccountSection
-                key={type}
-                type={type}
-                data={data}
-                Component={Component}
-                setvalue={setValue}
-                ItemArr={itemArr}
-                setItemArr={setItemArr}
-                clearSelectedAcc={clearSelectedAcc}
-                onClearSelectComplete={() => setClearSelectedAcc(false)}
-              />
-            ))}
-          </SimpleGrid>
         </Box>
 
         <Accordion.Root collapsible defaultValue={[]}>

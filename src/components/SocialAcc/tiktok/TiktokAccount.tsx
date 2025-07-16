@@ -4,11 +4,11 @@ import { BsCheckCircleFill, BsCircle } from "react-icons/bs";
 
 export default function TiktokAccount({
   social_name,
-  thumnail_url,
+  thumbnail_url,
   selected,
 }: {
   social_name: string;
-  thumnail_url: string | null;
+  thumbnail_url: string | null;
   selected?: boolean;
 }) {
   return (
@@ -56,11 +56,11 @@ export default function TiktokAccount({
           >
             <Box as="span">{social_name}</Box>
           </Text>
-          {thumnail_url && (
+          {thumbnail_url && (
             <Image
               position="absolute"
               right={2}
-              src={thumnail_url}
+              src={thumbnail_url}
               width="30px"
               height="30px"
               borderRadius="full"
