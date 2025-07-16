@@ -159,7 +159,7 @@ export default function CreatePostForm() {
     setPostLoading(true);
 
     try {
-      setValue("status", isScheduled ? "scheduled" : "published", {
+      setValue("status", isScheduled ? "scheduled" : "posted", {
         shouldValidate: true,
       });
       if (!isScheduled) {
@@ -176,7 +176,7 @@ export default function CreatePostForm() {
       await mutateCreatePost(latestData).then((res) => {
         if (res?.success) {
           openDialog({
-            status: isScheduled ? "scheduled" : "published",
+            status: isScheduled ? "scheduled" : "posted",
           });
         }
       });
