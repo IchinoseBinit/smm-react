@@ -3,11 +3,11 @@ import { create } from "zustand";
 
 interface SuccessDialogState {
   isOpen: boolean;
-  status: "published" | "scheduled";
+  status: "posted" | "scheduled";
   platform?: string;
   time?: string;
   openDialog: (args: {
-    status: "published" | "scheduled";
+    status: "posted" | "scheduled";
     platform?: string;
     time?: string;
   }) => void;
@@ -16,7 +16,7 @@ interface SuccessDialogState {
 
 export const useSuccessDialogStore = create<SuccessDialogState>((set) => ({
   isOpen: false,
-  status: "published",
+  status: "posted",
   platform: undefined,
   time: undefined,
 
