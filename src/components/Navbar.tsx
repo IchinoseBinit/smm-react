@@ -7,10 +7,15 @@ import {
   Menu,
   Button,
   Portal,
+  Image,
 } from "@chakra-ui/react";
 import { FiMenu, FiBell } from "react-icons/fi";
 import DarkModeToggle from "./DarkModeToggle";
 import Cookies from "js-cookie";
+import LightLogo from "@/assets/app/Header Logo White.png";
+import DarkLogo from "@/assets/app/Header Logo Black.png";
+
+import { useColorMode } from "./ui/color-mode";
 
 export function Navbar() {
   const handleLogout = () => {
@@ -18,6 +23,8 @@ export function Navbar() {
     Cookies.remove("refresh_token");
     window.location.reload();
   };
+
+  const { colorMode } = useColorMode();
   return (
     <Box>
       <Flex
@@ -36,18 +43,37 @@ export function Navbar() {
         p={3}
       >
         {/* Mobile sidebar toggle */}
-        <IconButton
-          aria-label="Toggle sidebar"
-          display={{ base: "inline-flex", md: "none" }}
-          variant="ghost"
-        >
-          <FiMenu />
-        </IconButton>
+        <Flex gap={3}>
+          <IconButton
+            aria-label="Toggle sidebar"
+            display={{ base: "inline-flex", md: "none" }}
+            variant="ghost"
+          >
+            <FiMenu />
+          </IconButton>
 
-        {/* Brand */}
-        <Box fontSize="xl" fontWeight="bold">
-          Socially
-        </Box>
+          {/* Brand */}
+
+          <Box fontSize="xl" fontWeight="bold">
+            {colorMode === "light" ? (
+              <Image
+                src={LightLogo}
+                height={{ base: 7, md: 8 }}
+                mt={{ base: 2, md: 0 }}
+                width="auto"
+                maxW="100%"
+              />
+            ) : (
+              <Image
+                src={DarkLogo}
+                height={{ base: 7, md: 8 }}
+                mt={{ base: 2, md: 0 }}
+                width="auto"
+                maxW="100%"
+              />
+            )}
+          </Box>
+        </Flex>
 
         {/* Notifications & Avatar */}
         <Flex align="center">

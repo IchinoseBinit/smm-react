@@ -1,49 +1,17 @@
-import { Box, Flex, Skeleton, HStack, VStack, Spinner } from "@chakra-ui/react";
-
+import { Box, Flex, Spinner, Image } from "@chakra-ui/react";
+import LoadingLogolight from "@/assets/app/Loading Logo white.jpg";
+import LoadingLogodark from "@/assets/app/Loading Logo black.jpg";
+import { useColorMode } from "@/components/ui/color-mode";
 export const InitialAppLoading = () => {
+  const { colorMode } = useColorMode();
   return (
-    <Box>
-      {/* Navbar Skeleton */}
-      <Flex
-        as="nav"
-        px={{ base: 2, md: 4 }}
-        h={16}
-        align="center"
-        justify="space-between"
-        boxShadow="shadow.sm"
-        position="sticky"
-        top="0"
-        zIndex="1000"
-        bg={{ base: "white", _dark: "gray.600" }}
-        p={3}
-      >
-        <Skeleton height="20px" width="100px" />
-        <HStack spaceX={4}>
-          <Skeleton height="20px" width="20px" />
-          <Skeleton height="20px" width="20px" />
-          <Skeleton />
-        </HStack>
-      </Flex>
-
-      <Flex>
-        {/* Sidebar Skeleton */}
-        <VStack
-          as="aside"
-          w={{ base: 0, md: 60 }}
-          display={{ base: "none", md: "flex" }}
-          mt={5}
-          spaceY={4}
-          p={3}
-        >
-          {[...Array(7)].map((_, i) => (
-            <Skeleton key={i} height="40px" width="100%" borderRadius="lg" />
-          ))}
-        </VStack>
-
-        {/* Main Content Skeleton */}
-        <Box flex="1" p={4}>
-          <Skeleton height="80vh" borderRadius="md" />
-        </Box>
+    <Box h="100vh" w="100vw">
+      <Flex justify="center" align="center" h="full" w="full">
+        {colorMode == "light" ? (
+          <Image src={LoadingLogodark} h={28} w={28} />
+        ) : (
+          <Image src={LoadingLogolight} h={28} w={28} />
+        )}
       </Flex>
     </Box>
   );

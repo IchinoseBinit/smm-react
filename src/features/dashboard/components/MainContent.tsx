@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, GridItem, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import { Chart, useChart } from "@chakra-ui/charts";
 import {
   LineChart,
@@ -10,6 +10,8 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
+import { useEffect, useState } from "react";
+import { CircularLoading } from "@/lib/loadings";
 
 const SalesLineChart = () => {
   const chart = useChart({
@@ -100,17 +102,15 @@ const metricCards = [
   { label: "Engagement", value: "5,432", change: "+5%" },
 ];
 export function MainContent() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(t);
+  }, []);
+  if (loading) return <CircularLoading />;
   return (
-    <Box h="full" overflowY="auto" p={4}>
-      <Box mb={4}>
-        <Heading size="3xl" mb={1}>
-          Dashboard
-        </Heading>
-        <Text fontSize="sm" color="fg.MUTED">
-          Overview of your social media performance
-        </Text>
-      </Box>
-      {/* Metric Cards */}
+    <Box>
       <Grid
         w="full"
         templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}

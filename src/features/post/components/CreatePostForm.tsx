@@ -173,6 +173,12 @@ export default function CreatePostForm() {
       setValue("is_photo", isPhoto, { shouldValidate: true }); // ✅ here
 
       const latestData = getValues();
+      if (
+        !selectedPlatforms.includes("YOUTUBE") &&
+        !selectedPlatforms.includes("TIKTOK")
+      ) {
+        delete latestData.title;
+      }
       await mutateCreatePost(latestData).then((res) => {
         if (res?.success) {
           openDialog({
@@ -180,13 +186,6 @@ export default function CreatePostForm() {
           });
         }
       });
-
-      if (
-        !selectedPlatforms.includes("YOUTUBE") &&
-        !selectedPlatforms.includes("TIKTOK")
-      ) {
-        delete latestData.title;
-      }
 
       reset(defaultValues);
       setIsScheduled(false);
@@ -226,7 +225,7 @@ export default function CreatePostForm() {
           selectedPlatforms.includes("TIKTOK")) && (
           <Field.Root required>
             <Input
-              placeholder="write topic name!"
+              placeholder="write a title!"
               {...register("title", { required: true })}
               maxW="30rem"
               maxH="5lh"
@@ -237,7 +236,7 @@ export default function CreatePostForm() {
         )}
         <Field.Root required>
           <Textarea
-            placeholder="What's on your mind?"
+            placeholder="write a description"
             {...register("description", { required: true })}
             maxW="30rem"
             maxH="5lh"

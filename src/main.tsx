@@ -7,17 +7,20 @@ import { Toaster } from "./components/ui/toaster.tsx";
 import { ChakraProvider } from "@chakra-ui/react";
 import { system } from "./lib/theme.ts";
 import { AuthProvider } from "./lib/providers/authProvider.tsx";
+import { HelmetProvider } from "react-helmet-async";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
-  <QueryClientProvider client={queryClient}>
-    <ChakraProvider value={system}>
-      <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-        <Toaster />
-      </BrowserRouter>
-    </ChakraProvider>
-  </QueryClientProvider>,
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider value={system}>
+        <BrowserRouter>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+          <Toaster />
+        </BrowserRouter>
+      </ChakraProvider>
+    </QueryClientProvider>
+  </HelmetProvider>,
 );
