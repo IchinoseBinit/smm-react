@@ -63,13 +63,13 @@ export const FileUploadList = ({
             : null;
 
       if (!fileSchema) {
+        fileUpload.clearFiles();
         toaster.error({
           title: "Not allowed",
           description: "please,select a platform",
           closable: true,
           duration: 4000,
         });
-        fileUpload.clearFiles();
         return false;
       }
 
@@ -127,7 +127,7 @@ export const FileUploadList = ({
       setError("");
       return;
     }
-    uploadFiles();
+    queueMicrotask(() => uploadFiles());
   }, [files, uploadFiles]);
 
   useEffect(() => {

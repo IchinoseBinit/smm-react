@@ -99,7 +99,6 @@ export default function CreatePostForm() {
     reset,
     setValue,
     getValues,
-    resetField,
     formState: { isValid },
   } = useForm({
     mode: "onChange",
@@ -167,14 +166,7 @@ export default function CreatePostForm() {
         setValue("scheduled_time", null, { shouldValidate: true });
       }
 
-      if (
-        !selectedPlatforms.includes("YOUTUBE") &&
-        !selectedPlatforms.includes("TIKTOK")
-      ) {
-        resetField("title");
-      }
       // clear if not scheduled
-
       await uploadFiles();
 
       const isPhoto = payload.files.every((f) => f.type.startsWith("image/"));
@@ -188,6 +180,13 @@ export default function CreatePostForm() {
           });
         }
       });
+
+      if (
+        !selectedPlatforms.includes("YOUTUBE") &&
+        !selectedPlatforms.includes("TIKTOK")
+      ) {
+        delete latestData.title;
+      }
 
       reset(defaultValues);
       setIsScheduled(false);
