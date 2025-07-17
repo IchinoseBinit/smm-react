@@ -99,6 +99,7 @@ export default function CreatePostForm() {
     reset,
     setValue,
     getValues,
+    resetField,
     formState: { isValid },
   } = useForm({
     mode: "onChange",
@@ -164,6 +165,13 @@ export default function CreatePostForm() {
       });
       if (!isScheduled) {
         setValue("scheduled_time", null, { shouldValidate: true });
+      }
+
+      if (
+        !selectedPlatforms.includes("YOUTUBE") &&
+        !selectedPlatforms.includes("TIKTOK")
+      ) {
+        resetField("title");
       }
       // clear if not scheduled
 
