@@ -42,15 +42,16 @@ import {
 } from "@/components/SocialAcc/zod";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useClearSelectedAccStore } from "../lib/store/selectedAcc";
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils();
   const { data, isLoading } = useAllConnAccounts(userId);
   const isScheduled = useScheduleStore((s) => s.isScheduled);
   const setIsScheduled = useScheduleStore((s) => s.setIsScheduled);
+  const { setClearSelectedAcc } = useClearSelectedAccStore();
   const [itemArr, setItemArr] = useState<any[]>([]);
   const [clearFiles, setClearFiles] = useState(false);
-  const [clearSelectedAcc, setClearSelectedAcc] = useState(false);
   const [postLoading, setPostLoading] = useState(false);
   const { mutateAsync: mutateCreatePost } = useCreatePost();
   const { openDialog } = useSuccessDialogStore();
@@ -152,7 +153,9 @@ export default function CreatePostForm() {
       s3_url: encodeURI(url),
       order: index,
     }));
+    if (medias.length === 0) return false;
     setValue("medias", medias, { shouldValidate: true });
+    return true;
   };
 
   const onSubmit = async () => {
@@ -167,7 +170,11 @@ export default function CreatePostForm() {
       }
 
       // clear if not scheduled
-      await uploadFiles();
+      const x = await uploadFiles();
+      if (x == false) {
+        console.log(x);
+        return;
+      }
 
       const isPhoto = payload.files.every((f) => f.type.startsWith("image/"));
       setValue("is_photo", isPhoto, { shouldValidate: true }); // ✅ here
@@ -190,7 +197,7 @@ export default function CreatePostForm() {
       reset(defaultValues);
       setIsScheduled(false);
       setClearFiles(true);
-      setClearSelectedAcc(true);
+      setTimeout(() => setClearSelectedAcc(true), 0);
     } finally {
       setPostLoading(false);
     }
@@ -215,8 +222,6 @@ export default function CreatePostForm() {
                 setvalue={setValue}
                 ItemArr={itemArr}
                 setItemArr={setItemArr}
-                clearSelectedAcc={clearSelectedAcc}
-                onClearSelectComplete={() => setClearSelectedAcc(false)}
               />
             ))}
           </SimpleGrid>

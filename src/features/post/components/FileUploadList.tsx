@@ -43,32 +43,30 @@ export const FileUploadList = ({
     () => fileUpload.acceptedFiles,
     [fileUpload.acceptedFiles],
   );
-
+  const fileSchem = useMemo(() => {
+    if (selectedPlatforms.includes("YOUTUBE")) return YouTubeVideoSchema;
+    if (selectedPlatforms.includes("TIKTOK")) return TikTokMediaPostSchema;
+    if (selectedPlatforms.includes("FACEBOOK")) return FacebookPostSchema;
+  }, [selectedPlatforms]);
   const validateFiles = useCallback(
     (files: File[]) => {
       // Validate same file type (image/video)
+
       const batch = filesSchema.safeParse(files);
       if (!batch.success) {
         setError(batch.error.issues[0].message);
         return false;
       }
 
-      // Pick schema based on platform
-      const fileSchema = selectedPlatforms.includes("TIKTOK")
-        ? TikTokMediaPostSchema
-        : selectedPlatforms.includes("FACEBOOK")
-          ? FacebookPostSchema
-          : selectedPlatforms.includes("YOUTUBE")
-            ? YouTubeVideoSchema
-            : null;
-
-      if (!fileSchema) {
-        fileUpload.clearFiles();
-        toaster.error({
-          title: "Not allowed",
-          description: "please,select a platform",
-          closable: true,
-          duration: 4000,
+      if (!fileSchem) {
+        queueMicrotask(() => {
+          fileUpload.clearFiles();
+          toaster.error({
+            title: "Not allowed",
+            description: "please, select a platform",
+            closable: true,
+            duration: 4000,
+          });
         });
         return false;
       }
@@ -76,7 +74,7 @@ export const FileUploadList = ({
       // Validate each file using imageFile/videoFile/photoFile fields
 
       for (const file of files) {
-        const s: any = fileSchema.shape;
+        const s: any = fileSchem.shape;
         const tryParse = (key: string) => {
           if (s[key]) {
             try {
@@ -105,7 +103,7 @@ export const FileUploadList = ({
       setError("");
       return true;
     },
-    [selectedPlatforms],
+    [selectedPlatforms, fileSchem],
   );
 
   const uploadFiles = useCallback(async () => {
@@ -123,13 +121,12 @@ export const FileUploadList = ({
   }, [files, validateFiles]);
 
   useEffect(() => {
-    if (clearFiles) return; // skip when clearing
     if (files.length === 0) {
       setError("");
       return;
     }
     uploadFiles();
-  }, [files, uploadFiles, clearFiles]);
+  }, [files, uploadFiles]);
 
   useEffect(() => {
     if (clearFiles) {
