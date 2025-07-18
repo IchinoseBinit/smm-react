@@ -127,7 +127,7 @@ export const FileUploadList = ({
       setError("");
       return;
     }
-    queueMicrotask(() => uploadFiles());
+    uploadFiles();
   }, [files, uploadFiles]);
 
   useEffect(() => {
@@ -145,8 +145,8 @@ export const FileUploadList = ({
         </Text>
       )}
       <FileUpload.ItemGroup display="flex" flexDirection="row">
-        {files.length > 0 &&
-          !error &&
+        {!error &&
+          files.length > 0 &&
           files.map((file) =>
             file.type.startsWith("video/") ? (
               <FileUpload.Item
