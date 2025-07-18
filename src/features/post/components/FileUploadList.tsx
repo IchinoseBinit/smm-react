@@ -109,7 +109,7 @@ export const FileUploadList = ({
   );
 
   const uploadFiles = useCallback(async () => {
-    if (!validateFiles(files)) return false;
+    if (!validateFiles(files)) return;
 
     const fileArr: FileMeta[] = files.map((file) => ({
       filename: file.name,
@@ -120,16 +120,16 @@ export const FileUploadList = ({
     const payload: FilesPayload = { files: fileArr };
     // set files
     useUploadStore.getState().setPayload(payload);
-    return true;
   }, [files, validateFiles]);
 
   useEffect(() => {
+    if (clearFiles) return; // skip when clearing
     if (files.length === 0) {
       setError("");
       return;
     }
     uploadFiles();
-  }, [files, uploadFiles]);
+  }, [files, uploadFiles, clearFiles]);
 
   useEffect(() => {
     if (clearFiles) {
