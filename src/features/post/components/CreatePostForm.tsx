@@ -127,7 +127,7 @@ export default function CreatePostForm() {
     setValue("platform_statuses", itemArr, { shouldValidate: true });
   }, [itemArr, setValue]);
 
-  const uploadFiles = async () => {
+  const uploadFiles = async (): Promise<any> => {
     // Step 1: get presigned URLs
     const presignedResponse: any = await mutateAsync(payload);
 
@@ -167,7 +167,8 @@ export default function CreatePostForm() {
       }
 
       // clear if not scheduled
-      await uploadFiles();
+      const isValid = await uploadFiles();
+      if (!isValid) return;
 
       const isPhoto = payload.files.every((f) => f.type.startsWith("image/"));
       setValue("is_photo", isPhoto, { shouldValidate: true }); // ✅ here

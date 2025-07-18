@@ -109,7 +109,7 @@ export const FileUploadList = ({
   );
 
   const uploadFiles = useCallback(async () => {
-    if (!validateFiles(files)) return;
+    if (!validateFiles(files)) return false;
 
     const fileArr: FileMeta[] = files.map((file) => ({
       filename: file.name,
@@ -120,6 +120,7 @@ export const FileUploadList = ({
     const payload: FilesPayload = { files: fileArr };
     // set files
     useUploadStore.getState().setPayload(payload);
+    return true;
   }, [files, validateFiles]);
 
   useEffect(() => {
