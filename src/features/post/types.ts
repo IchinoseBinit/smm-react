@@ -11,6 +11,7 @@ interface AccountSectionProps {
   type: AccountType;
   data: unknown[];
   label?: string;
+  selectedPlatforms?: any;
   setvalue?: any;
   ItemArr?: any;
   setItemArr?: any;

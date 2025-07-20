@@ -58,7 +58,7 @@ export default function CreatePostForm() {
   const { mutateAsync } = useFileUpload();
 
   const selectedPlatforms = useMemo(
-    () => itemArr.map((item) => item.accountType),
+    () => itemArr.map((item) => item.social_account_id),
     [itemArr],
   );
 
@@ -195,6 +195,7 @@ export default function CreatePostForm() {
   };
 
   if (isLoading) return <CircularLoading />;
+
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <VStack spaceY={10} align="stretch">
@@ -204,13 +205,14 @@ export default function CreatePostForm() {
           </Text>
 
           <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={10} mt={2}>
-            {accountConfigs.map(({ type }) => (
+            {accountConfigs.map(({ type }, index) => (
               <PostConnectedAccsSection
-                key={type}
+                key={index}
                 type={type}
                 data={data}
                 setvalue={setValue}
                 setItemArr={setItemArr} // ← fixed prop name
+                selectedPlatforms={selectedPlatforms}
                 icon={iconMap[type].icon} // ← pass icon
                 iconColor={iconMap[type].color} // ← pass color
               />

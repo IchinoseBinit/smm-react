@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useClearSelectedAccStore } from "../lib/store/selectedAcc";
 import type { AccountSectionProps } from "../types";
 import { Box } from "@chakra-ui/react";
@@ -11,24 +11,22 @@ export const PostConnectedAccsSection = ({
   setItemArr,
   icon,
   iconColor,
+  selectedPlatforms,
 }: AccountSectionProps & { icon: any; iconColor: any }) => {
   const { clearSelectedAcc, setClearSelectedAcc } = useClearSelectedAccStore();
-  const [selectedId, setSelectedId] = useState<number | null>(null);
   const filtered = data.filter((d: any) => d.account_type === type);
 
   useEffect(() => {
     if (!clearSelectedAcc) return;
-    setSelectedId(null);
     setItemArr([]);
     setClearSelectedAcc(false);
   }, [clearSelectedAcc, setClearSelectedAcc, setItemArr]);
 
   if (!filtered.length) return null;
-
   return (
     <>
       {filtered.map((d: any) => {
-        const isSelected = selectedId === d.id;
+        const isSelected = selectedPlatforms.includes(d.id);
         return (
           <Box
             key={d.id}
@@ -51,7 +49,6 @@ export const PostConnectedAccsSection = ({
                     )
                   : [...prev, item];
               });
-              setSelectedId((prev) => (prev === d.id ? null : d.id));
             }}
           >
             <SocialAccountCard

@@ -15,6 +15,7 @@ type Props = {
 };
 
 export default function SocialAccountCard({
+  id,
   social_name,
   thumbnail_url,
   selected,
@@ -23,6 +24,7 @@ export default function SocialAccountCard({
 }: Props) {
   return (
     <Box
+      key={id}
       p={4}
       mt={5}
       borderRadius="2xl"
