@@ -7,5 +7,14 @@ type FileMeta = {
 type FilesPayload = {
   files: FileMeta[];
 };
-
-export type { FileMeta, FilesPayload };
+interface AccountSectionProps {
+  type: AccountType;
+  data: unknown[];
+  label?: string;
+  setvalue?: any;
+  ItemArr?: any;
+  setItemArr?: any;
+  clearSelectedAcc?: boolean;
+  onClearSelectComplete?: () => void;
+}
+export type { FileMeta, FilesPayload, AccountSectionProps };

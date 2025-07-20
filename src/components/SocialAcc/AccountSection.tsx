@@ -1,130 +1,38 @@
-// components/AccountSection.tsx
-import { useClearSelectedAccStore } from "@/features/post/lib/store/selectedAcc";
-import { Box, SimpleGrid, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
 
-interface AccountSectionProps {
+type AccountSectionProps = {
   type: AccountType;
   data: unknown[];
   Component: React.FC<any>;
   label?: string;
-  setvalue?: any;
-  ItemArr?: any;
-  setItemArr?: any;
-  clearSelectedAcc?: boolean;
-  onClearSelectComplete?: () => void;
-}
+  pagesPath?: string;
+};
 
 export const AccountSection = ({
   type,
   data,
   Component,
   label,
-  setvalue,
-}: AccountSectionProps) => {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  pagesPath,
+}: AccountSectionProps & { pagesPath?: string }) => {
   const filtered = data.filter((d: any) => d.account_type === type);
 
-  if (!data || !filtered.length) return null; // or loading/skeleton if needed
+  if (!filtered.length) return null;
 
   return (
     <Box>
       {label && (
-        <Text
-          mt={5}
-          fontWeight="bold"
-          fontSize="md"
-          color={{ base: "primary.700", _dark: "white" }}
-        >
-          {label?.toLowerCase()} account connected
-        </Text>
+        <Heading size="md" mt={4}>
+          Connect to {label.charAt(0) + label.slice(1).toLowerCase()}
+        </Heading>
       )}
-      <SimpleGrid columns={{ base: 1, md: 3 }} gridGap={10} mt={5}>
+      <SimpleGrid>
         {filtered.map((d: any) => (
-          <Box
-            key={d.id}
-            onClick={() => {
-              if (selectedId === d.id) return; // prevent re-selection
-
-              setvalue("platform_statuses", [
-                {
-                  accountType: d.account_type,
-                  social_account_id: d.id,
-                },
-              ]);
-              setSelectedId(d.id); // mark selected
-            }}
-            pointerEvents={selectedId === d.id ? "none" : "auto"}
-            opacity={selectedId === d.id ? 0.6 : 1}
-          >
-            <Component {...d} setvalue={setvalue} />
+          <Box key={d.id}>
+            <Component {...d} pagesPath={pagesPath} />
           </Box>
         ))}
       </SimpleGrid>
     </Box>
-  );
-};
-
-export const PostAccountSection = ({
-  type,
-  data,
-  Component,
-  setvalue,
-  setItemArr,
-}: AccountSectionProps) => {
-  const { clearSelectedAcc, setClearSelectedAcc } = useClearSelectedAccStore();
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const filtered = data.filter((d: any) => d.account_type === type);
-
-  useEffect(() => {
-    if (!clearSelectedAcc) return; // only run when it’s true
-    setSelectedId(null);
-    setItemArr([]);
-    setClearSelectedAcc(false);
-  }, [clearSelectedAcc, setClearSelectedAcc, setItemArr]);
-
-  if (!data || !filtered.length) return null;
-
-  return (
-    <>
-      {filtered.map((d: any) => {
-        const isSelected = selectedId === d.id;
-        return (
-          <Box
-            key={d.id}
-            borderRadius="md"
-            cursor="pointer"
-            onClick={() => {
-              const item = {
-                accountType: d.account_type,
-                social_account_id: d.id,
-              };
-
-              setItemArr((prev: any[]) => {
-                const isAlreadySelected = prev.some(
-                  (i) =>
-                    i.social_account_id === d.id &&
-                    i.accountType === d.account_type,
-                );
-
-                const next = isAlreadySelected
-                  ? prev.filter(
-                      (i) =>
-                        i.social_account_id !== d.id ||
-                        i.accountType !== d.account_type,
-                    ) // remove
-                  : [...prev, item]; // add
-
-                return next;
-              });
-
-              setSelectedId((prev) => (prev === d.id ? null : d.id));
-            }}
-          >
-            <Component {...d} setvalue={setvalue} selected={isSelected} />
-          </Box>
-        );
-      })}
-    </>
   );
 };

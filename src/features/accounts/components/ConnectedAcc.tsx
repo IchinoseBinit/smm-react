@@ -11,7 +11,11 @@ export const ConnectedAcc = () => {
   const { navigate, userId } = useAuthUtils();
   const { data, isLoading } = useAllConnAccounts(userId);
   const accountConfigs = [
-    { type: "FACEBOOK" as AccountType, Component: FacebookAccount },
+    {
+      type: "FACEBOOK" as AccountType,
+      Component: FacebookAccount,
+      pagesPath: "/account/facebook/pages",
+    },
     { type: "TIKTOK" as AccountType, Component: TiktokAccount },
     { type: "YOUTUBE" as AccountType, Component: YoutubeAccount },
   ];
@@ -59,13 +63,14 @@ export const ConnectedAcc = () => {
         </Box>
       ) : (
         <>
-          {accountConfigs.map(({ type, Component }) => (
+          {accountConfigs.map(({ type, Component, pagesPath }) => (
             <AccountSection
               key={type}
               type={type}
               label={type}
-              data={data} // ← this is your fetched account list
+              data={data}
               Component={Component}
+              pagesPath={pagesPath} // ← pass it here
             />
           ))}
         </>

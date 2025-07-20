@@ -22,10 +22,6 @@ import { LuUpload } from "react-icons/lu";
 import { FileUploadList } from "./FileUploadList";
 import DateTime from "./DateTime";
 import { useAuthUtils } from "@/hooks/useAuthUtils";
-import { PostAccountSection } from "@/components/SocialAcc/AccountSection";
-import FacebookAccount from "@/components/SocialAcc/facebook/FacebookAccount";
-import TiktokAccount from "@/components/SocialAcc/tiktok/TiktokAccount";
-import YoutubeAccount from "@/components/SocialAcc/youtube/YoutubeAccount";
 import { useAllConnAccounts } from "@/hooks/useConnectedAccounts";
 import { CircularLoading } from "@/lib/loadings";
 import { useCreatePost } from "../hooks/query/usePost";
@@ -43,6 +39,8 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useClearSelectedAccStore } from "../lib/store/selectedAcc";
+import { PostConnectedAccsSection } from "./ConnectedAccs";
+import { accountConfigs, iconMap } from "../lib/accounts";
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils();
@@ -58,14 +56,7 @@ export default function CreatePostForm() {
 
   const { payload } = useUploadStore();
   const { mutateAsync } = useFileUpload();
-  const accountConfigs = useMemo(
-    () => [
-      { type: "FACEBOOK" as AccountType, Component: FacebookAccount },
-      { type: "TIKTOK" as AccountType, Component: TiktokAccount },
-      { type: "YOUTUBE" as AccountType, Component: YoutubeAccount },
-    ],
-    [],
-  );
+
   const selectedPlatforms = useMemo(
     () => itemArr.map((item) => item.accountType),
     [itemArr],
@@ -213,15 +204,15 @@ export default function CreatePostForm() {
           </Text>
 
           <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={10} mt={2}>
-            {accountConfigs.map(({ type, Component }) => (
-              <PostAccountSection
+            {accountConfigs.map(({ type }) => (
+              <PostConnectedAccsSection
                 key={type}
                 type={type}
                 data={data}
-                Component={Component}
                 setvalue={setValue}
-                ItemArr={itemArr}
-                setItemArr={setItemArr}
+                setItemArr={setItemArr} // ← fixed prop name
+                icon={iconMap[type].icon} // ← pass icon
+                iconColor={iconMap[type].color} // ← pass color
               />
             ))}
           </SimpleGrid>
