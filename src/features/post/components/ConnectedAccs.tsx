@@ -1,5 +1,8 @@
 import { useEffect } from "react";
-import { useClearSelectedAccStore } from "../lib/store/selectedAcc";
+import {
+  useClearSelectedAccStore,
+  useSelectedStore,
+} from "../lib/store/selectedAcc";
 import type { AccountSectionProps } from "../types";
 import { Box } from "@chakra-ui/react";
 import SocialAccountCard from "./SocialAccCard";
@@ -14,13 +17,15 @@ export const PostConnectedAccsSection = ({
   selectedPlatforms,
 }: AccountSectionProps & { icon: any; iconColor: any }) => {
   const { clearSelectedAcc, setClearSelectedAcc } = useClearSelectedAccStore();
+  const { toggleId, clear } = useSelectedStore();
   const filtered = data.filter((d: any) => d.account_type === type);
 
   useEffect(() => {
     if (!clearSelectedAcc) return;
+    clear();
     setItemArr([]);
     setClearSelectedAcc(false);
-  }, [clearSelectedAcc, setClearSelectedAcc, setItemArr]);
+  }, [clearSelectedAcc, setClearSelectedAcc, setItemArr, clear]);
 
   if (!filtered.length) return null;
   return (
@@ -49,6 +54,8 @@ export const PostConnectedAccsSection = ({
                     )
                   : [...prev, item];
               });
+
+              if (d.id) toggleId(d.id);
             }}
           >
             <SocialAccountCard

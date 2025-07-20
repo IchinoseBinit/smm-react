@@ -38,7 +38,10 @@ import {
 } from "@/components/SocialAcc/zod";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useClearSelectedAccStore } from "../lib/store/selectedAcc";
+import {
+  useClearSelectedAccStore,
+  useSelectedStore,
+} from "../lib/store/selectedAcc";
 import { PostConnectedAccsSection } from "./ConnectedAccs";
 import { accountConfigs, iconMap } from "../lib/accounts";
 
@@ -56,6 +59,10 @@ export default function CreatePostForm() {
 
   const { payload } = useUploadStore();
   const { mutateAsync } = useFileUpload();
+  const { selectedIds } = useSelectedStore();
+  const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>(
+    [],
+  );
 
   const selectedPlatforms = useMemo(
     () => itemArr.map((item) => item.social_account_id),
@@ -63,11 +70,20 @@ export default function CreatePostForm() {
   );
 
   const formSchema = useMemo(() => {
-    if (selectedPlatforms.includes("YOUTUBE")) return YouTubeVideoSchema;
-    if (selectedPlatforms.includes("TIKTOK")) return TikTokMediaPostSchema;
-    if (selectedPlatforms.includes("FACEBOOK")) return FacebookPostSchema;
-    return z.any(); // fallback
-  }, [selectedPlatforms]);
+    const selectedTypes = Array.from(
+      new Set(
+        itemArr
+          .filter((item) => selectedIds.includes(item.social_account_id))
+          .map((item) => item.accountType),
+      ),
+    );
+    setSelectedPlatformsType(selectedTypes);
+
+    if (selectedTypes.includes("YOUTUBE")) return YouTubeVideoSchema;
+    if (selectedTypes.includes("TIKTOK")) return TikTokMediaPostSchema;
+    if (selectedTypes.includes("FACEBOOK")) return FacebookPostSchema;
+    return z.any();
+  }, [itemArr, selectedIds]);
 
   const defaultValues = {
     title: "",
@@ -172,8 +188,8 @@ export default function CreatePostForm() {
 
       const latestData = getValues();
       if (
-        !selectedPlatforms.includes("YOUTUBE") &&
-        !selectedPlatforms.includes("TIKTOK")
+        !selectedPlatformsType.includes("YOUTUBE") &&
+        !selectedPlatformsType.includes("TIKTOK")
       ) {
         delete latestData.title;
       }
@@ -219,8 +235,8 @@ export default function CreatePostForm() {
             ))}
           </SimpleGrid>
         </Box>
-        {(selectedPlatforms.includes("YOUTUBE") ||
-          selectedPlatforms.includes("TIKTOK")) && (
+        {(selectedPlatformsType.includes("YOUTUBE") ||
+          selectedPlatformsType.includes("TIKTOK")) && (
           <Field.Root required>
             <Input
               placeholder="write a title!"
@@ -260,7 +276,7 @@ export default function CreatePostForm() {
             <FileUploadList
               clearFiles={clearFiles}
               onClearComplete={() => setClearFiles(false)}
-              selectedPlatforms={selectedPlatforms}
+              selectedPlatforms={selectedPlatformsType}
             />
           </FileUpload.Root>
         </Box>
