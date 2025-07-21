@@ -22,7 +22,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   >();
 
   event?.platform?.forEach((p) => {
-    const time = format(new Date(event.start), "h:mm a");
+    const time = format(event.start, "h:mm a");
     const key = `${p.accountType}-${time}`;
     const platform = p.accountType;
     const posts = p.posts;

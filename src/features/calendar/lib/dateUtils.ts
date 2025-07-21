@@ -11,6 +11,7 @@ import {
   addHours,
   getHours,
   getMinutes,
+  parse,
 } from "date-fns";
 import type { TimeSlot, WeekDay } from "../types";
 
@@ -74,3 +75,6 @@ export const getCurrentTimezone = (): string => {
 
   return `GMT${sign}${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 };
+
+export const parseLocalTime = (str: string) =>
+  parse(str, "yyyy-MM-dd HH:mm:ss", new Date());
