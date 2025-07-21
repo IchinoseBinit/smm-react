@@ -34,9 +34,13 @@ export default function DateTime({
                 setvalue("scheduled_time", null, { shouldValidate: true });
                 setIsScheduled(false);
               } else {
-                setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"), {
-                  shouldValidate: true,
-                });
+                setvalue(
+                  "scheduled_time",
+                  format(d, "yyyy-MM-dd'T'HH:mm:ssxxx"),
+                  {
+                    shouldValidate: true,
+                  },
+                );
                 setIsScheduled(true);
               }
             }}
@@ -71,9 +75,13 @@ export default function DateTime({
                 setvalue("scheduled_time", null, { shouldValidate: true });
                 setIsScheduled(false);
               } else {
-                setvalue("scheduled_time", format(d, "yyyy-MM-dd HH:mm:ss"), {
-                  shouldValidate: true,
-                });
+                setvalue(
+                  "scheduled_time",
+                  format(d, "yyyy-MM-dd'T'HH:mm:ssxxx"),
+                  {
+                    shouldValidate: true,
+                  },
+                );
                 setIsScheduled(true);
               }
             }}
