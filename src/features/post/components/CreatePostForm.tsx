@@ -82,6 +82,7 @@ export default function CreatePostForm() {
     if (selectedTypes.includes("YOUTUBE")) return YouTubeVideoSchema;
     if (selectedTypes.includes("TIKTOK")) return TikTokMediaPostSchema;
     if (selectedTypes.includes("FACEBOOK")) return FacebookPostSchema;
+    if (selectedTypes.includes("INSTAGRAM")) return FacebookPostSchema;
     return z.any();
   }, [itemArr, selectedIds]);
 
@@ -187,12 +188,15 @@ export default function CreatePostForm() {
       setValue("is_photo", isPhoto, { shouldValidate: true }); // ✅ here
 
       const latestData = getValues();
+
       if (
         !selectedPlatformsType.includes("YOUTUBE") &&
-        !selectedPlatformsType.includes("TIKTOK")
+        !selectedPlatformsType.includes("TIKTOK") &&
+        !selectedPlatformsType.includes("INSTAGRAM")
       ) {
         delete latestData.title;
       }
+
       await mutateCreatePost(latestData).then((res) => {
         if (res?.success) {
           openDialog({
@@ -200,7 +204,6 @@ export default function CreatePostForm() {
           });
         }
       });
-
       reset(defaultValues);
       setIsScheduled(false);
       setClearFiles(true);

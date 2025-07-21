@@ -47,11 +47,11 @@ export const FileUploadList = ({
     if (selectedPlatforms.includes("YOUTUBE")) return YouTubeVideoSchema;
     if (selectedPlatforms.includes("TIKTOK")) return TikTokMediaPostSchema;
     if (selectedPlatforms.includes("FACEBOOK")) return FacebookPostSchema;
+    if (selectedPlatforms.includes("INSTAGRAM")) return FacebookPostSchema;
   }, [selectedPlatforms]);
   const validateFiles = useCallback(
     (files: File[]) => {
       // Validate same file type (image/video)
-
       const batch = filesSchema.safeParse(files);
       if (!batch.success) {
         setError(batch.error.issues[0].message);

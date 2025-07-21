@@ -35,16 +35,19 @@ export const YouTubeVideoSchema = z.object({
     .instanceof(File)
     .refine((file) => file.size <= 256 * 1024 * 1024 * 1024, {
       message: "Max video file size is 256 GB",
-    }),
+    })
+    .optional(),
   videoDurationSeconds: z
     .number()
-    .max(12 * 60 * 60, { message: "Max video length is 12 hours" }),
+    .max(12 * 60 * 60, { message: "Max video length is 12 hours" })
+    .optional(),
   thumbnailFile: z
     .instanceof(File)
     .optional()
     .refine((file) => !file || file.size <= 10 * 1024 * 1024, {
       message: "Recommended thumbnail up to 1280x720 px",
-    }),
+    })
+    .optional(),
 });
 
 export const YouTubeShortSchema = z.object({
