@@ -20,11 +20,11 @@ const handleSuccess = (title: string, description: string) => {
     description: description,
   });
 };
-const handleError = (title: string, error: Error) => {
+const handleError = (title: string, error?: Error) => {
   console.error(error);
   toaster.error({
     title: title,
-    description: error.message,
+    description: error?.message,
     closable: true,
   });
 };

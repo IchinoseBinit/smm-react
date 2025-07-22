@@ -40,7 +40,7 @@ const useRefreshToken = () => {
       const { access, refresh } = data;
       setAuthCookies(access, refresh, getTokenExpiry);
     },
-    onError: (error: Error) => handleError("Refresh token failed", error),
+    onError: () => handleError("Unauthorized, please login again"),
   });
 };
 

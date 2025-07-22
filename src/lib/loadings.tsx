@@ -1,17 +1,10 @@
 import { Box, Flex, Spinner, Image } from "@chakra-ui/react";
-import LoadingLogolight from "@/assets/app/Loading Logo white.jpg";
-import LoadingLogodark from "@/assets/app/Loading Logo black.jpg";
-import { useColorMode } from "@/components/ui/color-mode";
+import LoadingLogolight from "@/assets/app/Tab icon.png";
 export const InitialAppLoading = () => {
-  const { colorMode } = useColorMode();
   return (
     <Box h="100vh" w="100vw">
       <Flex justify="center" align="center" h="full" w="full">
-        {colorMode == "light" ? (
-          <Image src={LoadingLogodark} h={28} w={28} />
-        ) : (
-          <Image src={LoadingLogolight} h={28} w={28} />
-        )}
+        <Image src={LoadingLogolight} h={28} w={28} />
       </Flex>
     </Box>
   );

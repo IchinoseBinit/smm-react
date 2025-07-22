@@ -6,7 +6,7 @@ export default function Manager() {
   return (
     <>
       <Helmet>
-        <title>Manager</title>
+        <title>Posts</title>
       </Helmet>
       <Box p={{ base: 4, md: 8 }} bg="bg.DEFAULT" minH="100vh">
         <Text
@@ -15,7 +15,7 @@ export default function Manager() {
           mb={6}
           color="fg.DEFAULT"
         >
-          Social Media Manager
+          Social Media Posts
         </Text>
         <SocialMediaPosts />
       </Box>

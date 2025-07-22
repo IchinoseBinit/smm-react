@@ -27,7 +27,7 @@ function App() {
             component: <Calendar />,
           })}
           {layoutRoute({
-            path: "/manager",
+            path: "/posts",
             component: <Manager />,
           })}
           {layoutRoute({

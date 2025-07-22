@@ -17,7 +17,7 @@ const navItems = [
   { label: "Create", icon: FiEdit2, href: "/create" },
   { label: "Engagement", icon: FiUsers, href: "/engagement" },
   { label: "Calendar", icon: FiCalendar, href: "/calendar" },
-  { label: "Manager", icon: MdManageAccounts, href: "/manager" },
+  { label: "Posts", icon: MdManageAccounts, href: "/posts" },
   { label: "Accounts", icon: FiKey, href: "/account" },
 ];
 

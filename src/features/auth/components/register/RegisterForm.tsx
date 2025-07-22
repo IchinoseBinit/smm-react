@@ -87,15 +87,7 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <Box
-      bg="white"
-      p={5}
-      mt={10}
-      w="100%"
-      maxW="md"
-      mx="auto"
-      transition="all 0.3s ease"
-    >
+    <Box bg="white" w="100%" maxW="md" mx="auto" transition="all 0.3s ease">
       <Flex align="center" mb={7}>
         <Heading size="2xl">Create Account</Heading>
       </Flex>

@@ -19,6 +19,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import logo from "@/assets/app/Header Logo White.png";
 
 export default function SendOtp() {
   const { setEmail } = useEmailStore();
@@ -64,16 +65,28 @@ export default function SendOtp() {
           >
             <Box
               minH="100vh"
-              display="flex"
               justifyContent="center"
               alignItems="center"
               px={4}
+              flexDirection="column"
             >
+              <Flex align="center" mb={3}>
+                <Box>
+                  <Image
+                    src={logo}
+                    alt="logo"
+                    h={8}
+                    w="full"
+                    objectFit="contain"
+                  />
+                </Box>
+              </Flex>
               <Box
                 as="form"
                 onSubmit={handleSubmit(onSubmit)}
                 bg="white"
                 p={8}
+                mt={10}
                 rounded="xl"
                 shadow="lg"
                 w="full"
@@ -88,7 +101,6 @@ export default function SendOtp() {
                     <strong>email</strong>.
                   </Text>
                 </Box>
-
                 <Field.Root invalid={Boolean(errors.email)}>
                   <Field.Label>Email Address</Field.Label>
                   <Input
@@ -99,7 +111,6 @@ export default function SendOtp() {
                   />
                   <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
                 </Field.Root>
-
                 <Button
                   type="submit"
                   colorScheme="brand"
@@ -116,7 +127,6 @@ export default function SendOtp() {
               </Box>
             </Box>
           </Box>
-
           {/* Image Section - Only shown on larger screens */}
           {!isMobile && (
             <Box flex="1" bg="gray.700" position="relative" overflow="hidden">

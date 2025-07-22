@@ -1,5 +1,6 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Flex, Image } from "@chakra-ui/react";
 import RegisterForm from "./RegisterForm";
+import logo from "@/assets/app/Header Logo White.png";
 
 export const RegisterFormSection = () => {
   return (
@@ -14,6 +15,11 @@ export const RegisterFormSection = () => {
         className="hide-scrollbar"
       >
         <Box w="full" maxW="lg">
+          <Flex mb={5} mt={10} ml={{ base: 0, md: -5 }}>
+            <Box>
+              <Image src={logo} alt="logo" h={8} w="full" />
+            </Box>
+          </Flex>
           <RegisterForm />
         </Box>
       </Box>

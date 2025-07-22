@@ -73,31 +73,54 @@ export default function SocialMediaPosts() {
       ) : (
         data.map((post: Post) => {
           const postDate = new Date(post.scheduled_time);
+          // Define badge colors based on status
+          const getStatusColor = (status: string) => {
+            switch (status?.toLowerCase()) {
+              case "failed":
+                return "red.600";
+              case "posted":
+                return "green.600";
+              case "scheduled":
+                return "yellow";
+              case "null":
+                return "white";
+              default:
+                return "gray";
+            }
+          };
           return (
             <Box
               key={post.id}
-              p={4}
-              bg="bg.card"
+              p={6}
+              bg="white"
               borderWidth={1}
-              borderColor="border.DEFAULT"
-              borderRadius="2xl"
-              shadow="sm"
-              _hover={{ shadow: "md", transition: "all 0.2s ease-in-out" }}
+              borderColor="gray.200"
+              borderRadius="xl"
+              boxShadow="sm"
+              transition="all 0.3s ease-in-out"
+              _hover={{ boxShadow: "lg", transform: "translateY(-4px)" }}
             >
-              <HStack justify="space-between" align="start">
+              <HStack justify="space-between" align="start" spaceX={4}>
                 <Box flex="1">
-                  <Heading size="md">{post.title}</Heading>
-                  <Text color="fg.DEFAULT" mb={2}>
+                  <Heading
+                    size="md"
+                    fontWeight="semibold"
+                    color="gray.800"
+                    mb={2}
+                  >
+                    {post.title}
+                  </Heading>
+                  <Text color="gray.600" fontSize="sm" mb={4} lineHeight="tall">
                     {post.description}
                   </Text>
-                  <HStack spaceX={2} mb={3}>
+                  <HStack spaceX={3} mb={4}>
                     {post.platform_statuses.map((p, i) => {
                       if (p.accountType === "YOUTUBE")
-                        return <FaYoutube key={i} color="red" />;
+                        return <FaYoutube key={i} color="#FF0000" size={20} />;
                       if (p.accountType === "FACEBOOK")
-                        return <FaFacebook key={i} color="blue" />;
+                        return <FaFacebook key={i} color="#1877F2" size={20} />;
                       if (p.accountType === "TIKTOK")
-                        return <FaTiktok key={i} />;
+                        return <FaTiktok key={i} color="#000000" size={20} />;
                       return null;
                     })}
                   </HStack>
@@ -105,27 +128,31 @@ export default function SocialMediaPosts() {
                 <IconButton
                   aria-label="Options"
                   variant="ghost"
-                  size="sm"
-                  color="fg.MUTED"
-                  _hover={{ bg: "bg.hover", color: "fg.DEFAULT" }}
+                  size="md"
+                  color="gray.500"
+                  _hover={{ bg: "gray.100", color: "gray.700" }}
+                  borderRadius="full"
                 >
                   <FiMoreHorizontal />
                 </IconButton>
               </HStack>
-              <HStack justify="end" mt={3} spaceX={2}>
-                <Text fontSize="sm" color="fg.MUTED">
-                  {postDate.toLocaleDateString()}
+              <HStack justify="end" mt={4} spaceX={3}>
+                <Text fontSize="xs" color="gray.500" fontWeight="medium">
+                  {postDate.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
                 </Text>
                 <Badge
                   variant="subtle"
-                  colorScheme={
-                    post.status === "published"
-                      ? "green"
-                      : post.status === "scheduled"
-                        ? "blue"
-                        : "gray"
-                  }
+                  bg={getStatusColor(post.status)}
                   textTransform="capitalize"
+                  fontSize="xs"
+                  color="white"
+                  px={3}
+                  py={1}
+                  borderRadius="full"
                 >
                   {post.status}
                 </Badge>
