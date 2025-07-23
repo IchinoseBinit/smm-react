@@ -11,7 +11,8 @@ const filesSchema = z.array(fileSchema).refine(
     return files.every((f) => f.type.startsWith(firstType));
   },
   {
-    message: "All files must be of the same type",
+    message:
+      "All files must be of the same type! Refresh the page and try again.",
   },
 );
 

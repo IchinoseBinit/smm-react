@@ -103,7 +103,7 @@ export const FileUploadList = ({
       setError("");
       return true;
     },
-    [selectedPlatforms, fileSchem],
+    [fileSchem],
   );
 
   const uploadFiles = useCallback(async () => {

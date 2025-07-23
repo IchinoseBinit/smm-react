@@ -13,7 +13,7 @@ import {
 import { FiMoreHorizontal } from "react-icons/fi";
 import useGetPostsByDate from "../hooks/query/useGetPosts";
 import type { Post } from "../types";
-import { FaFacebook, FaTiktok, FaYoutube } from "react-icons/fa6";
+import { FaFacebook, FaTiktok, FaYoutube, FaInstagram } from "react-icons/fa6";
 import { CircularLoading } from "@/lib/loadings";
 import { useAuthUtils } from "@/hooks/useAuthUtils";
 
@@ -31,7 +31,6 @@ export default function SocialMediaPosts() {
   });
 
   const reversedData = Array.isArray(data) ? [...data].reverse() : [];
-  console.log(reversedData);
 
   if (isLoading) return <CircularLoading />;
 
@@ -96,6 +95,7 @@ export default function SocialMediaPosts() {
 
           return (
             <Box
+              key={post.id}
               p={{ base: 4, md: 6 }}
               bg="white"
               _dark={{ bg: "gray.800", borderColor: "gray.700" }}
@@ -146,7 +146,7 @@ export default function SocialMediaPosts() {
                     mb={4}
                     lineHeight="tall"
                   >
-                    {post.description || "No description available"}
+                    {post.description}
                   </Text>
 
                   {/* Media Scrollable Section */}
@@ -170,17 +170,16 @@ export default function SocialMediaPosts() {
                       }}
                     >
                       <HStack spaceX={3} minW="max-content" py={2}>
-                        {post.medias.map((media, index) => (
+                        {post.medias.reverse().map((media, index) => (
                           <Box
                             key={index}
                             flexShrink={0}
-                            w={{ base: "200px", md: "250px" }}
-                            h={{ base: "120px", md: "150px" }}
+                            w={{ base: "150px", md: "200px" }}
+                            h={{ base: "90px", md: "100px" }}
                             borderRadius="md"
                             overflow="hidden"
                             borderWidth={1}
                             borderColor="gray.200"
-                            _dark={{ borderColor: "gray.600" }}
                           >
                             <img
                               src={media.s3_url}
@@ -188,7 +187,7 @@ export default function SocialMediaPosts() {
                               style={{
                                 width: "100%",
                                 height: "100%",
-                                objectFit: "cover",
+                                objectFit: "contain",
                               }}
                             />
                           </Box>
@@ -205,6 +204,10 @@ export default function SocialMediaPosts() {
                         return <FaFacebook key={i} color="#1877F2" size={20} />;
                       if (p.accountType === "TIKTOK")
                         return <FaTiktok key={i} color="#000000" size={20} />;
+                      if (p.accountType === "INSTAGRAM")
+                        return (
+                          <FaInstagram key={i} color="#E1306C" size={20} />
+                        );
                       return null;
                     })}
                   </HStack>

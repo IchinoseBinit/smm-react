@@ -92,6 +92,7 @@ export default function CreatePostForm() {
     status: "", // or ""
     scheduled_time: null,
     is_photo: false,
+    surface: "POST",
     medias: [],
     platform_statuses: [
       {
