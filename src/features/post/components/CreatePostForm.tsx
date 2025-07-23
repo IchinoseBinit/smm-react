@@ -62,7 +62,7 @@ export default function CreatePostForm() {
   const { payload } = useUploadStore();
   const { mutateAsync } = useFileUpload();
   const { selectedIds } = useSelectedStore();
-  const { type } = useContentTypeStore();
+  const { resetType } = useContentTypeStore();
   const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>(
     [],
   );
@@ -95,7 +95,7 @@ export default function CreatePostForm() {
     status: "", // or ""
     scheduled_time: null,
     is_photo: false,
-    surface: type[0],
+    surface: useContentTypeStore.getState().type[0],
     medias: [],
     platform_statuses: [
       {
@@ -191,6 +191,9 @@ export default function CreatePostForm() {
       const isPhoto = payload.files.every((f) => f.type.startsWith("image/"));
       setValue("is_photo", isPhoto, { shouldValidate: true }); // ✅ here
 
+      const currentType = useContentTypeStore.getState().type[0]; // ✅ always up-to-date
+      setValue("surface", currentType, { shouldValidate: true });
+
       const latestData = getValues();
 
       if (
@@ -209,6 +212,7 @@ export default function CreatePostForm() {
         }
       });
       reset(defaultValues);
+      resetType();
       setIsScheduled(false);
       setClearFiles(true);
       setTimeout(() => setClearSelectedAcc(true), 0);
