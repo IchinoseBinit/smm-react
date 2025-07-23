@@ -44,6 +44,8 @@ import {
 } from "../lib/store/selectedAcc";
 import { PostConnectedAccsSection } from "./ConnectedAccs";
 import { accountConfigs, iconMap } from "../lib/accounts";
+import { SelectSurface } from "./selectSurface";
+import { useContentTypeStore } from "../lib/store/Sufaceselect";
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils();
@@ -60,6 +62,7 @@ export default function CreatePostForm() {
   const { payload } = useUploadStore();
   const { mutateAsync } = useFileUpload();
   const { selectedIds } = useSelectedStore();
+  const { type } = useContentTypeStore();
   const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>(
     [],
   );
@@ -92,7 +95,7 @@ export default function CreatePostForm() {
     status: "", // or ""
     scheduled_time: null,
     is_photo: false,
-    surface: "POST",
+    surface: type[0],
     medias: [],
     platform_statuses: [
       {
@@ -330,7 +333,7 @@ export default function CreatePostForm() {
             </Accordion.ItemContent>
           </Accordion.Item>
         </Accordion.Root>
-        <Flex justify="end">
+        <Flex justify="end" gap={2}>
           <Button
             type="submit"
             bg="secondary.500"
@@ -343,6 +346,7 @@ export default function CreatePostForm() {
           >
             {isScheduled ? "Schedule Post" : "Post"}
           </Button>
+          <SelectSurface />
         </Flex>
       </VStack>
       <SuccessDialog />
