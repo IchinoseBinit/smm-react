@@ -30,6 +30,9 @@ export default function SocialMediaPosts() {
     userId,
   });
 
+  const reversedData = Array.isArray(data) ? [...data].reverse() : [];
+  console.log(reversedData);
+
   if (isLoading) return <CircularLoading />;
 
   return (
@@ -66,13 +69,15 @@ export default function SocialMediaPosts() {
 
       {/* POSTS */}
 
-      {data.length === 0 ? (
+      {reversedData.length === 0 ? (
         <Text textAlign="center" color="fg.MUTED" mt={6}>
           No posts found for the selected date range.
         </Text>
       ) : (
-        data.map((post: Post) => {
-          const postDate = new Date(post.scheduled_time);
+        reversedData.map((post: Post) => {
+          const postDate = post?.scheduled_time
+            ? new Date(post.scheduled_time)
+            : null;
           // Define badge colors based on status
           const getStatusColor = (status: string) => {
             switch (status?.toLowerCase()) {
@@ -88,31 +93,110 @@ export default function SocialMediaPosts() {
                 return "gray";
             }
           };
+
           return (
             <Box
-              key={post.id}
-              p={6}
+              p={{ base: 4, md: 6 }}
               bg="white"
+              _dark={{ bg: "gray.800", borderColor: "gray.700" }}
               borderWidth={1}
               borderColor="gray.200"
-              borderRadius="xl"
+              borderRadius="lg"
               boxShadow="sm"
               transition="all 0.3s ease-in-out"
-              _hover={{ boxShadow: "lg", transform: "translateY(-4px)" }}
+              _hover={{ boxShadow: "md", transform: "translateY(-2px)" }}
+              w="full"
             >
-              <HStack justify="space-between" align="start" spaceX={4}>
-                <Box flex="1">
+              <HStack
+                justify="space-between"
+                align="start"
+                spaceX={{ base: 2, md: 4 }}
+              >
+                <Box
+                  flex="1"
+                  overflow="scroll"
+                  css={{
+                    "&::-webkit-scrollbar": { height: "8px" },
+                    "&::-webkit-scrollbar-thumb": {
+                      background: "gray.300",
+                      borderRadius: "4px",
+                      "&:hover": { background: "gray.400" },
+                    },
+                    _dark: {
+                      "&::-webkit-scrollbar-thumb": {
+                        background: "gray.600",
+                        "&:hover": { background: "gray.500" },
+                      },
+                    },
+                  }}
+                >
                   <Heading
-                    size="md"
+                    size={{ base: "sm", md: "md" }}
                     fontWeight="semibold"
                     color="gray.800"
+                    _dark={{ color: "gray.100" }}
                     mb={2}
                   >
                     {post.title}
                   </Heading>
-                  <Text color="gray.600" fontSize="sm" mb={4} lineHeight="tall">
-                    {post.description}
+                  <Text
+                    color="gray.800"
+                    _dark={{ color: "gray.300" }}
+                    fontSize={{ base: "xs", md: "sm" }}
+                    mb={4}
+                    lineHeight="tall"
+                  >
+                    {post.description || "No description available"}
                   </Text>
+
+                  {/* Media Scrollable Section */}
+                  {post.medias && post.medias.length > 0 && (
+                    <Box
+                      mb={4}
+                      overflowX="auto"
+                      css={{
+                        "&::-webkit-scrollbar": { height: "8px" },
+                        "&::-webkit-scrollbar-thumb": {
+                          background: "gray.300",
+                          borderRadius: "4px",
+                          "&:hover": { background: "gray.400" },
+                        },
+                        _dark: {
+                          "&::-webkit-scrollbar-thumb": {
+                            background: "gray.600",
+                            "&:hover": { background: "gray.500" },
+                          },
+                        },
+                      }}
+                    >
+                      <HStack spaceX={3} minW="max-content" py={2}>
+                        {post.medias.map((media, index) => (
+                          <Box
+                            key={index}
+                            flexShrink={0}
+                            w={{ base: "200px", md: "250px" }}
+                            h={{ base: "120px", md: "150px" }}
+                            borderRadius="md"
+                            overflow="hidden"
+                            borderWidth={1}
+                            borderColor="gray.200"
+                            _dark={{ borderColor: "gray.600" }}
+                          >
+                            <img
+                              src={media.s3_url}
+                              alt={`Post media ${index + 1}`}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
+                            />
+                          </Box>
+                        ))}
+                      </HStack>
+                    </Box>
+                  )}
+
                   <HStack spaceX={3} mb={4}>
                     {post.platform_statuses.map((p, i) => {
                       if (p.accountType === "YOUTUBE")
@@ -128,33 +212,39 @@ export default function SocialMediaPosts() {
                 <IconButton
                   aria-label="Options"
                   variant="ghost"
-                  size="md"
+                  size={{ base: "sm", md: "md" }}
                   color="gray.500"
-                  _hover={{ bg: "gray.100", color: "gray.700" }}
+                  _dark={{ color: "gray.400" }}
+                  _hover={{
+                    bg: "gray.100",
+                    color: "gray.700",
+                    _dark: { bg: "gray.700", color: "gray.200" },
+                  }}
                   borderRadius="full"
                 >
                   <FiMoreHorizontal />
                 </IconButton>
               </HStack>
               <HStack justify="end" mt={4} spaceX={3}>
-                <Text fontSize="xs" color="gray.500" fontWeight="medium">
-                  {postDate.toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
+                <Text
+                  fontSize={{ base: "xs", md: "sm" }}
+                  color="gray.500"
+                  _dark={{ color: "gray.400" }}
+                  fontWeight="medium"
+                >
+                  {postDate ? postDate.toLocaleDateString("en-US") : ""}
                 </Text>
                 <Badge
                   variant="subtle"
                   bg={getStatusColor(post.status)}
                   textTransform="capitalize"
-                  fontSize="xs"
+                  fontSize={{ base: "xs", md: "sm" }}
                   color="white"
                   px={3}
                   py={1}
                   borderRadius="full"
                 >
-                  {post.status}
+                  {post.status || "Unknown"}
                 </Badge>
               </HStack>
             </Box>
