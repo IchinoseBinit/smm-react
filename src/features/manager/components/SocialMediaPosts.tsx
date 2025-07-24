@@ -32,6 +32,7 @@ export default function SocialMediaPosts() {
 
   const reversedData = Array.isArray(data) ? [...data].reverse() : [];
 
+  console.log(reversedData);
   if (isLoading) return <CircularLoading />;
 
   return (

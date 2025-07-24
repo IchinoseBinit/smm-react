@@ -8,7 +8,8 @@ export default function Create() {
       <Helmet>
         <title>Create a Post </title>
       </Helmet>
-      <Box h="full" overflowY="auto" p={4}>
+
+      <Box minH="100dvh" overflowY="hidden" p={4}>
         <Box mb={4}>
           <Heading size="2xl" mb={1}>
             Create Post

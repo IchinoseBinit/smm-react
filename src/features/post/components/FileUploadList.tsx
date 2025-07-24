@@ -14,6 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { FileMeta, FilesPayload } from "../types";
 import { useUploadStore } from "../lib/store/filePayload";
 import { filesSchema } from "../lib/zod";
+import "../css/FileUpload.css";
 import {
   FacebookPostSchema,
   TikTokMediaPostSchema,
@@ -136,13 +137,19 @@ export const FileUploadList = ({
   }, [clearFiles, fileUpload, onClearComplete]);
 
   return (
-    <>
+    <Box minW="60rem">
       {error && (
         <Text color="red.500" fontWeight={500} fontSize="sm">
           {error}
         </Text>
       )}
-      <FileUpload.ItemGroup display="flex" flexDirection="row">
+      <FileUpload.ItemGroup
+        display="flex"
+        flexDirection="row"
+        overflow="scroll"
+        className="file-upload-item-group"
+        pt={2}
+      >
         {!error &&
           files.length > 0 &&
           files.map((file) =>
@@ -226,6 +233,6 @@ export const FileUploadList = ({
           )}
       </FileUpload.ItemGroup>
       <VideoPreviewDialog isOpen={isOpen} onClose={onClose} src={previewSrc} />
-    </>
+    </Box>
   );
 };

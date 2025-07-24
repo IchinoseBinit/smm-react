@@ -9,7 +9,7 @@ import {
   Portal,
   Image,
 } from "@chakra-ui/react";
-import { FiMenu, FiBell } from "react-icons/fi";
+import { FiBell } from "react-icons/fi";
 import DarkModeToggle from "./DarkModeToggle";
 import Cookies from "js-cookie";
 import LightLogo from "@/assets/app/Header Logo White.png";
@@ -44,14 +44,6 @@ export function Navbar() {
       >
         {/* Mobile sidebar toggle */}
         <Flex gap={3}>
-          <IconButton
-            aria-label="Toggle sidebar"
-            display={{ base: "inline-flex", md: "none" }}
-            variant="ghost"
-          >
-            <FiMenu />
-          </IconButton>
-
           {/* Brand */}
 
           <Box fontSize="xl" fontWeight="bold">

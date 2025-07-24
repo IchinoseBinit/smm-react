@@ -22,29 +22,29 @@ const navItems = [
 ];
 
 export function Sidebar() {
-  const location = useLocation();
-  const path = location.pathname; // current route path
+  const { pathname } = useLocation();
+
   return (
     <Flex
       as="aside"
       gridArea="sidebar"
       direction="column"
-      bg="sidebarBg" // semantic token (light ⇆ dark)
+      bg="sidebarBg"
       color="fg"
-      w={{ base: 0, md: 60 }} // 240px on md+, hidden on base
-      display={{ base: "none", md: "flex" }}
-      mt={5}
+      w={{ base: "16", md: 60 }} // icon-only width on mobile
       h="full"
+      px={2}
+      mt={4}
     >
-      {/* Nav links */}
       {navItems.map((item) => {
-        const isActive = path === item.href || path.startsWith(`${item.href}/`);
+        const isActive =
+          pathname === item.href || pathname.startsWith(`${item.href}/`);
+
         return (
           <Link
             key={item.label}
             href={item.href}
             mb={1}
-            ml={2}
             _hover={{
               textDecor: "none",
               bg: "primary.50",
@@ -57,9 +57,17 @@ export function Sidebar() {
             }
             borderRadius="lg"
           >
-            <HStack px={6} py={3} spaceX={3} borderRadius="md">
+            <HStack
+              px={{ base: 3, md: 6 }}
+              py={3}
+              spaceX={3}
+              borderRadius="md"
+              justify={{ base: "center", md: "flex-start" }}
+            >
               <Icon as={item.icon} boxSize={5} />
-              <Text fontSize="sm">{item.label}</Text>
+              <Text fontSize="sm" display={{ base: "none", md: "block" }}>
+                {item.label}
+              </Text>
             </HStack>
           </Link>
         );

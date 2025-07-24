@@ -6,6 +6,7 @@ import {
 import type { AccountSectionProps } from "../types";
 import { Box } from "@chakra-ui/react";
 import SocialAccountCard from "./SocialAccCard";
+import { useContentTypeStore } from "../lib/store/sufaceType";
 
 export const PostConnectedAccsSection = ({
   type,
@@ -18,7 +19,14 @@ export const PostConnectedAccsSection = ({
 }: AccountSectionProps & { icon: any; iconColor: any }) => {
   const { clearSelectedAcc, setClearSelectedAcc } = useClearSelectedAccStore();
   const { toggleId, clear } = useSelectedStore();
-  const filtered = data.filter((d: any) => d.account_type === type);
+
+  const { surfaceType } = useContentTypeStore();
+  const filtered = data.filter((d: any) => {
+    const isStory = surfaceType[0] === "STORY";
+    const isFbOrInsta =
+      d.account_type === "FACEBOOK" || d.account_type === "INSTAGRAM";
+    return d.account_type === type && (!isStory || isFbOrInsta);
+  });
 
   useEffect(() => {
     if (!clearSelectedAcc) return;

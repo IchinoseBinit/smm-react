@@ -1,0 +1,9 @@
+.file-upload-item-group {
+    overflow: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.file-upload-item-group::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}

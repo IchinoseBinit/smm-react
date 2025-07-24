@@ -27,6 +27,7 @@ export default function SocialAccountCard({
       key={id}
       p={4}
       mt={5}
+      mr={4}
       borderRadius="2xl"
       bg={{ base: "blue.50", _dark: "primary.800" }}
       _hover={{
@@ -54,7 +55,6 @@ export default function SocialAccountCard({
           <BsCircle size={20} color="#A0AEC0" />
         )}
       </Box>
-
       <Flex gap={3}>
         <Icon as={icon} boxSize={6} color={iconColor} />
         <Text

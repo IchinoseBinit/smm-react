@@ -45,7 +45,7 @@ import {
 import { PostConnectedAccsSection } from "./ConnectedAccs";
 import { accountConfigs, iconMap } from "../lib/accounts";
 import { SelectSurface } from "./selectSurface";
-import { useContentTypeStore } from "../lib/store/Sufaceselect";
+import { useContentTypeStore } from "../lib/store/sufaceType";
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils();
@@ -62,7 +62,7 @@ export default function CreatePostForm() {
   const { payload } = useUploadStore();
   const { mutateAsync } = useFileUpload();
   const { selectedIds } = useSelectedStore();
-  const { resetType } = useContentTypeStore();
+  const { resetSurfaceType } = useContentTypeStore();
   const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>(
     [],
   );
@@ -95,7 +95,7 @@ export default function CreatePostForm() {
     status: "", // or ""
     scheduled_time: null,
     is_photo: false,
-    surface: useContentTypeStore.getState().type[0],
+    surface: useContentTypeStore.getState().surfaceType[0],
     medias: [],
     platform_statuses: [
       {
@@ -191,7 +191,7 @@ export default function CreatePostForm() {
       const isPhoto = payload.files.every((f) => f.type.startsWith("image/"));
       setValue("is_photo", isPhoto, { shouldValidate: true }); // ✅ here
 
-      const currentType = useContentTypeStore.getState().type[0]; // ✅ always up-to-date
+      const currentType = useContentTypeStore.getState().surfaceType[0]; // ✅ always up-to-date
       setValue("surface", currentType, { shouldValidate: true });
 
       const latestData = getValues();
@@ -212,7 +212,7 @@ export default function CreatePostForm() {
         }
       });
       reset(defaultValues);
-      resetType();
+      resetSurfaceType();
       setIsScheduled(false);
       setClearFiles(true);
       setTimeout(() => setClearSelectedAcc(true), 0);
@@ -224,14 +224,20 @@ export default function CreatePostForm() {
   if (isLoading) return <CircularLoading />;
 
   return (
-    <Box as="form" onSubmit={handleSubmit(onSubmit)}>
-      <VStack spaceY={10} align="stretch">
+    <Box
+      as="form"
+      onSubmit={handleSubmit(onSubmit)}
+      minH="100dvh"
+      overflowY="hidden"
+    >
+      <VStack spaceY={8} align="stretch">
+        <SelectSurface />
         <Box>
           <Text mb={2} fontWeight="medium" color="fg.DEFAULT">
             Connected Accounts
           </Text>
 
-          <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={10} mt={2}>
+          <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={2} mt={2}>
             {accountConfigs.map(({ type }, index) => (
               <PostConnectedAccsSection
                 key={index}
@@ -249,6 +255,11 @@ export default function CreatePostForm() {
         {(selectedPlatformsType.includes("YOUTUBE") ||
           selectedPlatformsType.includes("TIKTOK")) && (
           <Field.Root required>
+            <Field.Label>
+              <Text fontSize={16} mb={2} fontWeight="medium" color="fg.DEFAULT">
+                Title
+              </Text>
+            </Field.Label>
             <Input
               placeholder="write a title!"
               {...register("title", { required: true })}
@@ -260,6 +271,11 @@ export default function CreatePostForm() {
           </Field.Root>
         )}
         <Field.Root required>
+          <Field.Label>
+            <Text fontSize={16} mb={2} fontWeight="medium" color="fg.DEFAULT">
+              Description
+            </Text>
+          </Field.Label>
           <Textarea
             placeholder="write a description"
             {...register("description", { required: true })}
@@ -270,10 +286,9 @@ export default function CreatePostForm() {
             autoresize
           />
         </Field.Root>
-
         <Box p={2} spaceY={6}>
           <Heading fontSize="fontSizes.4xl">Media</Heading>
-          <FileUpload.Root maxW="3xl" alignItems="stretch" maxFiles={10}>
+          <FileUpload.Root maxW="3xl" alignItems="stretch" maxFiles={5}>
             <FileUpload.HiddenInput />
             <FileUpload.Dropzone>
               <Icon size="md" color="fg.muted">
@@ -291,7 +306,6 @@ export default function CreatePostForm() {
             />
           </FileUpload.Root>
         </Box>
-
         <Box>
           <Text mb={2} fontWeight="medium" color="fg.DEFAULT">
             Hashtag Suggestions
@@ -313,7 +327,6 @@ export default function CreatePostForm() {
             ))}
           </HStack>
         </Box>
-
         <Accordion.Root collapsible defaultValue={[]}>
           <Accordion.Item value="schedule">
             <Accordion.ItemTrigger _hover={{ cursor: "pointer" }}>
@@ -350,7 +363,6 @@ export default function CreatePostForm() {
           >
             {isScheduled ? "Schedule Post" : "Post"}
           </Button>
-          <SelectSurface />
         </Flex>
       </VStack>
       <SuccessDialog />

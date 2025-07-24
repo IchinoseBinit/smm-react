@@ -1,20 +1,20 @@
 "use client";
 
 import { Portal, Select, createListCollection } from "@chakra-ui/react";
-import { useContentTypeStore } from "../lib/store/Sufaceselect";
+import { useContentTypeStore } from "../lib/store/sufaceType";
 
 export const SelectSurface = () => {
-  const { type, setType } = useContentTypeStore();
+  const { surfaceType, setSurfaceType } = useContentTypeStore();
 
   return (
     <Select.Root
       collection={frameworks}
-      value={type}
+      value={surfaceType}
       defaultValue={["POST"]}
       size="sm"
       width="120px"
       onValueChange={
-        (val) => setType(val.value.map((str) => str)) // ✅ update store
+        (val) => setSurfaceType(val.value.map((str) => str)) // ✅ update store
       }
     >
       <Select.HiddenSelect />
