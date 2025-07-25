@@ -12,7 +12,7 @@ import { useVideoPreview } from "../hooks/useVideoPreview";
 import { VideoPreviewDialog } from "./PreviewModel";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { FileMeta, FilesPayload } from "../types";
-import { useUploadStore } from "../lib/store/filePayload";
+import { useUploadStore } from "../lib/store/file";
 import { filesSchema } from "../lib/zod";
 import "../css/FileUpload.css";
 import {
@@ -40,6 +40,7 @@ export const FileUploadList = ({
   } = useVideoPreview();
   const [error, setError] = useState("");
   const fileUpload = useFileUploadContext();
+  const { setHasVideos } = useUploadStore();
   const files = useMemo(
     () => fileUpload.acceptedFiles,
     [fileUpload.acceptedFiles],
@@ -70,6 +71,26 @@ export const FileUploadList = ({
           });
         });
         return false;
+      }
+
+      if (files) {
+        const videoCount = files.filter((f) =>
+          f.type.startsWith("video/"),
+        ).length;
+
+        if (videoCount > 1) {
+          setHasVideos(false);
+          queueMicrotask(() => {
+            fileUpload.clearFiles();
+            toaster.error({
+              title: "Only one video allowed",
+              description: "Please select only one video file.",
+              duration: 4000,
+              closable: true,
+            });
+          });
+          return;
+        }
       }
 
       // Validate each file using imageFile/videoFile/photoFile fields
@@ -195,6 +216,7 @@ export const FileUploadList = ({
                     layerStyle="fill.solid"
                     bg="red"
                     borderRadius="full"
+                    onClick={() => setHasVideos(false)}
                   >
                     <LuX />
                   </FileUpload.ItemDeleteTrigger>
@@ -210,6 +232,7 @@ export const FileUploadList = ({
               >
                 <Box overflow="hidden" w="auto" boxSize="52" p="2">
                   <FileUpload.ItemPreviewImage
+                    src={URL.createObjectURL(file)}
                     style={{
                       width: "100%",
                       height: "100%",

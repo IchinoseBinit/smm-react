@@ -6,13 +6,16 @@ const fileSchema = z.object({
 
 const filesSchema = z.array(fileSchema).refine(
   (files) => {
-    if (files.length === 0) return true; // allow empty
-    const firstType = files[0].type.split("/")[0];
-    return files.every((f) => f.type.startsWith(firstType));
+    if (files.length === 0) return true;
+
+    const firstType = files[0].type?.split("/")[0];
+    if (!firstType) return false;
+
+    return files.every((f) => f.type?.startsWith(firstType));
   },
   {
     message:
-      "All files must be of the same type! Refresh the page and try again.",
+      "All files must be of the same type (image or video).Please refresh and try again.",
   },
 );
 

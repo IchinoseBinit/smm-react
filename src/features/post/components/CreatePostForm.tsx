@@ -26,7 +26,7 @@ import { useAllConnAccounts } from "@/hooks/useConnectedAccounts";
 import { CircularLoading } from "@/lib/loadings";
 import { useCreatePost } from "../hooks/query/usePost";
 import useFileUpload from "../hooks/query/useFileUpload";
-import { useUploadStore } from "../lib/store/filePayload";
+import { useUploadStore } from "../lib/store/file";
 import axios from "axios";
 import { useScheduleStore } from "../lib/store/dateTime";
 import { useSuccessDialogStore } from "../lib/store/successDialog";
@@ -59,7 +59,7 @@ export default function CreatePostForm() {
   const { mutateAsync: mutateCreatePost } = useCreatePost();
   const { openDialog } = useSuccessDialogStore();
 
-  const { payload } = useUploadStore();
+  const { payload, hasVideos } = useUploadStore();
   const { mutateAsync } = useFileUpload();
   const { selectedIds } = useSelectedStore();
   const { resetSurfaceType } = useContentTypeStore();
@@ -290,15 +290,17 @@ export default function CreatePostForm() {
           <Heading fontSize="fontSizes.4xl">Media</Heading>
           <FileUpload.Root maxW="3xl" alignItems="stretch" maxFiles={5}>
             <FileUpload.HiddenInput />
-            <FileUpload.Dropzone>
-              <Icon size="md" color="fg.muted">
-                <LuUpload />
-              </Icon>
-              <FileUpload.DropzoneContent>
-                <Box>Drag and drop files here</Box>
-                <Box color="fg.muted">.png, .jpg,mp4</Box>
-              </FileUpload.DropzoneContent>
-            </FileUpload.Dropzone>
+            {hasVideos === false && (
+              <FileUpload.Dropzone>
+                <Icon size="md" color="fg.muted">
+                  <LuUpload />
+                </Icon>
+                <FileUpload.DropzoneContent>
+                  <Box>Drag and drop files here</Box>
+                  <Box color="fg.muted">.png, .jpg,mp4</Box>
+                </FileUpload.DropzoneContent>
+              </FileUpload.Dropzone>
+            )}
             <FileUploadList
               clearFiles={clearFiles}
               onClearComplete={() => setClearFiles(false)}

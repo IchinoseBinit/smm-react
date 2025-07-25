@@ -21,7 +21,7 @@ export const PostConnectedAccsSection = ({
   const { toggleId, clear } = useSelectedStore();
 
   const { surfaceType } = useContentTypeStore();
-  const filtered = data.filter((d: any) => {
+  const filtered = data?.filter((d: any) => {
     const isStory = surfaceType[0] === "STORY";
     const isFbOrInsta =
       d.account_type === "FACEBOOK" || d.account_type === "INSTAGRAM";
