@@ -12,7 +12,7 @@ import { MdManageAccounts } from "react-icons/md";
 import { useLocation } from "react-router";
 
 const navItems = [
-  { label: "Dashboard", icon: FiHome, href: "/" },
+  { label: "Dashboard", icon: FiHome, href: "/dashboard" },
   { label: "Analytics", icon: FiBarChart2, href: "/analytics" },
   { label: "Create", icon: FiEdit2, href: "/create" },
   { label: "Engagement", icon: FiUsers, href: "/engagement" },
