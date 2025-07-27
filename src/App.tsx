@@ -12,6 +12,7 @@ import Manager from "./pages/manager/Manager";
 import FacebookSuccessPage from "./features/accounts/components/facebook/FbSuccessPage";
 import TiktokSuccessPage from "./features/accounts/components/titkok/TkSuccessPage";
 import YoutubeSuccessPage from "./features/accounts/components/youtube/YtSuccessPage";
+import LandingPage from "./pages/landing/Landing";
 
 function App() {
   return (
@@ -20,7 +21,8 @@ function App() {
         <Route path="/*" element={<AuthRoutes />} />
 
         <Route element={<ProtectedRoutesWithAuth />}>
-          {layoutRoute({ path: "/", component: <Dashboard /> })}
+          {flatRoute({ path: "/", component: <LandingPage /> })}
+          {layoutRoute({ path: "/dashboard", component: <Dashboard /> })}
           {layoutRoute({ path: "/create", component: <Create /> })}
           {layoutRoute({
             path: "/calendar",
