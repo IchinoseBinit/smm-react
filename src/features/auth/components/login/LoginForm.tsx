@@ -53,7 +53,7 @@ const LoginForm = () => {
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     await mutateAsync(data);
     setIsAuthenticated(true);
-    navigate("/");
+    navigate("/dashboard");
   };
 
   return (
