@@ -18,10 +18,10 @@ function App() {
   return (
     <>
       <Routes>
+        {flatRoute({ path: "/", component: <LandingPage /> })}
         <Route path="/*" element={<AuthRoutes />} />
 
         <Route element={<ProtectedRoutesWithAuth />}>
-          {flatRoute({ path: "/", component: <LandingPage /> })}
           {layoutRoute({ path: "/dashboard", component: <Dashboard /> })}
           {layoutRoute({ path: "/create", component: <Create /> })}
           {layoutRoute({
