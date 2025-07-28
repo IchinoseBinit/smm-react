@@ -1,0 +1,53 @@
+import { Box, Flex, Icon, Image, Link, Text } from "@chakra-ui/react";
+import { FaInstagram } from "react-icons/fa6";
+
+export default function InstagramAccount({
+  social_name,
+  thumbnail_url,
+  pagesPath,
+}: {
+  social_name: string;
+  thumbnail_url: string | null;
+  pagesPath?: string;
+}) {
+  const content = (
+    <Box
+      p={4}
+      mt={5}
+      borderRadius="2xl"
+      bg={{ base: "pink.50", _dark: "primary.800" }}
+      _hover={{
+        bg: { base: "pink.100", _dark: "primary.700" },
+        cursor: "pointer",
+      }}
+      boxShadow="md"
+      w="20rem"
+      position="relative"
+      transition="all 0.2s"
+    >
+      <Flex gap={3}>
+        <Icon as={FaInstagram} boxSize={6} color="pink.500" />
+        <Text
+          fontWeight="semibold"
+          color={{ base: "primary.800", _dark: "white" }}
+        >
+          <Box as="span">{social_name}</Box>
+        </Text>
+        {thumbnail_url && (
+          <Image
+            position="absolute"
+            right={2}
+            src={thumbnail_url}
+            width="30px"
+            height="30px"
+            borderRadius="full"
+          />
+        )}
+      </Flex>
+    </Box>
+  );
+
+  return (
+    <Box>{pagesPath ? <Link href={pagesPath}>{content}</Link> : content}</Box>
+  );
+}

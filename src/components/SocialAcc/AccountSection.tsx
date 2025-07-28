@@ -22,7 +22,7 @@ export const AccountSection = ({
   return (
     <Box>
       {label && (
-        <Heading size="md" mt={4}>
+        <Heading size="lg" mt={4}>
           Connect to {label.charAt(0) + label.slice(1).toLowerCase()}
         </Heading>
       )}

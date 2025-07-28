@@ -13,6 +13,7 @@ import YoutubeAccount from "../../../components/SocialAcc/youtube/YoutubeAccount
 import { CircularLoading } from "@/lib/loadings";
 import { AccountSection } from "@/components/SocialAcc/AccountSection";
 import { useAllConnAccounts } from "@/hooks/useConnectedAccounts";
+import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount";
 
 export const ConnectedAcc = () => {
   const { navigate, userId } = useAuthUtils();
@@ -25,6 +26,7 @@ export const ConnectedAcc = () => {
     },
     { type: "TIKTOK" as AccountType, Component: TiktokAccount },
     { type: "YOUTUBE" as AccountType, Component: YoutubeAccount },
+    { type: "INSTAGRAM" as AccountType, Component: InstagramAccount },
   ];
   if (isLoading)
     return (

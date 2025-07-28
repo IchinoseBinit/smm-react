@@ -203,6 +203,12 @@ export default function CreatePostForm() {
       ) {
         delete latestData.title;
       }
+      if (latestData.scheduled_time) {
+        latestData.scheduled_time = new Date(
+          new Date(latestData.scheduled_time).getTime() -
+            new Date(latestData.scheduled_time).getTimezoneOffset() * 60000,
+        ).toISOString();
+      }
 
       await mutateCreatePost(latestData).then((res) => {
         if (res?.success) {
