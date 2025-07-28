@@ -1,48 +1,61 @@
+// src/components/DashboardLayout.tsx
+import { Box, Grid, GridItem, useBreakpointValue } from "@chakra-ui/react";
 import { Navbar } from "@/components/Navbar";
 import { Sidebar } from "@/components/Sidebar";
-import { Box, Grid, GridItem } from "@chakra-ui/react";
+import { useSidebarStore } from "@/lib/store/sideBarStore";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const isOpen = useSidebarStore((s) => s.isOpen);
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
   return (
     <Box bg="bg.DEFAULT" h="100dvh" overflow="hidden">
       <Grid
         templateAreas={{
-          base: `"navbar" "sidebar" "main"`, // add sidebar row on mobile
+          base: `"navbar" "main"`,
           md: `"navbar navbar" "sidebar main"`,
         }}
-        templateRows={{
-          base: "auto auto 1fr", // navbar, sidebar, then main
-          md: "auto 1fr",
-        }}
-        templateColumns={{
-          base: "auto", // let sidebar size itself
-          md: "240px 1fr",
-        }}
+        templateRows={{ base: "auto 1fr", md: "auto 1fr" }}
+        templateColumns={{ base: "1fr", md: "240px 1fr" }}
         h="full"
       >
         <GridItem area="navbar">
           <Navbar />
         </GridItem>
 
-        <GridItem
-          area="sidebar"
-          display="block" // ← always visible
-          position={{ base: "absolute", md: "relative" }}
-          top={{ base: "56px", md: "auto" }} // adjust for navbar height
-          left={0}
-          zIndex={10}
-        >
-          <Sidebar />
-        </GridItem>
+        {/* Desktop sidebar */}
+        {!isMobile && (
+          <GridItem area="sidebar" position="relative">
+            <Sidebar />
+          </GridItem>
+        )}
 
-        <GridItem area="main" p={4} overflowY="auto" ml={{ base: 16, md: 0 }}>
+        <GridItem area="main" p={4} overflowY="auto">
           {children}
         </GridItem>
       </Grid>
+
+      {/* Mobile slide‑in sidebar */}
+      {isMobile && (
+        <Box
+          pos="absolute"
+          top="56px"
+          left={0}
+          w="240px"
+          h="calc(100dvh - 56px)"
+          bg="sidebarBg"
+          transform={isOpen ? "translateX(0)" : "translateX(-100%)"}
+          transition="transform 0.2s ease-out"
+          zIndex={100}
+          bgColor="white"
+        >
+          <Sidebar />
+        </Box>
+      )}
     </Box>
   );
 }

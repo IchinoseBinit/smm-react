@@ -16,6 +16,7 @@ import LightLogo from "@/assets/app/Header Logo White.png";
 import DarkLogo from "@/assets/app/Header Logo Black.png";
 
 import { useColorMode } from "./ui/color-mode";
+import { HamburgerBar } from "./Hamburger";
 
 export function Navbar() {
   const handleLogout = () => {
@@ -46,6 +47,7 @@ export function Navbar() {
         <Flex gap={3}>
           {/* Brand */}
 
+          <HamburgerBar />
           <Box fontSize="xl" fontWeight="bold">
             {colorMode === "light" ? (
               <Image

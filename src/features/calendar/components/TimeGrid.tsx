@@ -133,7 +133,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
         autoRows="94px"
         position="sticky"
         top="0"
-        zIndex="1000"
+        zIndex="80"
       >
         {/* Time labels */}
         {timeSlots.map((slot, i) => (

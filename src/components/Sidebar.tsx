@@ -31,10 +31,10 @@ export function Sidebar() {
       direction="column"
       bg="sidebarBg"
       color="fg"
-      w={{ base: "16", md: 60 }} // icon-only width on mobile
       h="full"
       px={2}
       mt={4}
+      zIndex={100}
     >
       {navItems.map((item) => {
         const isActive =
@@ -65,9 +65,7 @@ export function Sidebar() {
               justify={{ base: "center", md: "flex-start" }}
             >
               <Icon as={item.icon} boxSize={5} />
-              <Text fontSize="sm" display={{ base: "none", md: "block" }}>
-                {item.label}
-              </Text>
+              <Text fontSize="sm">{item.label}</Text>
             </HStack>
           </Link>
         );
