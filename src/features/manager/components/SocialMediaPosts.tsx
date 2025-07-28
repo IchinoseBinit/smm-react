@@ -63,28 +63,29 @@ export default function SocialMediaPosts() {
       ) : (
         <Tabs.Root defaultValue="scheduled" variant="plain">
           <Tabs.List bg="bg.muted" rounded="l3" p="1">
-            <Tabs.Trigger value="scheduled">
-              <LuUser />
-              Scheduled
-            </Tabs.Trigger>
             <Tabs.Trigger value="posted">
               <LuFolder />
               Posted
             </Tabs.Trigger>
+            <Tabs.Trigger value="scheduled">
+              <LuUser />
+              Scheduled
+            </Tabs.Trigger>
+
             <Tabs.Trigger value="failed">
               <LuSquareCheck />
               Failed
             </Tabs.Trigger>
             <Tabs.Indicator rounded="l2" />
           </Tabs.List>
-          <Tabs.Content value="scheduled">
-            <RenderPosts
-              posts={data.filter((p: Post) => p.status === "scheduled")}
-            />
-          </Tabs.Content>
           <Tabs.Content value="posted">
             <RenderPosts
               posts={data.filter((p: Post) => p.status === "posted")}
+            />
+          </Tabs.Content>
+          <Tabs.Content value="scheduled">
+            <RenderPosts
+              posts={data.filter((p: Post) => p.status === "scheduled")}
             />
           </Tabs.Content>
 
