@@ -88,6 +88,7 @@ export default function DateTime({
             }}
             showTimeSelect
             showTimeSelectOnly
+            filterTime={(time) => time.getTime() > Date.now()}
             timeIntervals={15}
             timeFormat="HH:mm"
             dateFormat="HH:mm"

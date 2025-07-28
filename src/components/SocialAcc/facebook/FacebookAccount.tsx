@@ -48,6 +48,20 @@ export default function FacebookAccount({
   );
 
   return (
-    <Box>{pagesPath ? <Link href={pagesPath}>{content}</Link> : content}</Box>
+    <Box>
+      {pagesPath ? (
+        <Link
+          href={pagesPath}
+          textDecoration="none"
+          _focus={{ boxShadow: "none" }}
+          _focusVisible={{ boxShadow: "none" }}
+          outline="none"
+        >
+          {content}
+        </Link>
+      ) : (
+        content
+      )}
+    </Box>
   );
 }

@@ -41,9 +41,15 @@
 .customDatepicker .react-datepicker__day--disabled {
     color: #999 !important;
     opacity: 0.4;
+    pointer-events: none;
 }
 /* for time picker  */
 
+.react-datepicker__time-list-item--disabled {
+    color: #999 !important;
+    opacity: 0.4;
+    pointer-events: none;
+}
 .customTimepicker .react-datepicker__time-list {
     background: #1a202c;
     color: white;

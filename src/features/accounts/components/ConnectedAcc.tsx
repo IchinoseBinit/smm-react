@@ -1,5 +1,12 @@
 import { useAuthUtils } from "@/hooks/useAuthUtils";
-import { Box, Button, Heading, Image, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Heading,
+  Image,
+  SimpleGrid,
+  Text,
+} from "@chakra-ui/react";
 import FacebookAccount from "../../../components/SocialAcc/facebook/FacebookAccount";
 import TiktokAccount from "../../../components/SocialAcc/tiktok/TiktokAccount";
 import YoutubeAccount from "../../../components/SocialAcc/youtube/YoutubeAccount";
@@ -62,16 +69,18 @@ export const ConnectedAcc = () => {
         </Box>
       ) : (
         <>
-          {accountConfigs.map(({ type, Component, pagesPath }) => (
-            <AccountSection
-              key={type}
-              type={type}
-              label={type}
-              data={data}
-              Component={Component}
-              pagesPath={pagesPath} // ← pass it here
-            />
-          ))}
+          <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={2} mt={2}>
+            {accountConfigs.map(({ type, Component, pagesPath }) => (
+              <AccountSection
+                key={type}
+                type={type}
+                label={type}
+                data={data}
+                Component={Component}
+                pagesPath={pagesPath} // ← pass it here
+              />
+            ))}
+          </SimpleGrid>
         </>
       )}
     </>

@@ -329,19 +329,50 @@ export default function CreatePostForm() {
             ))}
           </HStack>
         </Box>
-        <Accordion.Root collapsible defaultValue={[]}>
-          <Accordion.Item value="schedule">
-            <Accordion.ItemTrigger _hover={{ cursor: "pointer" }}>
+
+        <Accordion.Root
+          collapsible
+          defaultValue={[]}
+          borderBottom="none"
+          textDecoration="none"
+          outline="none"
+        >
+          <Accordion.Item value="schedule" border="none" outline="none">
+            <Accordion.ItemTrigger
+              // base styles
+              bg="bg.DIM"
+              shadow="md"
+              borderRadius="lg"
+              px={4}
+              py={2}
+              width={80}
+              transition="background 0.2s, color 0.2s"
+              // hover state
+              _hover={{
+                bg: "bg.DEFAULT",
+                color: "fg.DEFAULT",
+                cursor: "pointer",
+              }}
+              // expanded state
+              _expanded={{ bg: "bg.DEFAULT", boxShadow: "md" }}
+            >
               <Span flex="1">Schedule Post (Date/Time)</Span>
               <Accordion.ItemIndicator />
             </Accordion.ItemTrigger>
             <Accordion.ItemContent
+              border="none"
+              outline="none"
+              textDecoration="none"
+              m={5}
+              mt={2}
+              bg="bg.SUBTLE"
+              shadow="md"
+              borderRadius="md"
+              p={4}
               overflow="visible"
-              position="relative"
-              zIndex={0}
             >
               <Accordion.ItemBody>
-                <VStack spaceY={4} align="stretch" zIndex={50}>
+                <VStack spaceY={4} align="stretch">
                   <DateTime
                     register={register}
                     setvalue={setValue}
@@ -352,6 +383,7 @@ export default function CreatePostForm() {
             </Accordion.ItemContent>
           </Accordion.Item>
         </Accordion.Root>
+
         <Flex justify="end" gap={2}>
           <Button
             type="submit"

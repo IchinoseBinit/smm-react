@@ -1,4 +1,4 @@
-import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 
 type AccountSectionProps = {
   type: AccountType;
@@ -26,13 +26,12 @@ export const AccountSection = ({
           Connect to {label.charAt(0) + label.slice(1).toLowerCase()}
         </Heading>
       )}
-      <SimpleGrid columns={{ base: 1, lg: 2, xl: 4 }} gridGap={2} mt={2}>
-        {filtered.map((d: any) => (
-          <Box key={d.id} border="none">
-            <Component {...d} pagesPath={pagesPath} />
-          </Box>
-        ))}
-      </SimpleGrid>
+
+      {filtered.map((d: any) => (
+        <Box key={d.id} w={{ base: "100%", sm: "48%", md: "31%", lg: "23%" }}>
+          <Component {...d} pagesPath={pagesPath} />
+        </Box>
+      ))}
     </Box>
   );
 };
