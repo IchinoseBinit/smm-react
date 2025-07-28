@@ -61,7 +61,7 @@ export default function SocialMediaPosts() {
           No posts found for the selected date range.
         </Text>
       ) : (
-        <Tabs.Root defaultValue="scheduled" variant="plain">
+        <Tabs.Root defaultValue="posted" variant="plain">
           <Tabs.List bg="bg.muted" rounded="l3" p="1">
             <Tabs.Trigger value="posted">
               <LuFolder />
