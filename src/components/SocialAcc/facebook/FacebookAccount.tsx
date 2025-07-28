@@ -23,7 +23,6 @@ export default function FacebookAccount({
       boxShadow="md"
       w="20rem"
       position="relative"
-      border="2px solid"
       transition="all 0.2s"
     >
       <Flex gap={3}>

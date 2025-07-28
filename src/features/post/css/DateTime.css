@@ -38,6 +38,10 @@
     color: #e2e8f0;
 }
 
+.customDatepicker .react-datepicker__day--disabled {
+    color: #999 !important;
+    opacity: 0.4;
+}
 /* for time picker  */
 
 .customTimepicker .react-datepicker__time-list {

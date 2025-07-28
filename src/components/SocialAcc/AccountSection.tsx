@@ -26,9 +26,9 @@ export const AccountSection = ({
           Connect to {label.charAt(0) + label.slice(1).toLowerCase()}
         </Heading>
       )}
-      <SimpleGrid>
+      <SimpleGrid columns={{ base: 1, lg: 2, xl: 4 }} gridGap={2} mt={2}>
         {filtered.map((d: any) => (
-          <Box key={d.id}>
+          <Box key={d.id} border="none">
             <Component {...d} pagesPath={pagesPath} />
           </Box>
         ))}

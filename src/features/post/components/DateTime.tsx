@@ -49,6 +49,7 @@ export default function DateTime({
             placeholderText="Select Start Date"
             showTimeInput={false}
             customInput={<Input {...register("scheduled_time")} pr="2.5rem" />}
+            minDate={new Date()}
           />
           <Icon
             as={FaCalendarAlt}

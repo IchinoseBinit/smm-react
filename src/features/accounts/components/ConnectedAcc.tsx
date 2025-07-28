@@ -52,7 +52,6 @@ export const ConnectedAcc = () => {
             <Button
               variant="subtle"
               flex={1}
-              borderColor="border.DEFAULT"
               borderRadius="xl"
               mt={5}
               onClick={() => navigate("/account/connect")}
