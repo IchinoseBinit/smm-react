@@ -3,6 +3,8 @@ type PlatformStatus = {
   social_account_id: number;
   id: number;
   posted_time: string | null;
+  scheduled_time: string | null;
+  status: "scheduled" | "posted" | "failed";
 };
 
 type Media = {

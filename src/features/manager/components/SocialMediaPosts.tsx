@@ -80,18 +80,24 @@ export default function SocialMediaPosts() {
           </Tabs.List>
           <Tabs.Content value="posted">
             <RenderPosts
-              posts={data.filter((p: Post) => p.status === "posted")}
+              posts={data.filter(
+                (p: Post) => p.platform_statuses[0].status === "posted",
+              )}
             />
           </Tabs.Content>
           <Tabs.Content value="scheduled">
             <RenderPosts
-              posts={data.filter((p: Post) => p.status === "scheduled")}
+              posts={data.filter(
+                (p: Post) => p.platform_statuses[0].status === "scheduled",
+              )}
             />
           </Tabs.Content>
 
           <Tabs.Content value="failed">
             <RenderPosts
-              posts={data.filter((p: Post) => p.status === "failed")}
+              posts={data.filter(
+                (p: Post) => p.platform_statuses[0].status === "failed",
+              )}
             />
           </Tabs.Content>
         </Tabs.Root>

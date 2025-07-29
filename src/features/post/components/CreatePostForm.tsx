@@ -204,7 +204,9 @@ export default function CreatePostForm() {
         delete latestData.title;
       }
       if (latestData.scheduled_time) {
-        latestData.scheduled_time = new Date(latestData.scheduled_time).toISOString();
+        latestData.scheduled_time = new Date(
+          latestData.scheduled_time,
+        ).toISOString();
       }
 
       await mutateCreatePost(latestData).then((res) => {

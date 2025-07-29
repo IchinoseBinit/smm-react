@@ -4,7 +4,6 @@ import { FaFacebook, FaTiktok, FaYoutube, FaInstagram } from "react-icons/fa6";
 import { formatToLocalTime } from "@/lib/helper/formateDateTime";
 
 export default function RenderPosts({ posts }: { posts: Post[] }) {
-  console.log(posts);
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
       case "failed":
