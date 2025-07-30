@@ -184,7 +184,7 @@ export default function CreatePostForm() {
       // clear if not scheduled
       const x = await uploadFiles();
       if (x == false) {
-        console.log(x);
+        console.log(x, "please upload files to server");
         return;
       }
 
@@ -346,6 +346,7 @@ export default function CreatePostForm() {
             <Accordion.ItemTrigger
               // base styles
               bg="bg.DIM"
+              m={2}
               shadow="md"
               borderRadius="lg"
               px={4}
@@ -364,18 +365,7 @@ export default function CreatePostForm() {
               <Span flex="1">Schedule Post (Date/Time)</Span>
               <Accordion.ItemIndicator />
             </Accordion.ItemTrigger>
-            <Accordion.ItemContent
-              border="none"
-              outline="none"
-              textDecoration="none"
-              m={5}
-              mt={2}
-              bg="bg.SUBTLE"
-              shadow="md"
-              borderRadius="md"
-              p={4}
-              overflow="visible"
-            >
+            <Accordion.ItemContent ml={3} overflow="visible">
               <Accordion.ItemBody>
                 <VStack spaceY={4} align="stretch">
                   <DateTime
