@@ -1,26 +1,25 @@
-import { Box, Button, Heading, Text } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import useEmailStore from "@/lib/store/useEmailStore";
-import { useNavigate } from "react-router";
-import { useChangePassword } from "../../hooks/useAuth";
-import { resetPswSchema, type ResetPswFormData } from "../../lib/schema";
-import EmailField from "../EmailField";
-import OtpField from "../OtpField";
-import PasswordField from "../PasswordField";
+import { Box, Button, Heading, Text } from "@chakra-ui/react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect, useState } from "react"
+import useEmailStore from "@/lib/store/useEmailStore"
+import { useNavigate } from "react-router"
+import { useChangePassword } from "../../hooks/useAuth"
+import { resetPswSchema, type ResetPswFormData } from "../../lib/schema"
+import OtpField from "../OtpField"
+import PasswordField from "../PasswordField"
 
 export default function ResetPswForm() {
-  const [showPassword, setShowPassword] = useState(false);
-  const { email } = useEmailStore();
-  const navigate = useNavigate();
-  const { mutateAsync, isPending } = useChangePassword();
+  const [showPassword, setShowPassword] = useState(false)
+  const { email } = useEmailStore()
+  const navigate = useNavigate()
+  const { mutateAsync, isPending } = useChangePassword()
 
   useEffect(() => {
     if (!email) {
-      navigate("/reset-password/send-opt");
+      navigate("/reset-password/send-opt")
     }
-  }, [email, navigate]);
+  }, [email, navigate])
 
   const {
     register,
@@ -30,18 +29,18 @@ export default function ResetPswForm() {
   } = useForm<ResetPswFormData>({
     resolver: zodResolver(resetPswSchema),
     defaultValues: { email },
-  });
+  })
 
-  const password = watch("password", "");
+  const password = watch("password", "")
 
   const onSubmit = async (data: ResetPswFormData) => {
     await mutateAsync({
-      email: data.email,
+      email: email,
       otp: data.otp,
       new_password: data.password,
-    });
-    navigate("/login");
-  };
+    })
+    navigate("/login")
+  }
 
   return (
     <Box
@@ -59,12 +58,18 @@ export default function ResetPswForm() {
         <Heading size="md" mb={1} color="gray.700">
           Update your password
         </Heading>
-        <Text fontSize="sm" color="gray.500">
-          Fill all the fields below to update your password.
+        <Text fontSize="sm" color="gray.500" mb={2}>
+          Enter the OTP sent to your email and set a new password.
         </Text>
+        {email && (
+          <Text fontSize="sm" color="blue.600" fontWeight="medium">
+            OTP sent to:{" "}
+            <span style={{ fontFamily: "monospace" }}>{email}</span>
+          </Text>
+        )}
       </Box>
 
-      <EmailField register={register} error={errors.email?.message} />
+      {/* Only OTP and Password fields */}
       <OtpField register={register} error={errors.otp?.message} />
       <PasswordField
         register={register}
@@ -88,5 +93,5 @@ export default function ResetPswForm() {
         Reset Password
       </Button>
     </Box>
-  );
+  )
 }

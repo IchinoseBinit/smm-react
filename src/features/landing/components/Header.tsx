@@ -56,7 +56,8 @@ export default function Header() {
           </Link>
         </Box>
         <Flex align="center" gap={4}>
-          <Link href={loginLinks}>
+          {/* <Link href={loginLinks}> */}
+          <Link href={"/login"}>
             <Button
               variant="ghost"
               color="gray.600"
@@ -83,5 +84,5 @@ export default function Header() {
         </Flex>
       </Flex>
     </Box>
-  );
+  )
 }

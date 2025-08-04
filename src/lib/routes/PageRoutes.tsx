@@ -13,7 +13,7 @@ const authRoutes = [
   { path: "/reset-password/send-opt", element: <SendOtp /> },
   { path: "/reset-password", element: <ResetPsw /> },
   { path: "/verify-otp", element: <EmailVerification /> },
-];
+]
 
 export const AuthRoutes = () => {
   const { isAuthenticated, isLoading } = useAuthContext();

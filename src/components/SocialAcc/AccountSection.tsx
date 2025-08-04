@@ -23,7 +23,8 @@ export const AccountSection = ({
     <Box>
       {label && (
         <Heading size="lg" mt={4}>
-          Connect to {label.charAt(0) + label.slice(1).toLowerCase()}
+          {/* Connect to {label.charAt(0) + label.slice(1).toLowerCase()} */}
+          {label.charAt(0) + label.slice(1).toLowerCase()} Accounts
         </Heading>
       )}
 
@@ -33,5 +34,5 @@ export const AccountSection = ({
         </Box>
       ))}
     </Box>
-  );
+  )
 };

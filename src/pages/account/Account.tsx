@@ -10,11 +10,11 @@ export default function Account() {
   return (
     <>
       <Helmet>
-        <title>Account</title>
+        <title>Account </title>
       </Helmet>
       <Box mt={10}>
         <Flex justify="space-between">
-          <Heading size="2xl">Account</Heading>
+          <Heading size="2xl">Connected Accounts</Heading>
           <Button
             variant="subtle"
             flex={1}
@@ -23,7 +23,8 @@ export default function Account() {
             maxW={52}
             onClick={() => navigate("/account/connect")}
           >
-            Connect another account
+            {/* Connect to another account */}
+            Add Another Account
           </Button>
         </Flex>
         <div>
@@ -31,5 +32,5 @@ export default function Account() {
         </div>
       </Box>
     </>
-  );
+  )
 }
