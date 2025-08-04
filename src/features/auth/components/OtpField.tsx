@@ -2,7 +2,7 @@ import { Field, PinInput } from "@chakra-ui/react";
 
 export default function OtpField({ register, error }: any) {
   return (
-    <Field.Root invalid={!!error} mt={4}>
+    <Field.Root alignItems="center" invalid={!!error} mt={4}>
       <Field.Label>Enter OTP</Field.Label>
       <PinInput.Root>
         <PinInput.HiddenInput {...register("otp")} />
@@ -14,5 +14,5 @@ export default function OtpField({ register, error }: any) {
       </PinInput.Root>
       <Field.ErrorText>{error}</Field.ErrorText>
     </Field.Root>
-  );
+  )
 }

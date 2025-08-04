@@ -1,6 +1,6 @@
-import { Box, Button, Field, Flex, Input, Text } from "@chakra-ui/react";
-import { calculatePasswordStrength, getStrengthLabel } from "../lib/utils";
-import { LuEye, LuEyeOff } from "react-icons/lu";
+import { Box, Button, Field, Flex, Input, Text } from "@chakra-ui/react"
+import { calculatePasswordStrength, getStrengthLabel } from "../lib/utils"
+import { LuEye, LuEyeOff, LuCheck, LuX } from "react-icons/lu"
 
 export default function PasswordField({
   register,
@@ -8,21 +8,69 @@ export default function PasswordField({
   password,
   showPassword,
   togglePassword,
+  labeltype,
+  fieldName = "password",
+  passwordsMatch,
+  passwordsDontMatch,
 }: any) {
-  const { color, label } = getStrengthLabel(
-    calculatePasswordStrength(password),
-  );
+  const { color, label } = getStrengthLabel(calculatePasswordStrength(password))
+
   return (
     <Field.Root invalid={!!error} mt={4}>
-      <Field.Label>New Password</Field.Label>
+      <Field.Label>
+        <Flex align="center" gap={2}>
+          {labeltype}
+          {/* Show match/mismatch indicator for confirm password */}
+          {fieldName === "confirmpassword" && password && (
+            <>
+              {passwordsMatch && (
+                <Flex align="center" gap={1} color="green.500">
+                  <LuCheck size={16} />
+                  <Text fontSize="xs">Match</Text>
+                </Flex>
+              )}
+              {passwordsDontMatch && (
+                <Flex align="center" gap={1} color="red.500">
+                  <LuX size={16} />
+                  <Text fontSize="xs">Don't match</Text>
+                </Flex>
+              )}
+            </>
+          )}
+        </Flex>
+      </Field.Label>
       <Box position="relative" w="100%">
         <Input
-          {...register("password")}
+          {...register(fieldName)}
           type={showPassword ? "text" : "password"}
-          placeholder="Create a password"
+          placeholder={
+            labeltype === "Confirm Password"
+              ? "Confirm your password"
+              : "Create a password"
+          }
           pr="2.5rem"
           borderRadius="md"
           w="100%"
+          // Add border color based on password match status
+          borderColor={
+            fieldName === "confirmpassword" && password
+              ? passwordsMatch
+                ? "green.300"
+                : passwordsDontMatch
+                ? "red.300"
+                : undefined
+              : undefined
+          }
+          _focus={{
+            borderColor:
+              fieldName === "confirmpassword" && password
+                ? passwordsMatch
+                  ? "green.500"
+                  : passwordsDontMatch
+                  ? "red.500"
+                  : "blue.500"
+                : "blue.500",
+          }}
         />
         <Button
           variant="ghost"
@@ -38,7 +86,8 @@ export default function PasswordField({
         </Button>
       </Box>
 
-      {password && (
+      {/* Only show password strength for the main password field, not confirm password */}
+      {password && fieldName === "password" && (
         <Flex align="center" mt={2}>
           <Box w="100%" h="2px" bg="gray.200" borderRadius="full">
             <Box
@@ -56,5 +105,5 @@ export default function PasswordField({
       )}
       <Field.ErrorText>{error}</Field.ErrorText>
     </Field.Root>
-  );
+  )
 }
