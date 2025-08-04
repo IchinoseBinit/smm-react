@@ -1,5 +1,5 @@
 import { Box, Flex, Image, Link, Button, Icon } from "@chakra-ui/react";
-import { getStartedLinks, loginLinks } from "../lib/Links";
+import { getStartedLinks } from "../lib/Links";
 import logo from "@/assets/app/Header Logo White.png";
 import { BsRocketTakeoffFill } from "react-icons/bs";
 

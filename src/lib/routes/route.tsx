@@ -1,4 +1,3 @@
-import ResetPsw from "@/pages/auth/ResetPsw"
 import DashboardLayout from "@/pages/layout"
 import { Route } from "react-router"
 
