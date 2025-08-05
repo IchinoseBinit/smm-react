@@ -63,22 +63,36 @@ export default function CreatePostForm() {
   const { mutateAsync } = useFileUpload();
   const { selectedIds } = useSelectedStore();
   const { resetSurfaceType } = useContentTypeStore();
-  const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>(
-    [],
-  );
+  const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>([]);
 
   const selectedPlatforms = useMemo(
     () => itemArr.map((item) => item.social_account_id),
-    [itemArr],
+    [itemArr]
   );
+
+  // Check what files are currently uploaded
+  const uploadedFiles = payload?.files || [];
+  const hasImages = uploadedFiles.some((file) => file.type.startsWith("image/"));
+  const hasVideo = uploadedFiles.some((file) => file.type.startsWith("video/"));
+
+  // Determine what file types to accept
+  const acceptedFileTypes = useMemo(() => {
+    if (hasImages) {
+      return "image/*"; // Only allow images if images are already uploaded
+    }
+    if (hasVideo) {
+      return ""; // Don't allow any new files if video is uploaded (only 1 video allowed)
+    }
+    return "image/*,video/*"; // Allow both if nothing is uploaded
+  }, [hasImages, hasVideo]);
 
   const formSchema = useMemo(() => {
     const selectedTypes = Array.from(
       new Set(
         itemArr
           .filter((item) => selectedIds.includes(item.social_account_id))
-          .map((item) => item.accountType),
-      ),
+          .map((item) => item.accountType)
+      )
     );
     setSelectedPlatformsType(selectedTypes);
 
@@ -92,7 +106,7 @@ export default function CreatePostForm() {
   const defaultValues = {
     title: "",
     description: "",
-    status: "", // or ""
+    status: "",
     scheduled_time: null,
     is_photo: false,
     surface: useContentTypeStore.getState().surfaceType[0],
@@ -129,22 +143,22 @@ export default function CreatePostForm() {
     "#DigitalWorld",
     "#TechNews",
   ];
+
   const addTag = useCallback(
     (tag: string) => {
       const value = content.length ? `${content} ${tag}` : tag;
       setValue("description", value, { shouldValidate: true });
     },
-    [content, setValue],
+    [content, setValue]
   );
+
   useEffect(() => {
     setValue("platform_statuses", itemArr, { shouldValidate: true });
   }, [itemArr, setValue]);
 
   const uploadFiles = async () => {
-    // Step 1: get presigned URLs
     const presignedResponse: any = await mutateAsync(payload);
 
-    // Step 2: upload files to S3
     await Promise.all(
       presignedResponse.presigned_posts.map((post: any, i: any) => {
         const formData = new FormData();
@@ -154,12 +168,11 @@ export default function CreatePostForm() {
         formData.append("file", payload.files[i].file);
 
         return axios.post(post.url, formData);
-      }),
+      })
     );
     const urls = presignedResponse.presigned_posts.map(
-      (post: any) => post.url + post.fields.key,
+      (post: any) => post.url + post.fields.key
     );
-    // Convert to medias format
 
     const medias = urls.map((url: string, index: number) => ({
       s3_url: encodeURI(url),
@@ -181,7 +194,6 @@ export default function CreatePostForm() {
         setValue("scheduled_time", null, { shouldValidate: true });
       }
 
-      // clear if not scheduled
       const x = await uploadFiles();
       if (x == false) {
         console.log(x, "please upload files to server");
@@ -189,9 +201,9 @@ export default function CreatePostForm() {
       }
 
       const isPhoto = payload.files.every((f) => f.type.startsWith("image/"));
-      setValue("is_photo", isPhoto, { shouldValidate: true }); // ✅ here
+      setValue("is_photo", isPhoto, { shouldValidate: true });
 
-      const currentType = useContentTypeStore.getState().surfaceType[0]; // ✅ always up-to-date
+      const currentType = useContentTypeStore.getState().surfaceType[0];
       setValue("surface", currentType, { shouldValidate: true });
 
       const latestData = getValues();
@@ -205,7 +217,7 @@ export default function CreatePostForm() {
       }
       if (latestData.scheduled_time) {
         latestData.scheduled_time = new Date(
-          latestData.scheduled_time,
+          latestData.scheduled_time
         ).toISOString();
       }
 
@@ -249,10 +261,10 @@ export default function CreatePostForm() {
                 type={type}
                 data={data}
                 setvalue={setValue}
-                setItemArr={setItemArr} // ← fixed prop name
+                setItemArr={setItemArr}
                 selectedPlatforms={selectedPlatforms}
-                icon={iconMap[type].icon} // ← pass icon
-                iconColor={iconMap[type].color} // ← pass color
+                icon={iconMap[type].icon}
+                iconColor={iconMap[type].color}
               />
             ))}
           </SimpleGrid>
@@ -291,18 +303,29 @@ export default function CreatePostForm() {
             autoresize
           />
         </Field.Root>
+
+        {/* Simplified Media Upload Section */}
         <Box p={2} spaceY={6}>
           <Heading fontSize="fontSizes.4xl">Media</Heading>
-          <FileUpload.Root maxW="3xl" alignItems="stretch" maxFiles={5}>
+
+          <FileUpload.Root
+            maxW="3xl"
+            alignItems="stretch"
+            maxFiles={5}
+            accept={acceptedFileTypes}
+            disabled={hasVideo} // Disable entirely if video is uploaded
+          >
             <FileUpload.HiddenInput />
-            {hasVideos === false && (
+            {hasVideos === false && !hasVideo && (
               <FileUpload.Dropzone>
                 <Icon size="md" color="fg.muted">
                   <LuUpload />
                 </Icon>
                 <FileUpload.DropzoneContent>
                   <Box>Drag and drop files here</Box>
-                  <Box color="fg.muted">.png, .jpg,mp4</Box>
+                  <Box color="fg.muted">
+                    {hasImages ? ".png, .jpg only" : ".png, .jpg, .mp4"}
+                  </Box>
                 </FileUpload.DropzoneContent>
               </FileUpload.Dropzone>
             )}
@@ -310,9 +333,11 @@ export default function CreatePostForm() {
               clearFiles={clearFiles}
               onClearComplete={() => setClearFiles(false)}
               selectedPlatforms={selectedPlatformsType}
+              showStatusMessages={true} // New prop to show status messages
             />
           </FileUpload.Root>
         </Box>
+
         <Box>
           <Text mb={2} fontWeight="medium" color="fg.DEFAULT">
             Hashtag Suggestions
@@ -344,7 +369,6 @@ export default function CreatePostForm() {
         >
           <Accordion.Item value="schedule" border="none" outline="none">
             <Accordion.ItemTrigger
-              // base styles
               bg="bg.DIM"
               m={2}
               shadow="md"
@@ -353,13 +377,11 @@ export default function CreatePostForm() {
               py={2}
               width={80}
               transition="background 0.2s, color 0.2s"
-              // hover state
               _hover={{
                 bg: "bg.DEFAULT",
                 color: "fg.DEFAULT",
                 cursor: "pointer",
               }}
-              // expanded state
               _expanded={{ bg: "bg.DEFAULT", boxShadow: "md" }}
             >
               <Span flex="1">Schedule Post (Date/Time)</Span>

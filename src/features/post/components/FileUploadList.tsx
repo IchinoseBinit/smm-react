@@ -26,20 +26,33 @@ export const FileUploadList = ({
   clearFiles,
   onClearComplete,
   selectedPlatforms,
+  showStatusMessages = false,
 }: {
   clearFiles: boolean
   onClearComplete?: () => void
   selectedPlatforms: string[]
+  showStatusMessages?: boolean
 }) => {
   const isMobile = useIsMobile()
   const { open: isOpen, onClose, previewSrc, handlePreview } = useVideoPreview()
   const [error, setError] = useState("")
   const fileUpload = useFileUploadContext()
-  const { setHasVideos } = useUploadStore()
+  const { setHasVideos, payload, setPayload } = useUploadStore()
+
   const files = useMemo(
     () => fileUpload.acceptedFiles,
     [fileUpload.acceptedFiles]
   )
+
+  // Get file status from both sources for status messages
+  const uploadedFiles = payload?.files || []
+  const hasImages =
+    files.some((file) => file.type.startsWith("image/")) ||
+    uploadedFiles.some((file) => file.type.startsWith("image/"))
+  const hasVideo =
+    files.some((file) => file.type.startsWith("video/")) ||
+    uploadedFiles.some((file) => file.type.startsWith("video/"))
+
   const fileSchem = useMemo(() => {
     if (selectedPlatforms.includes("YOUTUBE")) return YouTubeVideoSchema
     if (selectedPlatforms.includes("TIKTOK")) return TikTokMediaPostSchema
@@ -47,12 +60,104 @@ export const FileUploadList = ({
     if (selectedPlatforms.includes("INSTAGRAM")) return FacebookPostSchema
   }, [selectedPlatforms])
 
+  // Custom delete function that actually removes the file
+  const handleDeleteFile = useCallback(
+    (fileToDelete: File) => {
+      console.log(
+        "Attempting to delete file:",
+        fileToDelete.name,
+        fileToDelete.type
+      )
+
+      if (fileUpload.deleteFile) {
+        console.log("Using fileUpload.deleteFile method")
+        fileUpload.deleteFile(fileToDelete)
+      } else if (fileUpload.clearFiles && files.length === 1) {
+        console.log("Clearing all files since only one exists")
+        fileUpload.clearFiles()
+      } else {
+        console.log("Manually filtering files")
+        const newFiles = files.filter((file) => file !== fileToDelete)
+
+        if (fileUpload.setFiles) {
+          fileUpload.setFiles(newFiles)
+        } else {
+          const fileInput = document.querySelector(
+            'input[type="file"]'
+          ) as HTMLInputElement
+          if (fileInput) {
+            const dt = new DataTransfer()
+            newFiles.forEach((file) => dt.items.add(file))
+            fileInput.files = dt.files
+
+            const event = new Event("change", { bubbles: true })
+            fileInput.dispatchEvent(event)
+          }
+        }
+      }
+
+      // Update our store immediately
+      const remainingFiles = files.filter((file) => file !== fileToDelete)
+      console.log("Remaining files after delete:", remainingFiles.length)
+
+      if (remainingFiles.length === 0) {
+        setPayload(null)
+        setHasVideos(false)
+        setError("")
+      } else {
+        const fileArr: FileMeta[] = remainingFiles.map((file) => ({
+          filename: file.name,
+          type: file.type,
+          file,
+        }))
+        setPayload({ files: fileArr })
+        setHasVideos(remainingFiles.some((f) => f.type.startsWith("video/")))
+      }
+
+      try {
+        URL.revokeObjectURL(URL.createObjectURL(fileToDelete))
+      } catch (e) {
+        console.log("Error revoking object URL:", e)
+      }
+    },
+    [files, fileUpload, setPayload, setHasVideos]
+  )
+
+  useEffect(() => {
+    const currentVideos = files.filter((file) => file.type.startsWith("video/"))
+    const currentImages = files.filter((file) => file.type.startsWith("image/"))
+
+    setHasVideos(currentVideos.length > 0)
+
+    if (files.length === 0) {
+      setPayload(null)
+      setError("")
+    } else {
+      const fileArr: FileMeta[] = files.map((file) => ({
+        filename: file.name,
+        type: file.type,
+        file,
+      }))
+      setPayload({ files: fileArr })
+    }
+  }, [files, setHasVideos, setPayload])
+
   const validateFiles = useCallback(
     (newFiles: File[]) => {
-      // Validate same file type (image/video)
+      // Don't validate if no files (this happens during removal)
+      if (newFiles.length === 0) {
+        setError("")
+        return true
+      }
+
       const batch = filesSchema.safeParse(newFiles)
       if (!batch.success) {
-        setError(batch.error.issues[0].message)
+        toaster.error({
+          title: "Invalid file type",
+          description: batch.error.issues[0].message,
+          closable: true,
+          duration: 4000,
+        })
         return false
       }
 
@@ -61,7 +166,7 @@ export const FileUploadList = ({
           fileUpload.clearFiles()
           toaster.error({
             title: "Not allowed",
-            description: "please, select a platform",
+            description: "Please, select a platform",
             closable: true,
             duration: 4000,
           })
@@ -69,111 +174,93 @@ export const FileUploadList = ({
         return false
       }
 
-      if (newFiles && newFiles.length > 0) {
-        const newVideoCount = newFiles.filter((f) =>
-          f.type.startsWith("video/")
-        ).length
-        const newImageCount = newFiles.filter((f) =>
-          f.type.startsWith("image/")
-        ).length
+      const newVideoCount = newFiles.filter((f) =>
+        f.type.startsWith("video/")
+      ).length
+      const newImageCount = newFiles.filter((f) =>
+        f.type.startsWith("image/")
+      ).length
 
-        // Get existing files (but exclude the current validation batch)
-        const existingFiles = fileUpload.acceptedFiles || []
+      const existingFiles = fileUpload.acceptedFiles || []
+      const actualExistingFiles = existingFiles.filter(
+        (existingFile) =>
+          !newFiles.some((newFile) => newFile.name === existingFile.name)
+      )
 
-        // Only validate against truly existing files, not the current batch
-        const actualExistingFiles = existingFiles.filter(
-          (existingFile) =>
-            !newFiles.some((newFile) => newFile.name === existingFile.name)
-        )
+      const existingVideoCount = actualExistingFiles.filter((f) =>
+        f.type.startsWith("video/")
+      ).length
+      const existingImageCount = actualExistingFiles.filter((f) =>
+        f.type.startsWith("image/")
+      ).length
 
-        const existingVideoCount = actualExistingFiles.filter((f) =>
-          f.type.startsWith("video/")
-        ).length
-        const existingImageCount = actualExistingFiles.filter((f) =>
-          f.type.startsWith("image/")
-        ).length
-
-        // Rule 1: Cannot mix videos and images in the same upload batch
-        if (newVideoCount > 0 && newImageCount > 0) {
-          setError("Cannot upload both videos and images together")
-
-          queueMicrotask(() => {
-            toaster.error({
-              title: "Mixed media not allowed",
-              description: "Please upload either videos OR images, not both.",
-              duration: 4000,
-              closable: true,
-            })
+      if (newVideoCount > 0 && newImageCount > 0) {
+        setError("Cannot upload both videos and images together")
+        queueMicrotask(() => {
+          toaster.error({
+            title: "Mixed media not allowed",
+            description: "Please upload either videos OR images, not both.",
+            duration: 4000,
+            closable: true,
           })
-          return false
-        }
-
-        // Rule 2: Only one video allowed (new videos only)
-        if (newVideoCount > 1) {
-          setError("Only one video allowed")
-          queueMicrotask(() => {
-            toaster.error({
-              title: "Only one video allowed",
-              description: "Please select only one video file.",
-              duration: 4000,
-              closable: true,
-            })
-          })
-          return false
-        }
-
-        // Rule 3: If there are existing images, cannot upload videos
-        if (existingImageCount > 0 && newVideoCount > 0) {
-          setError("Cannot upload video when images are already uploaded")
-          queueMicrotask(() => {
-            toaster.error({
-              title: "Cannot mix media types",
-              description: "Remove existing images first to upload a video.",
-              duration: 4000,
-              closable: true,
-            })
-          })
-          return false
-        }
-
-        // Rule 4: If there are existing videos, cannot upload more videos
-        if (existingVideoCount > 0 && newVideoCount > 0) {
-          setError("Only one video allowed")
-          queueMicrotask(() => {
-            toaster.error({
-              title: "Only one video allowed",
-              description:
-                "Remove the existing video before uploading a new one.",
-              duration: 4000,
-              closable: true,
-            })
-          })
-          return false
-        }
-
-        // Rule 5: If there are existing videos, cannot upload images
-        if (existingVideoCount > 0 && newImageCount > 0) {
-          setError("Cannot upload images when video is already uploaded")
-          queueMicrotask(() => {
-            toaster.error({
-              title: "Cannot mix media types",
-              description: "Remove the video first to upload images.",
-              duration: 4000,
-              closable: true,
-            })
-          })
-          return false
-        }
-
-        // Set video state
-        if (newVideoCount > 0 || existingVideoCount > 0) {
-          setHasVideos(true)
-        } else {
-          setHasVideos(false)
-        }
+        })
+        return false
       }
 
-      // Validate each file using imageFile/videoFile/photoFile fields
+      if (newVideoCount > 1) {
+        setError("Only one video allowed")
+        queueMicrotask(() => {
+          toaster.error({
+            title: "Only one video allowed",
+            description: "Please select only one video file.",
+            duration: 4000,
+            closable: true,
+          })
+        })
+        return false
+      }
+
+      if (existingImageCount > 0 && newVideoCount > 0) {
+        setError("Cannot upload videos after images are uploaded.")
+        queueMicrotask(() => {
+          toaster.error({
+            title: "Upload blocked",
+            description:
+              "You have already uploaded images. Remove them to upload a video instead.",
+            duration: 4000,
+            closable: true,
+          })
+        })
+        return false
+      }
+
+      if (existingVideoCount > 0 && newVideoCount > 0) {
+        setError("Only one video allowed")
+        queueMicrotask(() => {
+          toaster.error({
+            title: "Only one video allowed",
+            description:
+              "Remove the existing video before uploading a new one.",
+            duration: 4000,
+            closable: true,
+          })
+        })
+        return false
+      }
+
+      if (existingVideoCount > 0 && newImageCount > 0) {
+        setError("Cannot upload images when video is already uploaded")
+        queueMicrotask(() => {
+          toaster.error({
+            title: "Cannot mix media types",
+            description: "Remove the video first to upload images.",
+            duration: 4000,
+            closable: true,
+          })
+        })
+        return false
+      }
+
       for (const file of newFiles) {
         const s: any = fileSchem.shape
         const tryParse = (key: string) => {
@@ -208,10 +295,11 @@ export const FileUploadList = ({
   )
 
   const uploadFiles = useCallback(async () => {
-    // Only validate when there are actually new files to process
-    if (files.length === 0) return
+    if (files.length === 0) {
+      setError("")
+      return
+    }
 
-    // Don't validate the same files repeatedly
     if (!validateFiles(files)) return
 
     const fileArr: FileMeta[] = files.map((file) => ({
@@ -220,36 +308,50 @@ export const FileUploadList = ({
       file,
     }))
 
-    console.log("fileArr", fileArr)
-
     const payload: FilesPayload = { files: fileArr }
-    console.log("payload", payload)
-    // set files
     useUploadStore.getState().setPayload(payload)
   }, [files, validateFiles])
 
   useEffect(() => {
-    if (files.length === 0) {
-      setError("")
-      return
-    }
     uploadFiles()
-  }, [files, uploadFiles])
+  }, [uploadFiles])
 
   useEffect(() => {
     if (clearFiles) {
       fileUpload.clearFiles()
-      onClearComplete?.() // callback to parent to reset flag
+      setError("") // Clear error when clearing files
+      onClearComplete?.()
     }
   }, [clearFiles, fileUpload, onClearComplete])
 
   return (
     <Box minW="60rem">
+      {showStatusMessages && (
+        <Box mb={4}>
+          {hasImages && (
+            <Text fontSize="sm" color="orange.600" fontWeight="medium">
+              📷 Images uploaded.
+            </Text>
+          )}
+          {hasVideo && (
+            <Text fontSize="sm" color="orange.600" fontWeight="medium">
+              🎥 Video uploaded. Only one video allowed.
+            </Text>
+          )}
+          {!hasImages && !hasVideo && (
+            <Text fontSize="sm" color="green.600" fontWeight="medium">
+              📁 Ready to upload. You can upload images or videos.
+            </Text>
+          )}
+        </Box>
+      )}
+
       {error && (
         <Text color="red.500" fontWeight={500} fontSize="sm">
           {error}
         </Text>
       )}
+
       <FileUpload.ItemGroup
         display="flex"
         flexDirection="row"
@@ -257,8 +359,7 @@ export const FileUploadList = ({
         className="file-upload-item-group"
         pt={2}
       >
-        {!error &&
-          files.length > 0 &&
+        {files.length > 0 &&
           files.map((file) =>
             file.type.startsWith("video/") ? (
               <FileUpload.Item
@@ -297,15 +398,25 @@ export const FileUploadList = ({
                 </Box>
 
                 <Float placement="top-end">
-                  <FileUpload.ItemDeleteTrigger
+                  <Box
                     boxSize="4"
-                    layerStyle="fill.solid"
-                    bg="red"
+                    bg="red.500"
                     borderRadius="full"
-                    onClick={() => setHasVideos(false)}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    cursor="pointer"
+                    color="white"
+                    _hover={{ bg: "red.600" }}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      console.log("Custom video delete clicked")
+                      handleDeleteFile(file)
+                    }}
                   >
-                    <LuX />
-                  </FileUpload.ItemDeleteTrigger>
+                    <LuX size="12" />
+                  </Box>
                 </Float>
               </FileUpload.Item>
             ) : (
@@ -328,14 +439,25 @@ export const FileUploadList = ({
                 </Box>
 
                 <Float placement="top-end">
-                  <FileUpload.ItemDeleteTrigger
+                  <Box
                     boxSize="4"
-                    layerStyle="fill.solid"
-                    bg="red"
+                    bg="red.500"
                     borderRadius="full"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    cursor="pointer"
+                    color="white"
+                    _hover={{ bg: "red.600" }}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      console.log("Custom image delete clicked")
+                      handleDeleteFile(file)
+                    }}
                   >
-                    <LuX />
-                  </FileUpload.ItemDeleteTrigger>
+                    <LuX size="12" />
+                  </Box>
                 </Float>
               </FileUpload.Item>
             )
