@@ -14,6 +14,7 @@ import { FaCalendarAlt, FaClock, FaCheckCircle } from "react-icons/fa"
 import "react-datepicker/dist/react-datepicker.css"
 import { format } from "date-fns"
 import { useScheduleStore } from "../lib/store/dateTime"
+import Demo from "./Demo"
 
 export default function DateTime({
   setvalue,
@@ -24,7 +25,7 @@ export default function DateTime({
   register: any
   scheduled: any
 }) {
-  const setIsScheduled = useScheduleStore((s) => s.setIsScheduled)
+  const { setIsScheduled, isScheduled } = useScheduleStore()
   const selectedDate = scheduled ? new Date(scheduled) : null
   const now = new Date()
 
@@ -33,7 +34,6 @@ export default function DateTime({
       setvalue("scheduled_time", null, { shouldValidate: true })
       setIsScheduled(false)
     } else {
-      // Prevent setting past date/time
       if (date <= now) {
         return // Don't allow past dates
       }
@@ -43,22 +43,6 @@ export default function DateTime({
       })
       setIsScheduled(true)
     }
-  }
-
-  // Filter function to disable past times
-  const filterTime = (time: Date) => {
-    const current = new Date()
-
-    // If selected date is today, only show future times
-    if (
-      selectedDate &&
-      selectedDate.toDateString() === current.toDateString()
-    ) {
-      return time.getTime() > current.getTime()
-    }
-
-    // For future dates, allow all times
-    return true
   }
 
   const inputStyles = {
@@ -90,20 +74,18 @@ export default function DateTime({
   return (
     <Box>
       <VStack spaceY={6} align="stretch" w="full">
-        {/* Header Section */}
         <Box>
           <HStack mb={2} align="center">
-            {/* <Icon as={FaCalendarAlt} color="secondary.500" boxSize={5} /> */}
             <Text fontSize="lg" fontWeight="semibold" color="fg.DEFAULT">
               Schedule Settings
             </Text>
           </HStack>
           <Text fontSize="sm" color="fg.MUTED">
-            Choose when you want your post to be published (future dates only)
+            Choose when you want your post to be published (future dates and
+            times only)
           </Text>
         </Box>
 
-        {/* Date & Time Inputs */}
         <Flex direction={{ base: "column", lg: "row" }} gap={4} align="stretch">
           {/* Date Picker */}
           <Field.Root flex="1">
@@ -116,7 +98,6 @@ export default function DateTime({
               alignItems="center"
               gap={2}
             >
-              {/* <Icon as={FaCalendarAlt} color="secondary.400" boxSize={4} /> */}
               Publication Date
             </Field.Label>
             <Box position="relative">
@@ -141,7 +122,7 @@ export default function DateTime({
                 left="3"
                 top="50%"
                 transform="translateY(-50%)"
-                color="secondary.400"
+                color="green.500" // Changed to green
                 pointerEvents="none"
                 boxSize="1rem"
               />
@@ -159,7 +140,6 @@ export default function DateTime({
             </Box>
           </Field.Root>
 
-          {/* Time Picker */}
           <Field.Root flex="1">
             <Field.Label
               fontSize="sm"
@@ -170,62 +150,46 @@ export default function DateTime({
               alignItems="center"
               gap={2}
             >
-              {/* <Icon as={FaClock} color="secondary.400" boxSize={4} /> */}
               Publication Time
             </Field.Label>
             <Box position="relative">
-              <DatePicker
-                selected={selectedDate}
-                onChange={handleDateTimeChange}
-                showTimeSelect
-                showTimeSelectOnly
-                filterTime={filterTime} // Filter past times
-                timeIntervals={15}
-                timeFormat="h:mm aa"
-                dateFormat="h:mm aa"
-                placeholderText="Select time"
-                customInput={
-                  <Input {...register("scheduled_time")} {...inputStyles} />
-                }
-                popperProps={{
-                  strategy: "fixed",
+              {/* Hidden input for form registration */}
+              <Input
+                {...register("scheduled_time")}
+                placeholder="Select time"
+                readOnly
+                style={{
+                  opacity: 0,
+                  position: "absolute",
+                  zIndex: -1,
+                  pointerEvents: "none",
                 }}
               />
-              {/* Left Icon */}
+
+              <Demo />
+
               <Icon
                 as={FaClock}
                 position="absolute"
                 left="3"
                 top="50%"
                 transform="translateY(-50%)"
-                color="secondary.400"
+                color="green.500" // Changed to green
                 pointerEvents="none"
                 boxSize="1rem"
+                zIndex="2"
               />
-              {/* Right Status Icon */}
-              {selectedDate && (
-                <Icon
-                  as={FaCheckCircle}
-                  position="absolute"
-                  right="3"
-                  top="50%"
-                  transform="translateY(-50%)"
-                  color="green.500"
-                  boxSize="1rem"
-                />
-              )}
             </Box>
           </Field.Root>
         </Flex>
 
-        {/* Preview Section */}
-        {selectedDate && (
+        {selectedDate && isScheduled && (
           <Box
             p={5}
-            bg="secondary.50"
+            bg="green.50"
             borderRadius="xl"
             border="2px solid"
-            borderColor="secondary.200"
+            borderColor="green.200"
             position="relative"
             overflow="hidden"
             transform="scale(1)"
@@ -235,8 +199,8 @@ export default function DateTime({
               boxShadow: "lg",
             }}
             _dark={{
-              bg: "secondary.900",
-              borderColor: "secondary.700",
+              bg: "green.900",
+              borderColor: "green.700",
             }}
           >
             {/* Top gradient line */}
@@ -246,14 +210,14 @@ export default function DateTime({
               left="0"
               right="0"
               height="3px"
-              bgGradient="linear(to-r, secondary.400, secondary.600)"
+              bgGradient="linear(to-r, green.400, green.600)"
             />
 
             <Flex align="center" justify="space-between">
               <HStack gap={4}>
                 <Box
                   p={3}
-                  bg="secondary.500"
+                  bg="green.500"
                   borderRadius="lg"
                   color="white"
                   boxShadow="md"
@@ -282,12 +246,12 @@ export default function DateTime({
                     {format(selectedDate, "EEEE, MMMM do, yyyy")}
                   </Text>
                   <HStack gap={2}>
-                    <Icon as={FaClock} color="secondary.600" boxSize={3} />
+                    <Icon as={FaClock} color="green.600" boxSize={3} />
                     <Text
                       fontSize="sm"
-                      color="secondary.600"
+                      color="green.600"
                       fontWeight="medium"
-                      _dark={{ color: "secondary.300" }}
+                      _dark={{ color: "green.300" }}
                     >
                       {format(selectedDate, "h:mm aa")}
                     </Text>
@@ -297,6 +261,23 @@ export default function DateTime({
             </Flex>
           </Box>
         )}
+
+        <Box
+          p={3}
+          bg="orange.50"
+          borderLeft="4px solid"
+          borderLeftColor="orange.400"
+          borderRadius="md"
+        >
+          <HStack>
+            <Icon as={FaClock} color="orange.500" boxSize={4} />
+            <Text fontSize="sm" color="orange.700" fontWeight="medium">
+              <strong>Reminder:</strong> Scheduling is only allowed for future
+              dates and times. You won't be able to select any time that's
+              already passed today.
+            </Text>
+          </HStack>
+        </Box>
       </VStack>
     </Box>
   )
