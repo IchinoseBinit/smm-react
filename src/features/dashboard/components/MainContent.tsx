@@ -12,7 +12,7 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 import { CircularLoading } from "@/lib/loadings";
-// import FfmpegTest from "@/features/post/lib/Files";
+// import FfmpegTest from "@/features/post/lib/Files"
 
 const SalesLineChart = () => {
   const chart = useChart({
@@ -25,7 +25,7 @@ const SalesLineChart = () => {
       { sale: 90, month: "August" },
     ],
     series: [{ name: "sale", color: "teal.solid" }],
-  });
+  })
 
   return (
     <Chart.Root maxH="sm" chart={chart}>
@@ -60,8 +60,8 @@ const SalesLineChart = () => {
         ))}
       </LineChart>
     </Chart.Root>
-  );
-};
+  )
+}
 
 const AllocationBarChart = () => {
   const chart = useChart({
@@ -72,7 +72,7 @@ const AllocationBarChart = () => {
       { allocation: 4, type: "Cash" },
     ],
     series: [{ name: "allocation", color: "teal.solid" }],
-  });
+  })
 
   return (
     <Chart.Root maxH="sm" chart={chart}>
@@ -95,21 +95,21 @@ const AllocationBarChart = () => {
         ))}
       </BarChart>
     </Chart.Root>
-  );
-};
+  )
+}
 const metricCards = [
   { label: "Followers", value: "12,345", change: "+12%" },
   { label: "Reach", value: "25,678", change: "+8%" },
   { label: "Engagement", value: "5,432", change: "+5%" },
-];
+]
 export function MainContent() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 800);
-    return () => clearTimeout(t);
-  }, []);
-  if (loading) return <CircularLoading />;
+    const t = setTimeout(() => setLoading(false), 800)
+    return () => clearTimeout(t)
+  }, [])
+  if (loading) return <CircularLoading />
   return (
     <Box>
       <Grid
@@ -195,5 +195,5 @@ export function MainContent() {
         </Box>
       </Flex>
     </Box>
-  );
+  )
 }
