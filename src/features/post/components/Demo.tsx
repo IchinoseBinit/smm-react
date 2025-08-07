@@ -3,11 +3,9 @@ import dayjs, { Dayjs } from "dayjs"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { TimePicker } from "@mui/x-date-pickers/TimePicker"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
 import { useScheduleStore } from "../lib/store/dateTime"
 
 export default function TimePickerValue() {
-  // Set demo date as initial value - tomorrow at 2:30 PM
   const demoDate = dayjs().add(1, "day").hour(14).minute(30)
   const [value, setValue] = React.useState<Dayjs | null>(demoDate)
   const { setIsScheduled } = useScheduleStore()
@@ -16,19 +14,17 @@ export default function TimePickerValue() {
   const currentHour = now.hour()
   const currentMinute = now.minute()
 
-  // Set scheduled state to true initially since we have a demo date
   React.useEffect(() => {
     setIsScheduled(true)
   }, [setIsScheduled])
 
-  // Function to check if selected time is in the past
   const shouldDisableTime = (timeValue: Dayjs, clockType: string) => {
+    console.log("clockType", clockType)
     if (!timeValue) return false
 
     const selectedHour = timeValue.hour()
     const selectedMinute = timeValue.minute()
 
-    // If it's the same day, disable past times
     if (timeValue.isSame(now, "day")) {
       if (selectedHour < currentHour) {
         return true
@@ -48,20 +44,15 @@ export default function TimePickerValue() {
       return
     }
 
-    // Check if the selected time is in the past
     if (
       shouldDisableTime(newValue, "hours") ||
       shouldDisableTime(newValue, "minutes")
     ) {
-      // Don't update if it's a past time
       return
     }
 
     setValue(newValue)
     setIsScheduled(true)
-
-    // You can also update the parent form here if needed
-    // setvalue("scheduled_time", newValue.format(), { shouldValidate: true })
   }
 
   return (

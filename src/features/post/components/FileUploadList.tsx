@@ -11,7 +11,7 @@ import { LuX } from "react-icons/lu"
 import { useVideoPreview } from "../hooks/useVideoPreview"
 import { VideoPreviewDialog } from "./PreviewModel"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import type { FileMeta, FilesPayload } from "../types"
+import type { FileMeta } from "../types"
 import { useUploadStore } from "../lib/store/file"
 import { FaSlidersH } from "react-icons/fa"
 import { Menu, Portal } from "@chakra-ui/react"
@@ -35,8 +35,10 @@ export const FileUploadList = ({
   const { open: isOpen, onClose, previewSrc, handlePreview } = useVideoPreview()
   const [error, setError] = useState("")
   const fileUpload = useFileUploadContext()
-  const { setHasVideos, payload, setPayload } = useUploadStore()
-  const { surfaceType, setSurfaceType } = useContentTypeStore()
+  const { setHasVideos, setPayload } = useUploadStore()
+  const { surfaceType } = useContentTypeStore()
+  console.log("selectedPlatforms", selectedPlatforms)
+  console.log("showStatusMessages", showStatusMessages)
 
   // Simplified aspect ratios - only the most commonly used ones
   let aspectRatios: {
@@ -178,6 +180,7 @@ export const FileUploadList = ({
   const [selectedAspectRatio, setSelectedAspectRatio] =
     useState<string>("original")
   const [loading, setLoading] = useState(false)
+  console.log("loading", loading)
 
   const files = useMemo(
     () => fileUpload.acceptedFiles,
@@ -363,6 +366,7 @@ export const FileUploadList = ({
   const handleVideoPreview = useCallback(
     (file: File) => {
       const currentSrc = getCurrentVideoSrc(file)
+      console.log("currentSrc", currentSrc)
 
       // If we're using a converted video, create a proper File object for the preview
       if (
