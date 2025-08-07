@@ -157,86 +157,94 @@ export default function CreatePostForm() {
   }, [itemArr, setValue]);
 
   const uploadFiles = async () => {
-    const presignedResponse: any = await mutateAsync(payload);
+    console.log("uploadFiles called with payload:", payload)
+    const presignedResponse: any = await mutateAsync(payload)
+    console.log("presigned_post", presignedResponse)
 
     await Promise.all(
       presignedResponse.presigned_posts.map((post: any, i: any) => {
-        const formData = new FormData();
+        const formData = new FormData()
         Object.entries(post.fields).forEach(([key, value]) => {
-          formData.append(key, value as string);
-        });
-        formData.append("file", payload.files[i].file);
+          formData.append(key, value as string)
+        })
+        console.log("payload files", payload.files[i])
+        formData.append("file", payload.files[i].file)
 
-        return axios.post(post.url, formData);
+        return axios.post(post.url, formData)
       })
-    );
+    )
     const urls = presignedResponse.presigned_posts.map(
       (post: any) => post.url + post.fields.key
-    );
+    )
+    console.log("uploaded urls", urls)
 
     const medias = urls.map((url: string, index: number) => ({
       s3_url: encodeURI(url),
       order: index,
-    }));
-    if (medias.length === 0) return false;
-    setValue("medias", medias, { shouldValidate: true });
-    return true;
-  };
+    }))
+    console.log("uploaded urls", medias)
+
+    if (medias.length === 0) return false
+    setValue("medias", medias, { shouldValidate: true })
+    return true
+  }
 
   const onSubmit = async () => {
-    setPostLoading(true);
+    console.log("onsubmit called with:")
+    setPostLoading(true)
 
     try {
       setValue("status", isScheduled ? "scheduled" : "posted", {
         shouldValidate: true,
-      });
+      })
       if (!isScheduled) {
-        setValue("scheduled_time", null, { shouldValidate: true });
+        setValue("scheduled_time", null, { shouldValidate: true })
       }
 
-      const x = await uploadFiles();
+      const x = await uploadFiles()
+      console.log("uploadFiles result", x)
       if (x == false) {
-        console.log(x, "please upload files to server");
-        return;
+        console.log(x, "please upload files to server")
+        return
       }
 
-      const isPhoto = payload.files.every((f) => f.type.startsWith("image/"));
-      setValue("is_photo", isPhoto, { shouldValidate: true });
+      const isPhoto = payload.files.every((f) => f.type.startsWith("image/"))
+      setValue("is_photo", isPhoto, { shouldValidate: true })
 
-      const currentType = useContentTypeStore.getState().surfaceType[0];
-      setValue("surface", currentType, { shouldValidate: true });
+      const currentType = useContentTypeStore.getState().surfaceType[0]
+      setValue("surface", currentType, { shouldValidate: true })
 
-      const latestData = getValues();
+      const latestData = getValues()
 
       if (
         !selectedPlatformsType.includes("YOUTUBE") &&
         !selectedPlatformsType.includes("TIKTOK") &&
         !selectedPlatformsType.includes("INSTAGRAM")
       ) {
-        delete latestData.title;
+        delete latestData.title
       }
       if (latestData.scheduled_time) {
         latestData.scheduled_time = new Date(
           latestData.scheduled_time
-        ).toISOString();
+        ).toISOString()
       }
 
       await mutateCreatePost(latestData).then((res) => {
         if (res?.success) {
           openDialog({
             status: isScheduled ? "scheduled" : "posted",
-          });
+          })
         }
-      });
-      reset(defaultValues);
-      resetSurfaceType();
-      setIsScheduled(false);
-      setClearFiles(true);
-      setTimeout(() => setClearSelectedAcc(true), 0);
+      })
+      reset(defaultValues)
+      resetSurfaceType()
+      setIsScheduled(false)
+      setClearFiles(true)
+      setTimeout(() => setClearSelectedAcc(true), 0)
     } finally {
-      setPostLoading(false);
+      setPostLoading(false)
     }
-  };
+  }
 
   if (isLoading) return <CircularLoading />;
 

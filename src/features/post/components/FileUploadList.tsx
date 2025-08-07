@@ -18,125 +18,7 @@ import { Menu, Portal } from "@chakra-ui/react"
 import { FFmpeg } from "@ffmpeg/ffmpeg"
 import { fetchFile } from "@ffmpeg/util"
 import { toaster } from "@/components/ui/toaster"
-
-// Simplified aspect ratios - only the most commonly used ones
-const aspectRatios: {
-  [key: string]: {
-    width: number
-    height: number
-    description: string
-    icon: string
-  }
-} = {
-  original: { width: 0, height: 0, description: "Keep original", icon: "📹" },
-
-  "9:16": {
-    width: 1080,
-    height: 1920,
-    description: "TikTok/Stories",
-    icon: "📱",
-  },
-  "1:1": {
-    width: 1080,
-    height: 1080,
-    description: "Instagram Square",
-    icon: "⏹️",
-  },
-}
-
-let ffmpeg: FFmpeg | null = null
-
-async function transcodeToSingleAspectRatio(
-  file: File,
-  aspectRatio: string
-): Promise<string> {
-  if (!ffmpeg) {
-    ffmpeg = new FFmpeg()
-    await ffmpeg.load()
-  }
-
-  const { width, height } = aspectRatios[aspectRatio]
-  const randomId = Date.now().toString(36) // Simpler ID generation
-  const inputName = `input_${randomId}.mp4`
-  const outputName = `output_${aspectRatio}_${randomId}.mp4`
-
-  try {
-    await ffmpeg.writeFile(inputName, await fetchFile(file))
-
-    console.log(`Starting transcoding to ${aspectRatio} (${width}x${height})`)
-
-    const baseArgs = ["-i", inputName]
-
-    if (aspectRatio === "9:16") {
-      await ffmpeg.exec([
-        ...baseArgs,
-        "-vf",
-        `scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black`,
-        "-c:v",
-        "libx264",
-        "-profile:v",
-        "high",
-        "-level",
-        "4.1",
-        "-crf",
-        "25",
-        "-preset",
-        "medium",
-        "-c:a",
-        "aac",
-        "-b:a",
-        "128k",
-        "-movflags",
-        "+faststart",
-        "-pix_fmt",
-        "yuv420p",
-        "-r",
-        "30", // Force 30fps for TikTok
-        "-y",
-        outputName,
-      ])
-    } else {
-      await ffmpeg.exec([
-        ...baseArgs,
-        "-vf",
-        `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:black`,
-        "-c:v",
-        "libx264",
-        "-crf",
-        "28",
-        "-preset",
-        "fast",
-        "-c:a",
-        "copy",
-        "-threads",
-        "0",
-        "-movflags",
-        "+faststart",
-        "-y",
-        outputName,
-      ])
-    }
-
-    console.log(`Transcoding completed for ${aspectRatio}`)
-
-    const data = await ffmpeg.readFile(outputName)
-    const blob = new Blob([data], { type: "video/mp4" })
-    const url = URL.createObjectURL(blob)
-
-    await Promise.all([
-      ffmpeg.deleteFile(outputName),
-      ffmpeg.deleteFile(inputName),
-    ])
-
-    return url
-  } catch (error) {
-    await Promise.allSettled([
-      ffmpeg.deleteFile(inputName),
-      ffmpeg.deleteFile(outputName),
-    ])
-    throw error
-  }
-}
+import { useContentTypeStore } from "../lib/store/sufaceType"
 
 export const FileUploadList = ({
   clearFiles,
@@ -154,6 +36,143 @@ export const FileUploadList = ({
   const [error, setError] = useState("")
   const fileUpload = useFileUploadContext()
   const { setHasVideos, payload, setPayload } = useUploadStore()
+  const { surfaceType, setSurfaceType } = useContentTypeStore()
+
+  // Simplified aspect ratios - only the most commonly used ones
+  let aspectRatios: {
+    [key: string]: {
+      width: number
+      height: number
+      description: string
+      icon: string
+    }
+  }
+
+  if (surfaceType[0] === "POST") {
+    aspectRatios = {
+      original: {
+        width: 0,
+        height: 0,
+        description: "Keep original",
+        icon: "📹",
+      },
+      "1:1": {
+        width: 1080,
+        height: 1080,
+        description: "Instagram Square",
+        icon: "⏹️",
+      },
+    }
+  } else {
+    aspectRatios = {
+      original: {
+        width: 0,
+        height: 0,
+        description: "Keep original",
+        icon: "📹",
+      },
+      "9:16": {
+        width: 1080,
+        height: 1920,
+        description: "TikTok/Stories",
+        icon: "📱",
+      },
+    }
+  }
+
+  let ffmpeg: FFmpeg | null = null
+
+  async function transcodeToSingleAspectRatio(
+    file: File,
+    aspectRatio: string
+  ): Promise<string> {
+    if (!ffmpeg) {
+      ffmpeg = new FFmpeg()
+      await ffmpeg.load()
+    }
+
+    const { width, height } = aspectRatios[aspectRatio]
+    const randomId = Date.now().toString(36) // Simpler ID generation
+    const inputName = `input_${randomId}.mp4`
+    const outputName = `output_${aspectRatio}_${randomId}.mp4`
+
+    try {
+      await ffmpeg.writeFile(inputName, await fetchFile(file))
+
+      console.log(`Starting transcoding to ${aspectRatio} (${width}x${height})`)
+
+      const baseArgs = ["-i", inputName]
+
+      if (aspectRatio === "9:16") {
+        await ffmpeg.exec([
+          ...baseArgs,
+          "-vf",
+          `scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black`,
+          "-c:v",
+          "libx264",
+          "-profile:v",
+          "high",
+          "-level",
+          "4.1",
+          "-crf",
+          "25",
+          "-preset",
+          "medium",
+          "-c:a",
+          "aac",
+          "-b:a",
+          "128k",
+          "-movflags",
+          "+faststart",
+          "-pix_fmt",
+          "yuv420p",
+          "-r",
+          "30", // Force 30fps for TikTok
+          "-y",
+          outputName,
+        ])
+      } else {
+        await ffmpeg.exec([
+          ...baseArgs,
+          "-vf",
+          `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:black`,
+          "-c:v",
+          "libx264",
+          "-crf",
+          "28",
+          "-preset",
+          "fast",
+          "-c:a",
+          "copy",
+          "-threads",
+          "0",
+          "-movflags",
+          "+faststart",
+          "-y",
+          outputName,
+        ])
+      }
+
+      console.log(`Transcoding completed for ${aspectRatio}`)
+
+      const data = await ffmpeg.readFile(outputName)
+      const blob = new Blob([data], { type: "video/mp4" })
+      const url = URL.createObjectURL(blob)
+
+      await Promise.all([
+        ffmpeg.deleteFile(outputName),
+        ffmpeg.deleteFile(inputName),
+      ])
+
+      return url
+    } catch (error) {
+      await Promise.allSettled([
+        ffmpeg.deleteFile(inputName),
+        ffmpeg.deleteFile(outputName),
+      ])
+      throw error
+    }
+  }
 
   const [videoUrls, setVideoUrls] = useState<Record<string, string>>({})
   const [selectedAspectRatio, setSelectedAspectRatio] =
@@ -172,6 +191,9 @@ export const FileUploadList = ({
     () => files.some((file) => file.type.startsWith("video/")),
     [files]
   )
+  console.log("which type of file ", files)
+
+  console.log("Current sufaceType", surfaceType)
 
   const handleDeleteFile = useCallback(
     (fileToDelete: File) => {
@@ -337,6 +359,39 @@ export const FileUploadList = ({
     [selectedAspectRatio, videoUrls]
   )
 
+  // Enhanced preview handler that works with the correct video source
+  const handleVideoPreview = useCallback(
+    (file: File) => {
+      const currentSrc = getCurrentVideoSrc(file)
+
+      // If we're using a converted video, create a proper File object for the preview
+      if (
+        selectedAspectRatio !== "original" &&
+        videoUrls[selectedAspectRatio]
+      ) {
+        fetch(videoUrls[selectedAspectRatio])
+          .then((res) => res.blob())
+          .then((blob) => {
+            const transcodedFile = new File(
+              [blob],
+              `${file.name}_${selectedAspectRatio}.mp4`,
+              { type: "video/mp4" }
+            )
+            handlePreview(transcodedFile)
+          })
+          .catch((error) => {
+            console.error("Failed to create preview file:", error)
+            // Fallback to original file
+            handlePreview(file)
+          })
+      } else {
+        // Use original file for preview
+        handlePreview(file)
+      }
+    },
+    [selectedAspectRatio, videoUrls, getCurrentVideoSrc, handlePreview]
+  )
+
   return (
     <Box minW="60rem">
       {error && (
@@ -358,8 +413,8 @@ export const FileUploadList = ({
               <Button
                 variant="outline"
                 size="sm"
-                loading={loading}
-                loadingText="Converting..."
+                // loading={loading}
+                // loadingText="Converting..."
               >
                 <FaSlidersH />
                 {selectedAspectRatio && (
@@ -490,27 +545,7 @@ export const FileUploadList = ({
                   _hover={isMobile ? {} : { opacity: 1, cursor: "pointer" }}
                   borderRadius={8}
                   transition="opacity 0.2s"
-                  onClick={() => {
-                    if (
-                      selectedAspectRatio !== "original" &&
-                      videoUrls[selectedAspectRatio]
-                    ) {
-                      fetch(videoUrls[selectedAspectRatio])
-                        .then((res) => res.blob())
-                        .then((blob) => {
-                          const transcodedFile = new File(
-                            [blob],
-                            `${file.name}_${selectedAspectRatio}.mp4`,
-                            {
-                              type: "video/mp4",
-                            }
-                          )
-                          handlePreview(transcodedFile)
-                        })
-                    } else {
-                      handlePreview(file)
-                    }
-                  }}
+                  onClick={() => handleVideoPreview(file)}
                 >
                   <Button size="sm" colorScheme="teal">
                     Preview
