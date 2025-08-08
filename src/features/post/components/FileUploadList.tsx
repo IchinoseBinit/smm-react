@@ -347,6 +347,9 @@ export const FileUploadList = forwardRef<
       [currentVideoFile, videoUrls, surfaceType]
     )
 
+    console.log("handle Aspect ratio", handleAspectRatioClick)
+    console.log("hasvideo", hasVideo)
+
     useEffect(() => {
       if (clearFiles) {
         fileUpload.clearFiles()
