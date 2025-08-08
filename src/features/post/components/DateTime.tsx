@@ -13,14 +13,20 @@ import {
 import DatePicker from "react-datepicker"
 import { FaCalendarAlt, FaClock, FaCheckCircle } from "react-icons/fa"
 import "react-datepicker/dist/react-datepicker.css"
-import { format, addHours, isAfter } from "date-fns"
+import { format, addMinutes, isAfter } from "date-fns"
 import { useScheduleStore } from "../lib/store/dateTime"
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { TimePicker } from "@mui/x-date-pickers/TimePicker"
 
-export default function DateTime({ setvalue, scheduled }: { setvalue: any; scheduled: any }) {
+export default function DateTime({
+  setvalue,
+  scheduled,
+}: {
+  setvalue: any
+  scheduled: any
+}) {
   const { setIsScheduled, isScheduled } = useScheduleStore()
   const [selectedDate, setSelectedDate] = useState<Date | null>(
     scheduled ? new Date(scheduled) : null
@@ -29,12 +35,11 @@ export default function DateTime({ setvalue, scheduled }: { setvalue: any; sched
 
   // Memoize the current time and minimum allowed time to prevent infinite re-renders
   const now = useMemo(() => new Date(), [])
-  const minAllowedDateTime = useMemo(() => addHours(now, 1), [now])
+  const minAllowedDateTime = useMemo(() => addMinutes(now, 5), [now])
 
   // Combine date and time when both are selected
   useEffect(() => {
     if (selectedDate && selectedTime) {
-      // Get the dayjs time value and extract hours/minutes
       const timeValue = selectedTime
       const hours = timeValue.hour()
       const minutes = timeValue.minute()
@@ -193,8 +198,8 @@ export default function DateTime({ setvalue, scheduled }: { setvalue: any; sched
             </Text>
           </HStack>
           <Text fontSize="sm" color="fg.MUTED">
-            Choose when you want your post to be published (must be at least 1
-            hour in the future)
+            Choose when you want your post to be published (must be at least 5
+            min in the future)
           </Text>
         </Box>
 
@@ -365,7 +370,7 @@ export default function DateTime({ setvalue, scheduled }: { setvalue: any; sched
             <Icon as={FaClock} color="blue.500" boxSize={4} />
             <Text fontSize="sm" color="blue.700" fontWeight="medium">
               <strong>Scheduling Rules:</strong> You can schedule for today if
-              it's at least 1 hour from now (
+              it's at least 5 min from now (
               {format(minAllowedDateTime, "h:mm a")}), or any time on future
               dates.
             </Text>
