@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react"
 import {
   Box,
   Text,
@@ -16,75 +16,122 @@ import {
   Accordion,
   Span,
   Flex,
-} from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
-import { LuUpload } from "react-icons/lu";
-import { FileUploadList } from "./FileUploadList";
-import DateTime from "./DateTime";
-import { useAuthUtils } from "@/hooks/useAuthUtils";
-import { useAllConnAccounts } from "@/hooks/useConnectedAccounts";
-import { CircularLoading } from "@/lib/loadings";
-import { useCreatePost } from "../hooks/query/usePost";
-import useFileUpload from "../hooks/query/useFileUpload";
-import { useUploadStore } from "../lib/store/file";
-import axios from "axios";
-import { useScheduleStore } from "../lib/store/dateTime";
-import { useSuccessDialogStore } from "../lib/store/successDialog";
-import { SuccessDialog } from "./SuccessCreatePost";
+} from "@chakra-ui/react"
+import { useForm } from "react-hook-form"
+import { LuUpload } from "react-icons/lu"
+import { FileUploadList } from "./FileUploadList"
+import DateTime from "./DateTime"
+import { useAuthUtils } from "@/hooks/useAuthUtils"
+import { useAllConnAccounts } from "@/hooks/useConnectedAccounts"
+import { CircularLoading } from "@/lib/loadings"
+import { useCreatePost } from "../hooks/query/usePost"
+import useFileUpload from "../hooks/query/useFileUpload"
+import { useUploadStore } from "../lib/store/file"
+import axios from "axios"
+import { useScheduleStore } from "../lib/store/dateTime"
+import { useSuccessDialogStore } from "../lib/store/successDialog"
+import { SuccessDialog } from "./SuccessCreatePost"
 import {
   FacebookPostSchema,
   TikTokMediaPostSchema,
   YouTubeVideoSchema,
-} from "@/components/SocialAcc/zod";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+} from "@/components/SocialAcc/zod"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
   useClearSelectedAccStore,
   useSelectedStore,
-} from "../lib/store/selectedAcc";
-import { PostConnectedAccsSection } from "./ConnectedAccs";
-import { accountConfigs, iconMap } from "../lib/accounts";
-import { SelectSurface } from "./selectSurface";
-import { useContentTypeStore } from "../lib/store/sufaceType";
+} from "../lib/store/selectedAcc"
+import { toaster } from "@/components/ui/toaster"
+
+import { PostConnectedAccsSection } from "./ConnectedAccs"
+import { accountConfigs, iconMap } from "../lib/accounts"
+import { SelectSurface } from "./selectSurface"
+import { useContentTypeStore } from "../lib/store/sufaceType"
 
 export default function CreatePostForm() {
-  const { userId } = useAuthUtils();
-  const { data, isLoading } = useAllConnAccounts(userId);
-  const isScheduled = useScheduleStore((s) => s.isScheduled);
-  const setIsScheduled = useScheduleStore((s) => s.setIsScheduled);
-  const { setClearSelectedAcc } = useClearSelectedAccStore();
-  const [itemArr, setItemArr] = useState<any[]>([]);
-  const [clearFiles, setClearFiles] = useState(false);
-  const [postLoading, setPostLoading] = useState(false);
-  const { mutateAsync: mutateCreatePost } = useCreatePost();
-  const { openDialog } = useSuccessDialogStore();
+  const { userId } = useAuthUtils()
+  const { data, isLoading } = useAllConnAccounts(userId)
+  const isScheduled = useScheduleStore((s) => s.isScheduled)
+  const setIsScheduled = useScheduleStore((s) => s.setIsScheduled)
+  const { setClearSelectedAcc } = useClearSelectedAccStore()
+  const [itemArr, setItemArr] = useState<any[]>([])
+  const [clearFiles, setClearFiles] = useState(false)
+  const [postLoading, setPostLoading] = useState(false)
+  const { mutateAsync: mutateCreatePost } = useCreatePost()
+  const { openDialog } = useSuccessDialogStore()
 
-  const { payload, hasVideos } = useUploadStore();
-  const { mutateAsync } = useFileUpload();
-  const { selectedIds } = useSelectedStore();
-  const { resetSurfaceType } = useContentTypeStore();
-  const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>([]);
+  // Add the missing ref declaration
+  const fileUploadListRef = useRef<any>(null)
+
+  const { payload, hasVideos } = useUploadStore()
+  const { mutateAsync } = useFileUpload()
+  const { selectedIds } = useSelectedStore()
+  const { resetSurfaceType } = useContentTypeStore()
+  const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>(
+    []
+  )
 
   const selectedPlatforms = useMemo(
     () => itemArr.map((item) => item.social_account_id),
     [itemArr]
-  );
+  )
+
+  const hasConnectedAccounts = data && data.length > 0
+  const hasSelectedAccounts = selectedPlatforms.length > 0
+
+  console.log("selected platforms", selectedPlatforms)
 
   // Check what files are currently uploaded
-  const uploadedFiles = payload?.files || [];
-  const hasImages = uploadedFiles.some((file) => file.type.startsWith("image/"));
-  const hasVideo = uploadedFiles.some((file) => file.type.startsWith("video/"));
+  const uploadedFiles = payload?.files || []
+  const hasImages = uploadedFiles.some((file) => file.type.startsWith("image/"))
+  const hasVideo = uploadedFiles.some((file) => file.type.startsWith("video/"))
+
+  console.log("isScheduled", isScheduled)
+
+  // Block ALL uploads if no accounts are connected or selected
+  const canUploadAnyContent = hasConnectedAccounts && hasSelectedAccounts
 
   // Determine what file types to accept
   const acceptedFileTypes = useMemo(() => {
+    // Block all uploads if no accounts selected
+    if (!canUploadAnyContent) {
+      return "" // Empty string blocks all file types
+    }
+
     if (hasImages) {
-      return "image/*"; // Only allow images if images are already uploaded
+      return "image/*" // Only allow images if images are already uploaded
     }
     if (hasVideo) {
-      return ""; // Don't allow any new files if video is uploaded (only 1 video allowed)
+      return "" // Don't allow any new files if video is uploaded (only 1 video allowed)
     }
-    return "image/*,video/*"; // Allow both if nothing is uploaded
-  }, [hasImages, hasVideo]);
+    return "image/*,video/*" // Allow both if nothing is uploaded and accounts are selected
+  }, [hasImages, hasVideo, canUploadAnyContent])
+
+  // Handle file drop when restrictions are in place
+  const handleRestrictedUpload = useCallback(() => {
+    if (!hasConnectedAccounts) {
+      toaster.error({
+        title: "No Connected Accounts",
+        description:
+          "Please connect at least one social media account to upload content.",
+        duration: 2000,
+        closable: true,
+      })
+      return
+    }
+
+    if (!hasSelectedAccounts) {
+      toaster.error({
+        title: "No Accounts Selected",
+        description:
+          "Please select at least one account below to upload content.",
+        duration: 2000,
+        closable: true,
+      })
+      return
+    }
+  }, [hasConnectedAccounts, hasSelectedAccounts])
 
   const formSchema = useMemo(() => {
     const selectedTypes = Array.from(
@@ -93,15 +140,15 @@ export default function CreatePostForm() {
           .filter((item) => selectedIds.includes(item.social_account_id))
           .map((item) => item.accountType)
       )
-    );
-    setSelectedPlatformsType(selectedTypes);
+    )
+    setSelectedPlatformsType(selectedTypes)
 
-    if (selectedTypes.includes("YOUTUBE")) return YouTubeVideoSchema;
-    if (selectedTypes.includes("TIKTOK")) return TikTokMediaPostSchema;
-    if (selectedTypes.includes("FACEBOOK")) return FacebookPostSchema;
-    if (selectedTypes.includes("INSTAGRAM")) return FacebookPostSchema;
-    return z.any();
-  }, [itemArr, selectedIds]);
+    if (selectedTypes.includes("YOUTUBE")) return YouTubeVideoSchema
+    if (selectedTypes.includes("TIKTOK")) return TikTokMediaPostSchema
+    if (selectedTypes.includes("FACEBOOK")) return FacebookPostSchema
+    if (selectedTypes.includes("INSTAGRAM")) return FacebookPostSchema
+    return z.any()
+  }, [itemArr, selectedIds])
 
   const defaultValues = {
     title: "",
@@ -117,7 +164,7 @@ export default function CreatePostForm() {
         social_account_id: null,
       },
     ],
-  };
+  }
 
   const {
     register,
@@ -131,10 +178,10 @@ export default function CreatePostForm() {
     mode: "onChange",
     defaultValues,
     resolver: zodResolver(formSchema),
-  });
+  })
 
-  const content = watch("description", "");
-  const scheduledTime = watch("scheduled_time");
+  const content = watch("description", "")
+  const scheduledTime = watch("scheduled_time")
 
   const suggestions = [
     "#TechTrends",
@@ -142,24 +189,25 @@ export default function CreatePostForm() {
     "#FutureTech",
     "#DigitalWorld",
     "#TechNews",
-  ];
+  ]
 
   const addTag = useCallback(
     (tag: string) => {
-      const value = content.length ? `${content} ${tag}` : tag;
-      setValue("description", value, { shouldValidate: true });
+      const value = content.length ? `${content} ${tag}` : tag
+      setValue("description", value, { shouldValidate: true })
     },
     [content, setValue]
-  );
+  )
 
   useEffect(() => {
-    setValue("platform_statuses", itemArr, { shouldValidate: true });
-  }, [itemArr, setValue]);
+    setValue("platform_statuses", itemArr, { shouldValidate: true })
+  }, [itemArr, setValue])
 
   const uploadFiles = async () => {
     console.log("uploadFiles called with payload:", payload)
     const presignedResponse: any = await mutateAsync(payload)
     console.log("presigned_post", presignedResponse)
+    console.log("presigned_post. 1", presignedResponse.presigned_posts)
 
     await Promise.all(
       presignedResponse.presigned_posts.map((post: any, i: any) => {
@@ -190,6 +238,18 @@ export default function CreatePostForm() {
   }
 
   const onSubmit = async () => {
+    // Check if user has selected accounts before submitting
+    if (!hasSelectedAccounts) {
+      toaster.error({
+        title: "No Accounts Selected",
+        description:
+          "Please select at least one account below to upload content.",
+        duration: 2000,
+        closable: true,
+      })
+      return
+    }
+
     console.log("onsubmit called with:")
     setPostLoading(true)
 
@@ -197,8 +257,29 @@ export default function CreatePostForm() {
       setValue("status", isScheduled ? "scheduled" : "posted", {
         shouldValidate: true,
       })
+
       if (!isScheduled) {
         setValue("scheduled_time", null, { shouldValidate: true })
+      } else {
+        // 🎯 TRIGGER AUTO-CONVERSION WHEN SCHEDULING
+        if (hasVideo && fileUploadListRef.current?.triggerAutoConversion) {
+          console.log("🔄 Triggering auto-conversion for scheduled post...")
+
+          try {
+            const convertedUrl =
+              await fileUploadListRef.current.triggerAutoConversion()
+            if (convertedUrl) {
+              console.log("✅ Video auto-converted successfully for scheduling")
+            } else {
+              console.log(
+                "⚠️ Auto-conversion failed, proceeding with original video"
+              )
+            }
+          } catch (error) {
+            console.error("❌ Auto-conversion error:", error)
+            // Continue with original video if conversion fails
+          }
+        }
       }
 
       const x = await uploadFiles()
@@ -223,6 +304,7 @@ export default function CreatePostForm() {
       ) {
         delete latestData.title
       }
+
       if (latestData.scheduled_time) {
         latestData.scheduled_time = new Date(
           latestData.scheduled_time
@@ -236,6 +318,7 @@ export default function CreatePostForm() {
           })
         }
       })
+
       reset(defaultValues)
       resetSurfaceType()
       setIsScheduled(false)
@@ -246,7 +329,7 @@ export default function CreatePostForm() {
     }
   }
 
-  if (isLoading) return <CircularLoading />;
+  if (isLoading) return <CircularLoading />
 
   return (
     <Box
@@ -277,6 +360,7 @@ export default function CreatePostForm() {
             ))}
           </SimpleGrid>
         </Box>
+
         {(selectedPlatformsType.includes("YOUTUBE") ||
           selectedPlatformsType.includes("TIKTOK")) && (
           <Field.Root required>
@@ -295,6 +379,7 @@ export default function CreatePostForm() {
             />
           </Field.Root>
         )}
+
         <Field.Root required>
           <Field.Label>
             <Text fontSize={16} mb={2} fontWeight="medium" color="fg.DEFAULT">
@@ -312,7 +397,7 @@ export default function CreatePostForm() {
           />
         </Field.Root>
 
-        {/* Simplified Media Upload Section */}
+        {/* Media Upload Section with Proper Restrictions */}
         <Box p={2} spaceY={6}>
           <Heading fontSize="fontSizes.4xl">Media</Heading>
 
@@ -321,27 +406,47 @@ export default function CreatePostForm() {
             alignItems="stretch"
             maxFiles={5}
             accept={acceptedFileTypes}
-            disabled={hasVideo} // Disable entirely if video is uploaded
+            disabled={hasVideo || !canUploadAnyContent} // Disable if video uploaded OR no accounts selected
+            onFileReject={handleRestrictedUpload} // Show toast when files are rejected
           >
             <FileUpload.HiddenInput />
             {hasVideos === false && !hasVideo && (
-              <FileUpload.Dropzone>
-                <Icon size="md" color="fg.muted">
+              <FileUpload.Dropzone
+                onClick={() => {
+                  // Show toast when user clicks on disabled dropzone
+                  if (!canUploadAnyContent) {
+                    handleRestrictedUpload()
+                  }
+                }}
+              >
+                <Icon
+                  size="md"
+                  color={canUploadAnyContent ? "fg.muted" : "gray.400"}
+                >
                   <LuUpload />
                 </Icon>
                 <FileUpload.DropzoneContent>
-                  <Box>Drag and drop files here</Box>
-                  <Box color="fg.muted">
-                    {hasImages ? ".png, .jpg only" : ".png, .jpg, .mp4"}
+                  <Box color={canUploadAnyContent ? "fg.default" : "gray.400"}>
+                    {canUploadAnyContent
+                      ? "Drag and drop files here"
+                      : "Select accounts to upload content"}
+                  </Box>
+                  <Box color={canUploadAnyContent ? "fg.muted" : "gray.400"}>
+                    {canUploadAnyContent
+                      ? hasImages
+                        ? ".png, .jpg only"
+                        : ".png, .jpg, .mp4"
+                      : "Connect and select accounts first"}
                   </Box>
                 </FileUpload.DropzoneContent>
               </FileUpload.Dropzone>
             )}
             <FileUploadList
+              ref={fileUploadListRef} // Now properly declared ref
               clearFiles={clearFiles}
               onClearComplete={() => setClearFiles(false)}
               selectedPlatforms={selectedPlatformsType}
-              showStatusMessages={true} // New prop to show status messages
+              showStatusMessages={true}
             />
           </FileUpload.Root>
         </Box>
@@ -399,7 +504,6 @@ export default function CreatePostForm() {
               <Accordion.ItemBody>
                 <VStack spaceY={4} align="stretch">
                   <DateTime
-                    register={register}
                     setvalue={setValue}
                     scheduled={scheduledTime}
                   />
@@ -416,15 +520,15 @@ export default function CreatePostForm() {
             color="button.DEFAULT"
             _hover={{ bg: "button.HOVER" }}
             _active={{ bg: "button.ACTIVE" }}
-            disabled={!isValid}
+            disabled={!isValid || !hasSelectedAccounts} // Disable submit if no accounts selected
             loading={postLoading}
             loadingText={isScheduled ? "Scheduling..." : "Posting..."}
           >
-            {isScheduled ? "Schedule Post" : "Post"}
+            {isScheduled ? "Schedule Post" : "Post Now"}
           </Button>
         </Flex>
       </VStack>
       <SuccessDialog />
     </Box>
-  );
+  )
 }
