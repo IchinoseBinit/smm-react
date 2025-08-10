@@ -6,12 +6,12 @@ import {
   HStack,
   Tag,
   VStack,
-  Field,
+  // Field,
   Textarea,
   FileUpload,
   Icon,
   Heading,
-  Input,
+  // Input,
   SimpleGrid,
   // Accordion,
   // Span,
@@ -171,7 +171,7 @@ export default function CreatePostForm() {
   }
 
   const {
-    register,
+    // register,
     handleSubmit,
     watch,
     reset,
