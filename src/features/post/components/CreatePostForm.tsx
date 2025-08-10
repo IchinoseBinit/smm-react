@@ -13,14 +13,18 @@ import {
   Heading,
   Input,
   SimpleGrid,
-  Accordion,
-  Span,
+  // Accordion,
+  // Span,
   Flex,
 } from "@chakra-ui/react"
+
 import { useForm } from "react-hook-form"
 import { LuUpload } from "react-icons/lu"
 import { FileUploadList } from "./FileUploadList"
-import DateTime from "./DateTime"
+import { FiSmile, FiHash } from "react-icons/fi"
+import { Sparkles } from "lucide-react"
+
+// import DateTime from "./DateTime"
 import { useAuthUtils } from "@/hooks/useAuthUtils"
 import { useAllConnAccounts } from "@/hooks/useConnectedAccounts"
 import { CircularLoading } from "@/lib/loadings"
@@ -181,7 +185,7 @@ export default function CreatePostForm() {
   })
 
   const content = watch("description", "")
-  const scheduledTime = watch("scheduled_time")
+  // const scheduledTime = watch("scheduled_time")
 
   const suggestions = [
     "#TechTrends",
@@ -329,6 +333,23 @@ export default function CreatePostForm() {
     }
   }
 
+  const [isSchedule, setIsSchedule] = useState(false) // false = Post Now, true = Schedule Post
+
+  // const handleEmojiClick = () => {
+  //   // Add emoji functionality here
+  //   console.log("Emoji clicked")
+  // }
+
+  // const handleHashtagClick = () => {
+  //   // Add hashtag suggestion functionality here
+  //   console.log("Hashtag Suggestion clicked")
+  // }
+
+  // const handleAIGeneratorClick = () => {
+  //   // Add AI caption generator functionality here
+  //   console.log("AI Caption Generator clicked")
+  // }
+
   if (isLoading) return <CircularLoading />
 
   return (
@@ -361,42 +382,6 @@ export default function CreatePostForm() {
           </SimpleGrid>
         </Box>
 
-        {(selectedPlatformsType.includes("YOUTUBE") ||
-          selectedPlatformsType.includes("TIKTOK")) && (
-          <Field.Root required>
-            <Field.Label>
-              <Text fontSize={16} mb={2} fontWeight="medium" color="fg.DEFAULT">
-                Title
-              </Text>
-            </Field.Label>
-            <Input
-              placeholder="write a title!"
-              {...register("title", { required: true })}
-              maxW="30rem"
-              maxH="5lh"
-              size="xl"
-              variant="subtle"
-            />
-          </Field.Root>
-        )}
-
-        <Field.Root required>
-          <Field.Label>
-            <Text fontSize={16} mb={2} fontWeight="medium" color="fg.DEFAULT">
-              Description
-            </Text>
-          </Field.Label>
-          <Textarea
-            placeholder="write a description"
-            {...register("description", { required: true })}
-            maxW="30rem"
-            maxH="5lh"
-            size="xl"
-            variant="subtle"
-            autoresize
-          />
-        </Field.Root>
-
         {/* Media Upload Section with Proper Restrictions */}
         <Box p={2} spaceY={6}>
           <Heading fontSize="fontSizes.4xl">Media</Heading>
@@ -412,6 +397,9 @@ export default function CreatePostForm() {
             <FileUpload.HiddenInput />
             {hasVideos === false && !hasVideo && (
               <FileUpload.Dropzone
+                border="1px solid"
+                borderColor="blue.100"
+                borderRadius="8px"
                 onClick={() => {
                   // Show toast when user clicks on disabled dropzone
                   if (!canUploadAnyContent) {
@@ -451,9 +439,133 @@ export default function CreatePostForm() {
           </FileUpload.Root>
         </Box>
 
+        {(selectedPlatformsType.includes("YOUTUBE") ||
+          selectedPlatformsType.includes("TIKTOK")) && (
+          <Box maxW="40rem">
+            {/* Label */}
+            <Text fontSize="lg" fontWeight="semibold" mb={2} color="fg.DEFAULT">
+              Title
+            </Text>
+            <Box
+              border="1px solid"
+              borderColor="blue.100"
+              rounded="lg"
+              overflow="hidden"
+            >
+              <Textarea
+                placeholder="Write a caption"
+                border="none"
+                _focus={{
+                  borderColor: "transparent",
+                  boxShadow: "none",
+                  outline: "none",
+                }}
+                _hover={{
+                  borderColor: "transparent",
+                }}
+                p={4}
+                size={"xl"}
+                fontSize="md"
+                _placeholder={{ color: "gray.500" }}
+                resize="none"
+                rounded="lg"
+                overflow="hidden"
+                backgroundColor={"white"}
+              />
+            </Box>
+
+            {/* Footer */}
+          </Box>
+        )}
+
+        {/* <Field.Root required>
+           <Field.Label>
+             <Text fontSize={16} mb={2} fontWeight="medium" color="fg.DEFAULT">
+               Description
+             </Text>
+           </Field.Label>
+           <Textarea
+             placeholder="write a description"
+             {...register("description", { required: true })}
+             maxW="30rem"
+             maxH="5lh"
+             size="xl"
+             variant="subtle"
+             autoresize
+           />
+         </Field.Root> */}
+
+        {/* Desctiption Section Starts from here.  */}
+
+        <Box maxW="40rem">
+          {/* Label */}
+          <Text fontSize="lg" fontWeight="semibold" mb={2} color="fg.DEFAULT">
+            Description
+          </Text>
+
+          {/* Input container */}
+          <Box
+            border="1px solid"
+            borderColor="blue.100"
+            rounded="lg"
+            overflow="hidden"
+          >
+            <Textarea
+              placeholder="Write a caption"
+              border="none" // Remove default border
+              _focus={{
+                borderColor: "transparent",
+                boxShadow: "none",
+                outline: "none", // Remove any outline
+              }}
+              _hover={{
+                borderColor: "transparent", // Remove hover border
+              }}
+              p={4}
+              size={"xl"}
+              fontSize="md"
+              _placeholder={{ color: "gray.500" }}
+              resize="none"
+              rounded="lg"
+              overflow="hidden"
+              backgroundColor={"white"}
+            />
+
+            {/* Footer */}
+            <HStack gap={4} px={4} py={2} borderColor="blue.100">
+              <HStack gap={1} cursor="pointer">
+                <Icon as={FiSmile} color="blue.900" />
+                <Text fontSize="sm" color="blue.900">
+                  Emoji
+                </Text>
+              </HStack>
+
+              {/* Custom vertical divider */}
+              <Box w="1px" h="16px" bg="blue.100" />
+
+              <HStack gap={1} cursor="pointer">
+                <Icon as={FiHash} color="blue.900" />
+                <Text fontSize="sm" color="blue.900">
+                  Hashtag Suggestion
+                </Text>
+              </HStack>
+
+              {/* Custom vertical divider */}
+              <Box w="1px" h="16px" bg="blue.100" />
+
+              <HStack gap={1} cursor="pointer">
+                <Icon as={Sparkles} color="blue.900" />
+                <Text fontSize="sm" color="blue.900">
+                  AI Caption Generator
+                </Text>
+              </HStack>
+            </HStack>
+          </Box>
+        </Box>
         <Box>
-          <Text mb={2} fontWeight="medium" color="fg.DEFAULT">
-            Hashtag Suggestions
+          {/* //hastag suggestion? */}
+          <Text fontSize="lg" fontWeight="semibold" mb={2} color="fg.DEFAULT">
+            Hastags
           </Text>
           <HStack spaceX={2} wrap="wrap">
             {suggestions.map((tag) => (
@@ -473,7 +585,89 @@ export default function CreatePostForm() {
           </HStack>
         </Box>
 
-        <Accordion.Root
+        {/* Shedule wala here  */}
+        <Box w="full" py={8}>
+          <VStack align="flex-start" gap={8} w="full">
+            {/* Header */}
+            <Box w="full">
+              <Text
+                fontSize="lg"
+                fontWeight="semibold"
+                mb={2}
+                color="fg.DEFAULT"
+              >
+                Schedule Setting
+              </Text>
+              <Text
+                fontSize="16px"
+                color="#4a5568"
+                fontWeight="400"
+                lineHeight="1.5"
+              >
+                Choose when you want your post to be published
+              </Text>
+            </Box>
+
+            {/* Radio Options */}
+            <HStack align="flex-start" gap={4} w="full" mt={4}>
+              {/* Post Now */}
+              <HStack
+                gap={4}
+                align="center"
+                cursor="pointer"
+                onClick={() => setIsSchedule(false)}
+              >
+                <Box
+                  w="20px"
+                  h="20px"
+                  border="2px solid"
+                  borderColor={!isSchedule ? "#3182ce" : "#e2e8f0"}
+                  borderRadius="50%"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  bg="white"
+                >
+                  {!isSchedule && (
+                    <Box w="10px" h="10px" bg="#3182ce" borderRadius="50%" />
+                  )}
+                </Box>
+                <Text fontSize="18px" fontWeight="500" color="#1a365d">
+                  Post
+                </Text>
+              </HStack>
+
+              {/* Schedule Post */}
+              <HStack
+                gap={4}
+                align="center"
+                cursor="pointer"
+                onClick={() => setIsSchedule(true)}
+              >
+                <Box
+                  w="20px"
+                  h="20px"
+                  border="2px solid"
+                  borderColor={isSchedule ? "#3182ce" : "#e2e8f0"}
+                  borderRadius="50%"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  bg="white"
+                >
+                  {isSchedule && (
+                    <Box w="10px" h="10px" bg="#3182ce" borderRadius="50%" />
+                  )}
+                </Box>
+                <Text fontSize="18px" fontWeight="500" color="#1a365d">
+                  Schedule
+                </Text>
+              </HStack>
+            </HStack>
+          </VStack>
+        </Box>
+
+        {/* <Accordion.Root
           collapsible
           defaultValue={[]}
           borderBottom="none"
@@ -503,15 +697,12 @@ export default function CreatePostForm() {
             <Accordion.ItemContent ml={3} overflow="visible">
               <Accordion.ItemBody>
                 <VStack spaceY={4} align="stretch">
-                  <DateTime
-                    setvalue={setValue}
-                    scheduled={scheduledTime}
-                  />
+                  <DateTime setvalue={setValue} scheduled={scheduledTime} />
                 </VStack>
               </Accordion.ItemBody>
             </Accordion.ItemContent>
           </Accordion.Item>
-        </Accordion.Root>
+        </Accordion.Root> */}
 
         <Flex justify="end" gap={2}>
           <Button
