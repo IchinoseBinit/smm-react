@@ -6,15 +6,15 @@ import {
   HStack,
   Tag,
   VStack,
-  // Field,
+  Field,
   Textarea,
   FileUpload,
   Icon,
   Heading,
-  // Input,
+  Input,
   SimpleGrid,
-  // Accordion,
-  // Span,
+  Accordion,
+  Span,
   Flex,
 } from "@chakra-ui/react"
 
@@ -24,7 +24,7 @@ import { FileUploadList } from "./FileUploadList"
 import { FiSmile, FiHash } from "react-icons/fi"
 import { Sparkles } from "lucide-react"
 
-// import DateTime from "./DateTime"
+import DateTime from "./DateTime"
 import { useAuthUtils } from "@/hooks/useAuthUtils"
 import { useAllConnAccounts } from "@/hooks/useConnectedAccounts"
 import { CircularLoading } from "@/lib/loadings"
@@ -185,7 +185,7 @@ export default function CreatePostForm() {
   })
 
   const content = watch("description", "")
-  // const scheduledTime = watch("scheduled_time")
+  const scheduledTime = watch("scheduled_time")
 
   const suggestions = [
     "#TechTrends",
@@ -381,7 +381,6 @@ export default function CreatePostForm() {
             ))}
           </SimpleGrid>
         </Box>
-
         {/* Media Upload Section with Proper Restrictions */}
         <Box p={2} spaceY={6}>
           <Heading fontSize="fontSizes.4xl">Media</Heading>
@@ -438,7 +437,6 @@ export default function CreatePostForm() {
             />
           </FileUpload.Root>
         </Box>
-
         {(selectedPlatformsType.includes("YOUTUBE") ||
           selectedPlatformsType.includes("TIKTOK")) && (
           <Box maxW="40rem">
@@ -477,7 +475,6 @@ export default function CreatePostForm() {
             {/* Footer */}
           </Box>
         )}
-
         {/* <Field.Root required>
            <Field.Label>
              <Text fontSize={16} mb={2} fontWeight="medium" color="fg.DEFAULT">
@@ -494,9 +491,7 @@ export default function CreatePostForm() {
              autoresize
            />
          </Field.Root> */}
-
         {/* Desctiption Section Starts from here.  */}
-
         <Box maxW="40rem">
           {/* Label */}
           <Text fontSize="lg" fontWeight="semibold" mb={2} color="fg.DEFAULT">
@@ -584,7 +579,6 @@ export default function CreatePostForm() {
             ))}
           </HStack>
         </Box>
-
         {/* Shedule wala here  */}
         <Box w="full" py={8}>
           <VStack align="flex-start" gap={8} w="full">
@@ -666,16 +660,15 @@ export default function CreatePostForm() {
             </HStack>
           </VStack>
         </Box>
-
-        {/* <Accordion.Root
+        <Accordion.Root
           collapsible
-          defaultValue={[]}
+          value={isSchedule ? ["schedule"] : []} // Control based on isSchedule state
           borderBottom="none"
           textDecoration="none"
           outline="none"
         >
           <Accordion.Item value="schedule" border="none" outline="none">
-            <Accordion.ItemTrigger
+            {/* <Accordion.ItemTrigger
               bg="bg.DIM"
               m={2}
               shadow="md"
@@ -693,7 +686,7 @@ export default function CreatePostForm() {
             >
               <Span flex="1">Schedule Post (Date/Time)</Span>
               <Accordion.ItemIndicator />
-            </Accordion.ItemTrigger>
+            </Accordion.ItemTrigger> */}
             <Accordion.ItemContent ml={3} overflow="visible">
               <Accordion.ItemBody>
                 <VStack spaceY={4} align="stretch">
@@ -702,8 +695,7 @@ export default function CreatePostForm() {
               </Accordion.ItemBody>
             </Accordion.ItemContent>
           </Accordion.Item>
-        </Accordion.Root> */}
-
+        </Accordion.Root>
         <Flex justify="end" gap={2}>
           <Button
             type="submit"

@@ -13,7 +13,7 @@ import {
 import DatePicker from "react-datepicker"
 import { FaCalendarAlt, FaClock, FaCheckCircle } from "react-icons/fa"
 import "react-datepicker/dist/react-datepicker.css"
-import { format, addMinutes, isAfter } from "date-fns"
+import { format, addMinutes, isAfter, isSameDay } from "date-fns"
 import { useScheduleStore } from "../lib/store/dateTime"
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
@@ -33,9 +33,12 @@ export default function DateTime({
   )
   const [selectedTime, setSelectedTime] = useState<any>(null)
 
-  // Memoize the current time and minimum allowed time to prevent infinite re-renders
-  const now = useMemo(() => new Date(), [])
-  const minAllowedDateTime = useMemo(() => addMinutes(now, 5), [now])
+  // Get current time dynamically - not memoized to avoid stale closures
+  const getCurrentTime = useCallback(() => new Date(), [])
+  const getMinAllowedDateTime = useCallback(
+    () => addMinutes(getCurrentTime(), 5),
+    []
+  )
 
   // Combine date and time when both are selected
   useEffect(() => {
@@ -48,19 +51,19 @@ export default function DateTime({
       const combinedDateTime = new Date(selectedDate)
       combinedDateTime.setHours(hours, minutes, 0, 0)
 
+      const now = getCurrentTime()
+      const minAllowed = getMinAllowedDateTime()
+
       console.log(
         "Combined DateTime:",
         format(combinedDateTime, "yyyy-MM-dd HH:mm:ss")
       )
       console.log("Current Time:", format(now, "yyyy-MM-dd HH:mm:ss"))
-      console.log(
-        "Min Required:",
-        format(minAllowedDateTime, "yyyy-MM-dd HH:mm:ss")
-      )
+      console.log("Min Required:", format(minAllowed, "yyyy-MM-dd HH:mm:ss"))
 
-      // Check if combined date-time is at least 1 hour in future
-      if (isAfter(combinedDateTime, minAllowedDateTime)) {
-        console.log("✅ Valid: Date-time is at least 1 hour in future")
+      // Check if combined date-time is at least 5 minutes in future
+      if (isAfter(combinedDateTime, minAllowed)) {
+        console.log("✅ Valid: Date-time is at least 5 minutes in future")
         setvalue(
           "scheduled_time",
           format(combinedDateTime, "yyyy-MM-dd'T'HH:mm:ssxxx"),
@@ -70,7 +73,9 @@ export default function DateTime({
         )
         setIsScheduled(true)
       } else {
-        console.log("❌ Invalid: Date-time must be at least 1 hour in future")
+        console.log(
+          "❌ Invalid: Date-time must be at least 5 minutes in future"
+        )
         setvalue("scheduled_time", null, { shouldValidate: true })
         setIsScheduled(false)
       }
@@ -84,11 +89,11 @@ export default function DateTime({
     selectedTime,
     setvalue,
     setIsScheduled,
-    minAllowedDateTime,
-    now,
+    getCurrentTime,
+    getMinAllowedDateTime,
   ])
 
-  // In DateTime.tsx, modify the useEffect to set scheduling mode when date is selected:
+  // Set scheduling mode when date is selected
   useEffect(() => {
     if (selectedDate) {
       // Set scheduling mode as soon as date is selected
@@ -102,7 +107,9 @@ export default function DateTime({
         const combinedDateTime = new Date(selectedDate)
         combinedDateTime.setHours(hours, minutes, 0, 0)
 
-        if (isAfter(combinedDateTime, minAllowedDateTime)) {
+        const minAllowed = getMinAllowedDateTime()
+
+        if (isAfter(combinedDateTime, minAllowed)) {
           setvalue(
             "scheduled_time",
             format(combinedDateTime, "yyyy-MM-dd'T'HH:mm:ssxxx"),
@@ -126,8 +133,7 @@ export default function DateTime({
     selectedTime,
     setvalue,
     setIsScheduled,
-    minAllowedDateTime,
-    now,
+    getMinAllowedDateTime,
   ])
 
   const handleDateChange = useCallback(
@@ -140,8 +146,11 @@ export default function DateTime({
         return
       }
 
+      const now = getCurrentTime()
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
       // Don't allow past dates
-      if (date < new Date(now.getFullYear(), now.getMonth(), now.getDate())) {
+      if (date < today) {
         console.log("❌ Past date not allowed")
         return
       }
@@ -150,7 +159,7 @@ export default function DateTime({
       // Clear time when date changes
       setSelectedTime(null)
     },
-    [now]
+    [getCurrentTime]
   )
 
   // Memoize the callback to prevent infinite loops
@@ -188,21 +197,12 @@ export default function DateTime({
     []
   )
 
+  const now = getCurrentTime()
+  const minAllowedDateTime = getMinAllowedDateTime()
+
   return (
     <Box>
       <VStack spaceY={6} align="stretch" w="full">
-        <Box>
-          <HStack mb={2} align="center">
-            <Text fontSize="lg" fontWeight="semibold" color="fg.DEFAULT">
-              Schedule Settings
-            </Text>
-          </HStack>
-          <Text fontSize="sm" color="fg.MUTED">
-            Choose when you want your post to be published (must be at least 5
-            min in the future)
-          </Text>
-        </Box>
-
         <Flex direction={{ base: "column", lg: "row" }} gap={4} align="stretch">
           {/* Date Picker */}
           <Field.Root flex="1">
@@ -226,10 +226,14 @@ export default function DateTime({
                 showTimeInput={false}
                 customInput={<Input {...inputStyles} />}
                 minDate={now} // Prevent past dates
-                filterDate={(date) =>
-                  date >=
-                  new Date(now.getFullYear(), now.getMonth(), now.getDate())
-                }
+                filterDate={(date) => {
+                  const today = new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    now.getDate()
+                  )
+                  return date >= today
+                }}
                 popperProps={{
                   strategy: "fixed",
                 }}
@@ -275,7 +279,8 @@ export default function DateTime({
               <EnhancedDemo
                 selectedDate={selectedDate}
                 onTimeChange={handleTimeFromDemo}
-                minAllowedDateTime={minAllowedDateTime}
+                getCurrentTime={getCurrentTime}
+                getMinAllowedDateTime={getMinAllowedDateTime}
               />
             </Box>
           </Field.Root>
@@ -370,7 +375,7 @@ export default function DateTime({
             <Icon as={FaClock} color="blue.500" boxSize={4} />
             <Text fontSize="sm" color="blue.700" fontWeight="medium">
               <strong>Scheduling Rules:</strong> You can schedule for today if
-              it's at least 5 min from now (
+              it's at least 5 minutes from now (
               {format(minAllowedDateTime, "h:mm a")}), or any time on future
               dates.
             </Text>
@@ -385,44 +390,45 @@ export default function DateTime({
 const EnhancedDemo = React.memo(function EnhancedDemo({
   selectedDate,
   onTimeChange,
-  minAllowedDateTime,
+  getCurrentTime,
+  getMinAllowedDateTime,
 }: {
   selectedDate: Date | null
   onTimeChange: (time: any) => void
-  minAllowedDateTime: Date
+  getCurrentTime: () => Date
+  getMinAllowedDateTime: () => Date
 }) {
   const [value, setValue] = useState<any>(null)
+  const [isInvalidTime, setIsInvalidTime] = useState(false)
 
   // Clear time when date changes
   useEffect(() => {
     setValue(null)
+    setIsInvalidTime(false)
     if (onTimeChange) {
       onTimeChange(null)
     }
-  }, [selectedDate]) // Only depend on selectedDate
+  }, [selectedDate, onTimeChange])
 
-  const shouldDisableTime = useCallback(
+  const validateTime = useCallback(
     (timeValue: any) => {
-      if (!timeValue || !selectedDate) return false
+      if (!timeValue || !selectedDate) return true
 
-      // Create combined date-time for validation
-      const combinedDateTime = new Date(selectedDate)
-      combinedDateTime.setHours(timeValue.hour(), timeValue.minute(), 0, 0)
+      const now = getCurrentTime()
 
-      // Check if combined date-time is at least 1 hour in future
-      const isValid = isAfter(combinedDateTime, minAllowedDateTime)
+      // For today, validate the 5-minute gap
+      if (isSameDay(selectedDate, now)) {
+        const combinedDateTime = new Date(selectedDate)
+        combinedDateTime.setHours(timeValue.hour(), timeValue.minute(), 0, 0)
+        const minAllowedDateTime = getMinAllowedDateTime()
 
-      console.log("Time validation:", {
-        selectedTime: timeValue.format("HH:mm"),
-        selectedDate: format(selectedDate, "yyyy-MM-dd"),
-        combinedDateTime: format(combinedDateTime, "yyyy-MM-dd HH:mm"),
-        minRequired: format(minAllowedDateTime, "yyyy-MM-dd HH:mm"),
-        isValid,
-      })
+        return isAfter(combinedDateTime, minAllowedDateTime)
+      }
 
-      return !isValid
+      // For future dates, any time is allowed
+      return true
     },
-    [selectedDate, minAllowedDateTime]
+    [selectedDate, getCurrentTime, getMinAllowedDateTime]
   )
 
   const handleTimeChange = useCallback(
@@ -431,19 +437,27 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
 
       if (!newValue) {
         setValue(null)
+        setIsInvalidTime(false)
         onTimeChange(null)
         return
       }
 
-      if (shouldDisableTime(newValue)) {
-        console.log("Time blocked - not enough gap")
-        return
-      }
-
+      // Always update the display value to allow smooth editing
       setValue(newValue)
-      onTimeChange(newValue)
+
+      // Validate the time
+      const isValid = validateTime(newValue)
+      setIsInvalidTime(!isValid)
+
+      if (isValid) {
+        console.log("✅ Valid time selected")
+        onTimeChange(newValue)
+      } else {
+        console.log("❌ Invalid time - too close to current time")
+        onTimeChange(null) // Clear the parent's time value but keep the display
+      }
     },
-    [onTimeChange, shouldDisableTime]
+    [onTimeChange, validateTime]
   )
 
   return (
@@ -451,7 +465,6 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
       <TimePicker
         value={value}
         onChange={handleTimeChange}
-        shouldDisableTime={shouldDisableTime}
         disabled={!selectedDate} // Disable if no date selected
         sx={{
           width: "100%",
@@ -459,18 +472,22 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
             height: "48px",
             borderRadius: "12px",
             backgroundColor: "#ffffff",
-            border: "2px solid #000000",
+            border: isInvalidTime ? "2px solid #e53e3e" : "2px solid #000000",
             fontSize: "14px",
             fontWeight: 500,
             transition: "all 0.2s ease",
             position: "relative",
             "&:hover": {
-              borderColor: "#48bb78",
-              boxShadow: "0 0 0 1px rgba(72, 187, 120, 0.3)",
+              borderColor: isInvalidTime ? "#e53e3e" : "#48bb78",
+              boxShadow: isInvalidTime
+                ? "0 0 0 1px rgba(229, 62, 62, 0.3)"
+                : "0 0 0 1px rgba(72, 187, 120, 0.3)",
             },
             "&.Mui-focused": {
-              borderColor: "#48bb78",
-              boxShadow: "0 0 0 3px rgba(72, 187, 120, 0.1)",
+              borderColor: isInvalidTime ? "#e53e3e" : "#48bb78",
+              boxShadow: isInvalidTime
+                ? "0 0 0 3px rgba(229, 62, 62, 0.1)"
+                : "0 0 0 3px rgba(72, 187, 120, 0.1)",
             },
             "&::before": {
               content: '"🕐"',
@@ -532,6 +549,13 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
           },
         }}
       />
+      {isInvalidTime &&
+        selectedDate &&
+        isSameDay(selectedDate, getCurrentTime()) && (
+          <Text fontSize="xs" color="red.500" mt={1} fontWeight="medium">
+            Time must be at least 5 minutes from now
+          </Text>
+        )}
     </LocalizationProvider>
   )
 })
