@@ -33,7 +33,7 @@ export default function Footer() {
               </Text>
             </Flex>
             <Text color="gray.400" mb={4}>
-              Simplifying brand management for businesses worldwide.
+              Socially: Your socials, Simplified!
             </Text>
           </Box>
 
@@ -156,7 +156,7 @@ export default function Footer() {
           textAlign="center"
         >
           <Text color="gray.400">
-            &copy; 2024 Brandly. All rights reserved.
+            &copy; 2024 Socially. All rights reserved.
           </Text>
         </Box>
       </Box>
