@@ -66,7 +66,7 @@ export default function HeroSection() {
         <Text fontSize="xl" color="gray.600" mb={8} maxW="2xl" mx="auto">
           Schedule posts, track performance, and manage all your social media
           accounts from one comprehensive dashboard. Grow your audience with
-          Brandlys intelligent social media management tools.
+          Socially intelligent social media management tools.
         </Text>
         <Flex
           direction={{ base: "column", md: "row" }}
@@ -723,5 +723,5 @@ export default function HeroSection() {
         </Box>
       </Box>
     </Box>
-  );
+  )
 }

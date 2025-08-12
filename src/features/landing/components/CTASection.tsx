@@ -42,7 +42,7 @@ export default function CTASection() {
             Brand Management?
           </Heading>
           <Text fontSize="xl" color="green.100" mb={8} maxW="2xl" mx="auto">
-            Join thousands of businesses already using Brandly to streamline
+            Join thousands of businesses already using Socially to streamline
             their brand operations and drive growth.
           </Text>
           <Flex
@@ -80,5 +80,5 @@ export default function CTASection() {
         </Box>
       </Box>
     </Box>
-  );
+  )
 }

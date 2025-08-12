@@ -26,7 +26,7 @@ export default function Testimonials() {
             of Businesses Worldwide
           </Heading>
           <Text fontSize="xl" color="gray.600">
-            See what our customers have to say about Brandly.
+            See what our customers have to say about Socially.
           </Text>
         </Box>
 
@@ -40,8 +40,9 @@ export default function Testimonials() {
               </Flex>
 
               <Text color="gray.600" mb={6}>
-                &quot;Brandly has revolutionized how we manage our brand assets.
-                The analytics insights are incredible and hepp us make better.
+                &quot;Socially has revolutionized how we manage our brand
+                assets. The analytics insights are incredible and hepp us make
+                better.
               </Text>
 
               <Flex align="center">
@@ -107,7 +108,7 @@ export default function Testimonials() {
               </Flex>
 
               <Text color="gray.600" mb={6}>
-                &quot;Brandly&apos;s asset management system has saved us
+                &quot;Socially&apos;s asset management system has saved us
                 countless hours. Everything is organized, accessible, and
                 version-controlled perfectly.&quot;
               </Text>
@@ -134,5 +135,5 @@ export default function Testimonials() {
         </SimpleGrid>
       </Box>
     </Box>
-  );
+  )
 }
