@@ -13,12 +13,18 @@ import FacebookSuccessPage from "./features/accounts/components/facebook/FbSucce
 import TiktokSuccessPage from "./features/accounts/components/titkok/TkSuccessPage";
 import YoutubeSuccessPage from "./features/accounts/components/youtube/YtSuccessPage";
 import LandingPage from "./pages/landing/Landing";
-
+import Privacypolicy from "./pages/legal/Privacypolicy"
+import Termsofservices from "./pages/legal/Termsofservices"
 function App() {
   return (
     <>
       <Routes>
         {flatRoute({ path: "/", component: <LandingPage /> })}
+        {flatRoute({ path: "/privacypolicy", component: <Privacypolicy /> })}
+        {flatRoute({
+          path: "/termsofservices",
+          component: <Termsofservices />,
+        })}
         <Route path="/*" element={<AuthRoutes />} />
 
         <Route element={<ProtectedRoutesWithAuth />}>

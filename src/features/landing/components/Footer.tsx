@@ -12,7 +12,7 @@ export default function Footer() {
   return (
     <Box as="footer" bg="gray.900" color="white" py={12}>
       <Box maxW="container.xl" mx="auto" px={4}>
-        <SimpleGrid columns={{ base: 1, md: 4 }} gap={8}>
+        <SimpleGrid columns={{ base: 1, md: 5 }} gap={8}>
           <Box>
             <Flex align="center" gap={2} mb={4}>
               <Box
@@ -120,6 +120,32 @@ export default function Footer() {
               </List.Item>
             </List.Root>
           </Box>
+
+          <Box>
+            <Heading as="h4" fontSize="lg" fontWeight="semibold" mb={4}>
+              Legal
+            </Heading>
+            <List.Root gap={2} color="gray.400">
+              <List.Item>
+                <Link
+                  href="/privacypolicy"
+                  color="gray.400"
+                  _hover={{ color: "white" }}
+                >
+                  Privacy Policy
+                </Link>
+              </List.Item>
+              <List.Item>
+                <Link
+                  href="/termsofservices"
+                  color="gray.400"
+                  _hover={{ color: "white" }}
+                >
+                  Terms of Service
+                </Link>
+              </List.Item>
+            </List.Root>
+          </Box>
         </SimpleGrid>
 
         <Box
@@ -135,5 +161,5 @@ export default function Footer() {
         </Box>
       </Box>
     </Box>
-  );
+  )
 }
