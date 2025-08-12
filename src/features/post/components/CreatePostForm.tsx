@@ -16,13 +16,19 @@ import {
   Accordion,
   // Span,
   Flex,
+  Span,
+  // Image,
 } from "@chakra-ui/react"
+
+// import StarterKit from "@tiptap/starter-kit"
+// import Underline from "@tiptap/extension-underline"
+// import TextAlign from "@tiptap/extension-text-align"
 
 import { useForm } from "react-hook-form"
 import { LuUpload } from "react-icons/lu"
 import { FileUploadList } from "./FileUploadList"
-import { FiSmile, FiHash } from "react-icons/fi"
-import { Sparkles } from "lucide-react"
+// import { FiSmile, FiHash } from "react-icons/fi"
+// import { Sparkles } from "lucide-react"
 
 import DateTime from "./DateTime"
 import { useAuthUtils } from "@/hooks/useAuthUtils"
@@ -52,6 +58,9 @@ import { PostConnectedAccsSection } from "./ConnectedAccs"
 import { accountConfigs, iconMap } from "../lib/accounts"
 import { SelectSurface } from "./selectSurface"
 import { useContentTypeStore } from "../lib/store/sufaceType"
+import { TiptapDescriptionEditor } from "./TipTapDescriptionEditor"
+import { Switch } from "@chakra-ui/react"
+// import { redirect } from "react-router"
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils()
@@ -67,6 +76,11 @@ export default function CreatePostForm() {
 
   // Add the missing ref declaration
   const fileUploadListRef = useRef<any>(null)
+  // const [checked, setChecked] = useState(false)
+
+  // Add state for description content
+  const [descriptionContent, setDescriptionContent] = useState("")
+  const [titleContent, setTitleContent] = useState("")
 
   const { payload, hasVideos } = useUploadStore()
   const { mutateAsync } = useFileUpload()
@@ -93,14 +107,11 @@ export default function CreatePostForm() {
 
   console.log("isScheduled", isScheduled)
 
-  // Block ALL uploads if no accounts are connected or selected
   const canUploadAnyContent = hasConnectedAccounts && hasSelectedAccounts
 
-  // Determine what file types to accept
   const acceptedFileTypes = useMemo(() => {
-    // Block all uploads if no accounts selected
     if (!canUploadAnyContent) {
-      return "" // Empty string blocks all file types
+      return ""
     }
 
     if (hasImages) {
@@ -112,7 +123,6 @@ export default function CreatePostForm() {
     return "image/*,video/*" // Allow both if nothing is uploaded and accounts are selected
   }, [hasImages, hasVideo, canUploadAnyContent])
 
-  // Handle file drop when restrictions are in place
   const handleRestrictedUpload = useCallback(() => {
     if (!hasConnectedAccounts) {
       toaster.error({
@@ -171,7 +181,6 @@ export default function CreatePostForm() {
   }
 
   const {
-    // register,
     handleSubmit,
     watch,
     reset,
@@ -185,6 +194,7 @@ export default function CreatePostForm() {
   })
 
   const content = watch("description", "")
+  const titleValue = watch("title", "")
   const scheduledTime = watch("scheduled_time")
 
   const suggestions = [
@@ -195,13 +205,43 @@ export default function CreatePostForm() {
     "#TechNews",
   ]
 
+  // Updated addTag function to work with the editor
   const addTag = useCallback(
     (tag: string) => {
-      const value = content.length ? `${content} ${tag}` : tag
+      const value = descriptionContent.length
+        ? `${descriptionContent} ${tag}`
+        : tag
+      setDescriptionContent(value)
       setValue("description", value, { shouldValidate: true })
     },
-    [content, setValue]
+    [descriptionContent, setValue]
   )
+
+  const handleEmojiClick = () => {
+    console.log("Emoji clicked")
+  }
+
+  const handleHashtagClick = () => {
+    console.log("Hashtag clicked")
+  }
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value
+    setTitleContent(value)
+    setValue("title", value, { shouldValidate: true })
+  }
+
+  useEffect(() => {
+    if (content !== descriptionContent) {
+      setDescriptionContent(content)
+    }
+  }, [content])
+
+  useEffect(() => {
+    if (titleValue !== titleContent) {
+      setTitleContent(titleValue)
+    }
+  }, [titleValue])
 
   useEffect(() => {
     setValue("platform_statuses", itemArr, { shouldValidate: true })
@@ -327,28 +367,13 @@ export default function CreatePostForm() {
       resetSurfaceType()
       setIsScheduled(false)
       setClearFiles(true)
+      setDescriptionContent("") // Reset description content
+      setTitleContent("") // Reset title content
       setTimeout(() => setClearSelectedAcc(true), 0)
     } finally {
       setPostLoading(false)
     }
   }
-
-  const [isSchedule, setIsSchedule] = useState(false) // false = Post Now, true = Schedule Post
-
-  // const handleEmojiClick = () => {
-  //   // Add emoji functionality here
-  //   console.log("Emoji clicked")
-  // }
-
-  // const handleHashtagClick = () => {
-  //   // Add hashtag suggestion functionality here
-  //   console.log("Hashtag Suggestion clicked")
-  // }
-
-  // const handleAIGeneratorClick = () => {
-  //   // Add AI caption generator functionality here
-  //   console.log("AI Caption Generator clicked")
-  // }
 
   if (isLoading) return <CircularLoading />
 
@@ -362,10 +387,10 @@ export default function CreatePostForm() {
       <VStack spaceY={8} align="stretch">
         <SelectSurface />
         <Box>
-          <Text mb={2} fontWeight="medium" color="fg.DEFAULT">
-            Connected Accounts
+          <Text mb={2} fontWeight="bold" color="#00325c">
+            Connected Accounts <Span color={"red.600"}>*</Span>
           </Text>
-
+          {/* <Test width={100} height={100} fill="red" /> */}
           <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={2} mt={2}>
             {accountConfigs.map(({ type }, index) => (
               <PostConnectedAccsSection
@@ -382,76 +407,23 @@ export default function CreatePostForm() {
           </SimpleGrid>
         </Box>
         {/* Media Upload Section with Proper Restrictions */}
-        <Box p={2} spaceY={6}>
-          <Heading fontSize="fontSizes.4xl">Media</Heading>
 
-          <FileUpload.Root
-            maxW="3xl"
-            alignItems="stretch"
-            maxFiles={5}
-            accept={acceptedFileTypes}
-            disabled={hasVideo || !canUploadAnyContent} // Disable if video uploaded OR no accounts selected
-            onFileReject={handleRestrictedUpload} // Show toast when files are rejected
-          >
-            <FileUpload.HiddenInput />
-            {hasVideos === false && !hasVideo && (
-              <FileUpload.Dropzone
-                border="1px solid"
-                borderColor="blue.100"
-                borderRadius="8px"
-                onClick={() => {
-                  // Show toast when user clicks on disabled dropzone
-                  if (!canUploadAnyContent) {
-                    handleRestrictedUpload()
-                  }
-                }}
-              >
-                <Icon
-                  size="md"
-                  color={canUploadAnyContent ? "fg.muted" : "gray.400"}
-                >
-                  <LuUpload />
-                </Icon>
-                <FileUpload.DropzoneContent>
-                  <Box color={canUploadAnyContent ? "fg.default" : "gray.400"}>
-                    {canUploadAnyContent
-                      ? "Drag and drop files here"
-                      : "Select accounts to upload content"}
-                  </Box>
-                  <Box color={canUploadAnyContent ? "fg.muted" : "gray.400"}>
-                    {canUploadAnyContent
-                      ? hasImages
-                        ? ".png, .jpg only"
-                        : ".png, .jpg, .mp4"
-                      : "Connect and select accounts first"}
-                  </Box>
-                </FileUpload.DropzoneContent>
-              </FileUpload.Dropzone>
-            )}
-            <FileUploadList
-              ref={fileUploadListRef} // Now properly declared ref
-              clearFiles={clearFiles}
-              onClearComplete={() => setClearFiles(false)}
-              selectedPlatforms={selectedPlatformsType}
-              showStatusMessages={true}
-            />
-          </FileUpload.Root>
-        </Box>
         {(selectedPlatformsType.includes("YOUTUBE") ||
           selectedPlatformsType.includes("TIKTOK")) && (
           <Box maxW="40rem">
             {/* Label */}
-            <Text fontSize="lg" fontWeight="semibold" mb={2} color="fg.DEFAULT">
-              Title
+            <Text fontSize="lg" fontWeight="semibold" mb={2} color="#00325c">
+              Title <Span color="red.500">*</Span>
             </Text>
             <Box
               border="1px solid"
-              borderColor="blue.100"
+              borderColor="gray.200"
               rounded="lg"
               overflow="hidden"
+              width="full"
             >
               <Textarea
-                placeholder="Write a caption"
+                placeholder="Write topic name"
                 border="none"
                 _focus={{
                   borderColor: "transparent",
@@ -469,98 +441,95 @@ export default function CreatePostForm() {
                 rounded="lg"
                 overflow="hidden"
                 backgroundColor={"white"}
+                value={titleContent}
+                onChange={handleTitleChange}
               />
             </Box>
-
-            {/* Footer */}
           </Box>
         )}
-        {/* <Field.Root required>
-           <Field.Label>
-             <Text fontSize={16} mb={2} fontWeight="medium" color="fg.DEFAULT">
-               Description
-             </Text>
-           </Field.Label>
-           <Textarea
-             placeholder="write a description"
-             {...register("description", { required: true })}
-             maxW="30rem"
-             maxH="5lh"
-             size="xl"
-             variant="subtle"
-             autoresize
-           />
-         </Field.Root> */}
-        {/* Desctiption Section Starts from here.  */}
-        <Box maxW="40rem">
-          {/* Label */}
-          <Text fontSize="lg" fontWeight="semibold" mb={2} color="fg.DEFAULT">
-            Description
-          </Text>
 
-          {/* Input container */}
-          <Box
-            border="1px solid"
-            borderColor="blue.100"
-            rounded="lg"
-            overflow="hidden"
+        {/* Description Section with Tiptap Editor */}
+        <TiptapDescriptionEditor
+          fixedHeight={false}
+          minHeight="300px"
+          maxHeight="300px"
+          value={descriptionContent}
+          onChange={(text: string, html: string) => {
+            setDescriptionContent(text)
+            setValue("description", text, { shouldValidate: true })
+          }}
+          onEmojiClick={handleEmojiClick}
+          onHashtagClick={handleHashtagClick}
+          placeholder="Write something awesome"
+        />
+
+        <Box p={2} spaceY={6}>
+          <Heading color={"#00325c"} fontSize="fontSizes.4xl">
+            Media
+          </Heading>
+
+          <FileUpload.Root
+            maxW="3xl"
+            alignItems="stretch"
+            maxFiles={5}
+            accept={acceptedFileTypes}
+            disabled={hasVideo || !canUploadAnyContent} // Disable if video uploaded OR no accounts selected
+            onFileReject={handleRestrictedUpload} // Show toast when files are rejected
           >
-            <Textarea
-              placeholder="Write a caption"
-              border="none" // Remove default border
-              _focus={{
-                borderColor: "transparent",
-                boxShadow: "none",
-                outline: "none", // Remove any outline
-              }}
-              _hover={{
-                borderColor: "transparent", // Remove hover border
-              }}
-              p={4}
-              size={"xl"}
-              fontSize="md"
-              _placeholder={{ color: "gray.500" }}
-              resize="none"
-              rounded="lg"
-              overflow="hidden"
-              backgroundColor={"white"}
+            <FileUpload.HiddenInput />
+            {hasVideos === false && !hasVideo && (
+              <FileUpload.Dropzone
+                // border="1px solid"
+                // borderColor="#e5e5e5"
+                // borderColor="gray.200"
+                borderRadius="8px"
+                onClick={() => {
+                  // Show toast when user clicks on disabled dropzone
+                  if (!canUploadAnyContent) {
+                    handleRestrictedUpload()
+                  }
+                }}
+              >
+                <Icon
+                  size="md"
+                  color={canUploadAnyContent ? "fg.muted" : "gray.400"}
+                >
+                  <LuUpload />
+                </Icon>
+                <FileUpload.DropzoneContent>
+                  <Box
+                    fontWeight={"bold"}
+                    letterSpacing="0.1px"
+                    color={canUploadAnyContent ? "fg.default" : "gray.400"}
+                  >
+                    {canUploadAnyContent
+                      ? "Choose a file or drag & drop it here"
+                      : "Select accounts to upload content"}
+                  </Box>
+                  <Box color={canUploadAnyContent ? "fg.muted" : "gray.400"}>
+                    {canUploadAnyContent
+                      ? hasImages
+                        ? ".png, .jpg only"
+                        : "JPEG, PNG, PDG, and MP4 formats, up to 50MB"
+                      : "Connect and select accounts first"}
+                  </Box>
+                </FileUpload.DropzoneContent>
+              </FileUpload.Dropzone>
+            )}
+            <FileUploadList
+              ref={fileUploadListRef} // Now properly declared ref
+              clearFiles={clearFiles}
+              onClearComplete={() => setClearFiles(false)}
+              selectedPlatforms={selectedPlatformsType}
+              showStatusMessages={true}
             />
-
-            {/* Footer */}
-            <HStack gap={4} px={4} py={2} borderColor="blue.100">
-              <HStack gap={1} cursor="pointer">
-                <Icon as={FiSmile} color="blue.900" />
-                <Text fontSize="sm" color="blue.900">
-                  Emoji
-                </Text>
-              </HStack>
-
-              {/* Custom vertical divider */}
-              <Box w="1px" h="16px" bg="blue.100" />
-
-              <HStack gap={1} cursor="pointer">
-                <Icon as={FiHash} color="blue.900" />
-                <Text fontSize="sm" color="blue.900">
-                  Hashtag Suggestion
-                </Text>
-              </HStack>
-
-              {/* Custom vertical divider */}
-              <Box w="1px" h="16px" bg="blue.100" />
-
-              <HStack gap={1} cursor="pointer">
-                <Icon as={Sparkles} color="blue.900" />
-                <Text fontSize="sm" color="blue.900">
-                  AI Caption Generator
-                </Text>
-              </HStack>
-            </HStack>
-          </Box>
+          </FileUpload.Root>
         </Box>
+
         <Box>
-          {/* //hastag suggestion? */}
-          <Text fontSize="lg" fontWeight="semibold" mb={2} color="fg.DEFAULT">
-            Hastags
+          {/* Hashtag suggestions */}
+          <Text fontSize="lg" fontWeight="semibold" mb={2} color="#00325c">
+            Hashtags
           </Text>
           <HStack spaceX={2} wrap="wrap">
             {suggestions.map((tag) => (
@@ -579,123 +548,119 @@ export default function CreatePostForm() {
             ))}
           </HStack>
         </Box>
-        {/* Shedule wala here  */}
-        <Box w="full" py={8}>
+        {/* Schedule section */}
+        <Box
+          w="full"
+          border="1px solid"
+          borderColor="gray.200"
+          borderRadius="md"
+        >
           <VStack align="flex-start" gap={8} w="full">
             {/* Header */}
-            <Box w="full">
+            <Box
+              backgroundColor={"gray.100"}
+              borderBottom={"1px solid"}
+              borderColor={"gray.200"}
+              paddingTop={"2"}
+              w="full"
+              flexDirection="row"
+              display={"flex"}
+              justifyContent={"space-between"}
+            >
               <Text
                 fontSize="lg"
                 fontWeight="semibold"
                 mb={2}
-                color="fg.DEFAULT"
+                color="#00325c"
+                paddingLeft={5}
+                paddingRight={10}
               >
-                Schedule Setting
+                Schedule Post (Date/Time)
               </Text>
-              <Text
-                fontSize="16px"
-                color="#4a5568"
-                fontWeight="400"
-                lineHeight="1.5"
+              <Switch.Root
+                checked={isScheduled}
+                onCheckedChange={(e) => setIsScheduled(!isScheduled)}
               >
-                Choose when you want your post to be published
-              </Text>
+                <Switch.HiddenInput />
+                <Switch.Control
+                  _checked={{
+                    bg: "blue.500",
+                    borderColor: "blue.500",
+                  }}
+                >
+                  <Switch.Thumb />
+                </Switch.Control>
+                <Switch.Label />
+              </Switch.Root>
             </Box>
 
             {/* Radio Options */}
-            <HStack align="flex-start" gap={4} w="full" mt={4}>
-              {/* Post Now */}
-              <HStack
-                gap={4}
-                align="center"
-                cursor="pointer"
-                onClick={() => setIsSchedule(false)}
-              >
-                <Box
-                  w="20px"
-                  h="20px"
-                  border="2px solid"
-                  borderColor={!isSchedule ? "#3182ce" : "#e2e8f0"}
-                  borderRadius="50%"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  bg="white"
-                >
-                  {!isSchedule && (
-                    <Box w="10px" h="10px" bg="#3182ce" borderRadius="50%" />
-                  )}
-                </Box>
-                <Text fontSize="18px" fontWeight="500" color="#1a365d">
-                  Post
-                </Text>
-              </HStack>
-
-              {/* Schedule Post */}
-              <HStack
-                gap={4}
-                align="center"
-                cursor="pointer"
-                onClick={() => setIsSchedule(true)}
-              >
-                <Box
-                  w="20px"
-                  h="20px"
-                  border="2px solid"
-                  borderColor={isSchedule ? "#3182ce" : "#e2e8f0"}
-                  borderRadius="50%"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  bg="white"
-                >
-                  {isSchedule && (
-                    <Box w="10px" h="10px" bg="#3182ce" borderRadius="50%" />
-                  )}
-                </Box>
-                <Text fontSize="18px" fontWeight="500" color="#1a365d">
-                  Schedule
-                </Text>
-              </HStack>
-            </HStack>
           </VStack>
-        </Box>
-        <Accordion.Root
-          collapsible
-          value={isSchedule ? ["schedule"] : []} // Control based on isSchedule state
-          borderBottom="none"
-          textDecoration="none"
-          outline="none"
-        >
-          <Accordion.Item value="schedule" border="none" outline="none">
-            {/* <Accordion.ItemTrigger
-              bg="bg.DIM"
-              m={2}
-              shadow="md"
-              borderRadius="lg"
-              px={4}
-              py={2}
-              width={80}
-              transition="background 0.2s, color 0.2s"
-              _hover={{
-                bg: "bg.DEFAULT",
-                color: "fg.DEFAULT",
-                cursor: "pointer",
-              }}
-              _expanded={{ bg: "bg.DEFAULT", boxShadow: "md" }}
+
+          <Box>
+            <Accordion.Root
+              collapsible
+              value={isScheduled ? ["schedule"] : []} // Control based on isSchedule state
+              borderBottom="none"
+              textDecoration="none"
+              outline="none"
             >
-              <Span flex="1">Schedule Post (Date/Time)</Span>
-              <Accordion.ItemIndicator />
-            </Accordion.ItemTrigger> */}
-            <Accordion.ItemContent ml={3} overflow="visible">
-              <Accordion.ItemBody>
-                <VStack spaceY={4} align="stretch">
-                  <DateTime setvalue={setValue} scheduled={scheduledTime} />
-                </VStack>
-              </Accordion.ItemBody>
-            </Accordion.ItemContent>
-          </Accordion.Item>
-        </Accordion.Root>
+              <Accordion.Item value="schedule" border="none" outline="none">
+                <Accordion.ItemContent ml={3} overflow="visible">
+                  <Accordion.ItemBody>
+                    <Flex
+                      align="center"
+                      gap={2}
+                      bg="white"
+                      width={"full"}
+                      display="inline-flex"
+                      position={"relative"}
+                      mb={3}
+                    >
+                      <Text fontSize="sm" color="orange.500">
+                        ⚠️
+                      </Text>
+                      <Text
+                        fontSize="13"
+                        color="#d16f16"
+                        fontWeight="bolder"
+                        m={0}
+                        display="flex"
+                        justifyContent={"space-between"}
+                        alignItems={"center"}
+                      >
+                        Action Required
+                        <Span> </Span>
+                        <Text
+                          as="span"
+                          color="gray.500"
+                          fontWeight="normal"
+                          ml={1}
+                        >
+                          <Span color={"red.600"}>*</Span>
+                          <Text
+                            marginLeft={"auto"}
+                            color={"gray"}
+                            fontSize={"sm"}
+                            position={"absolute"}
+                            left={170}
+                            top={1}
+                          >
+                            This Section Required.
+                          </Text>
+                        </Text>
+                      </Text>
+                    </Flex>
+                    <VStack spaceY={4} align="stretch">
+                      <DateTime setvalue={setValue} scheduled={scheduledTime} />
+                    </VStack>
+                  </Accordion.ItemBody>
+                </Accordion.ItemContent>
+              </Accordion.Item>
+            </Accordion.Root>
+          </Box>
+        </Box>
+
         <Flex justify="end" gap={2}>
           <Button
             type="submit"

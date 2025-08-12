@@ -9,9 +9,10 @@ import {
   VStack,
   HStack,
   Badge,
+  Image,
+  Span,
 } from "@chakra-ui/react"
 import DatePicker from "react-datepicker"
-import { FaCalendarAlt, FaClock, FaCheckCircle } from "react-icons/fa"
 import "react-datepicker/dist/react-datepicker.css"
 import { format, addMinutes, isAfter, isSameDay } from "date-fns"
 import { useScheduleStore } from "../lib/store/dateTime"
@@ -19,6 +20,10 @@ import { useState, useEffect, useCallback, useMemo } from "react"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { TimePicker } from "@mui/x-date-pickers/TimePicker"
+import Test from "../../../assets/schedule.svg"
+import { IoIosArrowDown } from "react-icons/io"
+
+import { TiTick } from "react-icons/ti"
 
 export default function DateTime({
   setvalue,
@@ -174,9 +179,10 @@ export default function DateTime({
       pl: "3rem",
       h: "12",
       bg: "bg.DEFAULT",
-      border: "2px solid",
-      borderColor: "border.DEFAULT",
-      borderRadius: "xl",
+      selfAlign: "first",
+      border: "1px solid",
+      borderColor: "gray.200",
+      borderRadius: "md",
       fontSize: "sm",
       fontWeight: "medium",
       transition: "all 0.2s ease",
@@ -198,7 +204,7 @@ export default function DateTime({
   )
 
   const now = getCurrentTime()
-  const minAllowedDateTime = getMinAllowedDateTime()
+  // const minAllowedDateTime = getMinAllowedDateTime()
 
   return (
     <Box>
@@ -209,20 +215,21 @@ export default function DateTime({
             <Field.Label
               fontSize="sm"
               fontWeight="bold"
-              color="fg.DEFAULT"
+              color="#00325c"
               mb={2}
               display="flex"
               alignItems="center"
               gap={2}
             >
-              Publication Date
+              Published Date
+              <Span color={"red.600"}>*</Span>
             </Field.Label>
             <Box position="relative">
               <DatePicker
                 selected={selectedDate}
                 onChange={handleDateChange}
                 dateFormat="EEEE, MMM dd, yyyy"
-                placeholderText="Select publication date"
+                placeholderText="Select device key"
                 showTimeInput={false}
                 customInput={<Input {...inputStyles} />}
                 minDate={now} // Prevent past dates
@@ -238,7 +245,7 @@ export default function DateTime({
                   strategy: "fixed",
                 }}
               />
-              <Icon
+              {/* <Icon
                 as={FaCalendarAlt}
                 position="absolute"
                 left="3"
@@ -247,8 +254,18 @@ export default function DateTime({
                 color="green.500"
                 pointerEvents="none"
                 boxSize="1rem"
+              /> */}
+              <IoIosArrowDown
+                style={{
+                  position: "absolute",
+                  right: "13",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "gray",
+                }}
               />
-              {selectedDate && (
+
+              {/* {selectedDate && (
                 <Icon
                   as={FaCheckCircle}
                   position="absolute"
@@ -258,7 +275,7 @@ export default function DateTime({
                   color="green.500"
                   boxSize="1rem"
                 />
-              )}
+              )} */}
             </Box>
           </Field.Root>
 
@@ -266,13 +283,14 @@ export default function DateTime({
             <Field.Label
               fontSize="sm"
               fontWeight="bold"
-              color="fg.DEFAULT"
+              color="#00325c"
               mb={2}
               display="flex"
               alignItems="center"
               gap={2}
             >
               Publication Time
+              <Span color={"red.600"}>*</Span>
             </Field.Label>
             <Box position="relative">
               {/* Enhanced Demo component that passes time back */}
@@ -286,85 +304,110 @@ export default function DateTime({
           </Field.Root>
         </Flex>
 
+        {/* UPDATED SCHEDULED CARD - MATCHING FIGMA DESIGN */}
         {selectedDate && selectedTime && isScheduled && (
           <Box
-            p={5}
-            bg="green.50"
-            borderRadius="xl"
-            border="2px solid"
-            borderColor="green.200"
+            p={4}
+            bg="#f0f8ff"
+            borderRadius="16px"
+            border="1px solid"
+            // borderColor="rgba(99, 102, 241, 0.15)"
+            borderColor="#f0f8ff"
             position="relative"
             overflow="hidden"
-            transform="scale(1)"
             transition="all 0.2s ease"
             _hover={{
-              transform: "scale(1.02)",
-              boxShadow: "lg",
+              bg: "#f0f8ff",
+              borderColor: "#f0f8ff",
             }}
             _dark={{
-              bg: "green.900",
-              borderColor: "green.700",
+              bg: "rgba(99, 102, 241, 0.1)",
+              borderColor: "rgba(99, 102, 241, 0.2)",
             }}
           >
+            {/* Top accent line - matching purple theme */}
             <Box
               position="absolute"
               top="0"
               left="0"
               right="0"
-              height="3px"
-              bgGradient="linear(to-r, green.400, green.600)"
+              height="2px"
+              bgGradient="linear(to-r, purple.400, blue.400)"
             />
 
-            <Flex align="center" justify="space-between">
-              <HStack gap={4}>
-                <Box
-                  p={3}
-                  bg="green.500"
-                  borderRadius="lg"
-                  color="white"
-                  boxShadow="md"
+            <Flex align="center" gap={4}>
+              {/* Calendar Icon/Image */}
+              <Box
+                flexShrink={0}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Image
+                  src={Test}
+                  alt="Schedule icon"
+                  height={44}
+                  width={44}
+                  boxSize="40px"
+                />
+              </Box>
+
+              {/* Content Section - Date and Time */}
+              <Flex flex={1} direction="column" gap={1}>
+                {/* Date - matching Figma format "7 Aug,2025" */}
+                <Text
+                  fontSize="md"
+                  fontWeight="600"
+                  color="gray.900"
+                  lineHeight="1.2"
+                  _dark={{ color: "gray.100" }}
                 >
-                  <Icon as={FaCalendarAlt} boxSize="1.25rem" />
-                </Box>
-                <VStack align="start" gap={2}>
-                  <HStack>
-                    <Badge
-                      colorScheme="green"
-                      size="sm"
-                      borderRadius="full"
-                      px={3}
-                      py={1}
-                      fontWeight="semibold"
-                    >
-                      ✓ Scheduled
-                    </Badge>
-                  </HStack>
+                  {format(selectedDate, "d MMM,yyyy")}
+                </Text>
+
+                {/* Time with clock icon */}
+                <HStack gap={2} align="center">
+                  {/* <Icon as={FaClock} color="gray.500" boxSize="12px" /> */}
                   <Text
-                    fontSize="lg"
-                    fontWeight="bold"
-                    color="fg.DEFAULT"
-                    lineHeight="short"
+                    fontSize="sm"
+                    color="black"
+                    fontWeight="500"
+                    _dark={{ color: "gray.400" }}
                   >
-                    {format(selectedDate, "EEEE, MMMM do, yyyy")}
+                    {selectedTime.format("h:mm A")}
                   </Text>
-                  <HStack gap={2}>
-                    <Icon as={FaClock} color="green.600" boxSize={3} />
-                    <Text
-                      fontSize="sm"
-                      color="green.600"
-                      fontWeight="medium"
-                      _dark={{ color: "green.300" }}
-                    >
-                      {selectedTime.format("h:mm A")}
-                    </Text>
-                  </HStack>
-                </VStack>
-              </HStack>
+                </HStack>
+              </Flex>
+
+              {/* Status Badge - Right aligned */}
+              <Box flexShrink={0}>
+                <Badge
+                  bg="white"
+                  border="1px solid"
+                  borderColor="#005399"
+                  borderRadius="full"
+                  px={3}
+                  py={1}
+                  fontSize="xs"
+                  fontWeight="600"
+                  textTransform="none"
+                  _dark={{
+                    bg: "rgba(34, 197, 94, 0.15)",
+                    color: "green.400",
+                    borderColor: "rgba(34, 197, 94, 0.3)",
+                  }}
+                >
+                  <Span color="#005399">Scheduled</Span>
+                  <Box backgroundColor={"#005399"} borderRadius={"full"}>
+                    <TiTick color="white" />
+                  </Box>
+                </Badge>
+              </Box>
             </Flex>
           </Box>
         )}
 
-        <Box
+        {/* <Box
           p={3}
           bg="blue.50"
           borderLeft="4px solid"
@@ -380,7 +423,7 @@ export default function DateTime({
               dates.
             </Text>
           </HStack>
-        </Box>
+        </Box> */}
       </VStack>
     </Box>
   )
@@ -400,6 +443,7 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
 }) {
   const [value, setValue] = useState<any>(null)
   const [isInvalidTime, setIsInvalidTime] = useState(false)
+  // const [isFocused, setIsFocused] = useState(false)
 
   // Clear time when date changes
   useEffect(() => {
@@ -462,93 +506,44 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <TimePicker
-        value={value}
-        onChange={handleTimeChange}
-        disabled={!selectedDate} // Disable if no date selected
-        sx={{
-          width: "100%",
-          "& .MuiInputBase-root": {
-            height: "48px",
-            borderRadius: "12px",
-            backgroundColor: "#ffffff",
-            border: isInvalidTime ? "2px solid #e53e3e" : "2px solid #000000",
-            fontSize: "14px",
-            fontWeight: 500,
-            transition: "all 0.2s ease",
-            position: "relative",
-            "&:hover": {
-              borderColor: isInvalidTime ? "#e53e3e" : "#48bb78",
-              boxShadow: isInvalidTime
-                ? "0 0 0 1px rgba(229, 62, 62, 0.3)"
-                : "0 0 0 1px rgba(72, 187, 120, 0.3)",
-            },
-            "&.Mui-focused": {
-              borderColor: isInvalidTime ? "#e53e3e" : "#48bb78",
-              boxShadow: isInvalidTime
-                ? "0 0 0 3px rgba(229, 62, 62, 0.1)"
-                : "0 0 0 3px rgba(72, 187, 120, 0.1)",
-            },
-            "&::before": {
-              content: '"🕐"',
-              position: "absolute",
-              left: "12px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              fontSize: "16px",
-              zIndex: 1,
-              pointerEvents: "none",
-            },
-            "&::after": value
-              ? {
-                  content: '"✅"',
-                  position: "absolute",
-                  right: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  fontSize: "16px",
-                  zIndex: 1,
-                  pointerEvents: "none",
-                }
-              : {},
-          },
-          "& .MuiOutlinedInput-notchedOutline": {
-            border: "none",
-          },
-          "& .MuiInputBase-input": {
-            padding: "0 48px !important",
-            textAlign: "left",
-            color: value ? "#2d3748" : "#a0aec0",
-            "&::placeholder": {
-              color: "#a0aec0",
-              opacity: 1,
-            },
-          },
-        }}
-        slotProps={{
-          textField: {
-            placeholder: selectedDate
-              ? "Select publication time"
-              : "Select date first",
-            InputProps: {
-              style: {
-                paddingLeft: "48px",
-                paddingRight: "48px",
-              },
-            },
-          },
-          openPickerButton: {
-            sx: {
-              color: "#48bb78",
-              position: "absolute",
-              right: "8px",
+      <div style={{ position: "relative" }}>
+        <TimePicker
+          label="Select device key"
+          value={value}
+          onChange={handleTimeChange}
+          disabled={!selectedDate}
+          format="HH:mm"
+          sx={{
+            width: "100%",
+            "& .MuiInputBase-root": {
+              height: "48px",
+              borderRadius: "12px",
+              backgroundColor: "#ffffff",
+              border: isInvalidTime ? "2px solid #e53e3e" : "2px solid #000000",
+              fontSize: "14px",
+              fontWeight: 500,
+              transition: "all 0.2s ease",
               "&:hover": {
-                backgroundColor: "rgba(72, 187, 120, 0.08)",
+                borderColor: isInvalidTime ? "#e53e3e" : "#48bb78",
               },
             },
-          },
-        }}
-      />
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
+            "& .MuiInputBase-input": {
+              padding: "0 48px !important",
+              textAlign: "left",
+              color: value ? "#2d3748" : "transparent", // hides hh mm aa until value exists
+              caretColor: value ? "auto" : "transparent", // hides cursor when empty
+            },
+          }}
+          slotProps={{
+            textField: {
+              placeholder: "", // remove MUI's placeholder
+            },
+          }}
+        />
+      </div>
       {isInvalidTime &&
         selectedDate &&
         isSameDay(selectedDate, getCurrentTime()) && (

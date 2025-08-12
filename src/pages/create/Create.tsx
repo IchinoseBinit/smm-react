@@ -11,7 +11,7 @@ export default function Create() {
 
       <Box minH="100dvh" overflowY="hidden" p={4}>
         <Box mb={4}>
-          <Heading size="2xl" mb={1}>
+          <Heading size="2xl" mb={1} color={"#00325c"}>
             Create Post
           </Heading>
           <Text fontSize="sm" color="fg.MUTED">
@@ -23,5 +23,5 @@ export default function Create() {
         </FileUpload.Root>
       </Box>
     </>
-  );
+  )
 }
