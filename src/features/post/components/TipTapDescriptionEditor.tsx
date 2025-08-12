@@ -44,7 +44,7 @@ export const TiptapDescriptionEditor: React.FC<TiptapDescriptionEditorProps> = (
   onChange,
   onEmojiClick,
   onHashtagClick,
-  minHeight = "300px", // Increased from 200px to 400px
+  minHeight = "100px", // Increased from 200px to 400px
   maxHeight,
   fixedHeight = true,
 }) => {

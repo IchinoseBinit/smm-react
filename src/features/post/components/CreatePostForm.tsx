@@ -451,8 +451,8 @@ export default function CreatePostForm() {
         {/* Description Section with Tiptap Editor */}
         <TiptapDescriptionEditor
           fixedHeight={false}
-          minHeight="300px"
-          maxHeight="300px"
+          minHeight="200px"
+          maxHeight="200px"
           value={descriptionContent}
           onChange={(text: string, html: string) => {
             setDescriptionContent(text)
