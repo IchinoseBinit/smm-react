@@ -454,7 +454,7 @@ export default function CreatePostForm() {
           minHeight="200px"
           maxHeight="200px"
           value={descriptionContent}
-          onChange={(text: string, html: string) => {
+          onChange={(text: string) => {
             setDescriptionContent(text)
             setValue("description", text, { shouldValidate: true })
           }}
@@ -579,7 +579,7 @@ export default function CreatePostForm() {
               </Text>
               <Switch.Root
                 checked={isScheduled}
-                onCheckedChange={(e) => setIsScheduled(!isScheduled)}
+                onCheckedChange={() => setIsScheduled(!isScheduled)}
               >
                 <Switch.HiddenInput />
                 <Switch.Control

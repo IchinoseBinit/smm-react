@@ -3,7 +3,6 @@ import {
   Box,
   Field,
   Flex,
-  Icon,
   Input,
   Text,
   VStack,
