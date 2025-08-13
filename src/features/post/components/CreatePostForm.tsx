@@ -510,7 +510,7 @@ export default function CreatePostForm() {
                     {canUploadAnyContent
                       ? hasImages
                         ? ".png, .jpg only"
-                        : "JPEG, PNG, PDG, and MP4 formats"
+                        : "JPEG, PNG, PDG, and MP4 formats, "
                       : "Connect and select accounts first"}
                   </Box>
                 </FileUpload.DropzoneContent>

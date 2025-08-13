@@ -44,24 +44,79 @@ export default function HeroSection() {
         >
           🚀 Socially: Your socials, Simplified!
         </Badge>
-        <Stack spaceY={{ base: 0, md: 5 }} mb={6}>
+        {/* <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="flex-start"
+          textAlign="center"
+          flexWrap="wrap"
+          gap={4}
+          mb={8}
+        >
+          <Text
+            fontSize={{ base: "3xl", md: "7xl" }}
+            fontWeight="bold"
+            letterSpacing={1}
+            color="blue.500"
+            lineHeight={{ base: "1.1", md: "0.9" }}
+            m={0}
+            alignSelf={"center"}
+            p={0}
+          >
+            Socially:
+          </Text>
+          <Box textAlign="left" fontWeight={"bold"}>
+            <Text
+              fontSize={{ base: "2xl", md: "3xl" }}
+              color="gray.900"
+              // lineHeight={{ base: "1.2", md: "1.1" }}
+              letterSpacing="-0.02em"
+              m={0}
+              p={0}
+              // mb={3}
+            >
+              Turn Social Media
+            </Text>
+            <Text
+              fontSize={{ base: "2xl", md: "3xl" }}
+              color="gray.900"
+              lineHeight={{ base: "1.2", md: "1.1" }}
+              letterSpacing="-0.02em"
+              m={0}
+              p={0}
+            >
+              Chaos into Clarity
+            </Text>
+          </Box>
+        </Box> */}
+
+        <Stack spaceY={{ base: 4, md: 6 }} mb={8} textAlign="center">
           <Heading
             as="h1"
-            fontSize={{ base: "2xl", md: "6xl" }}
-            fontWeight="bold"
+            fontSize={{ base: "3xl", md: "7xl" }}
+            // fontWeight="bold"
             color="gray.900"
-            lineHeight="tight"
+            lineHeight={{ base: "1.1", md: "0.9" }}
+            letterSpacing="-0.02em"
+            maxWidth="900px"
+            mx="auto"
           >
-            Turn Social Media Chaos
-          </Heading>
-          <Heading
-            as="h1"
-            fontSize={{ base: "2xl", md: "6xl" }}
-            fontWeight="bold"
-            color="gray.900"
-            lineHeight="tight"
-          >
-            into Clarity with Socially.
+            <Text
+              as="span"
+              fontWeight="bold"
+              letterSpacing={1}
+              color="blue.500"
+            >
+              Socially
+            </Text>
+            <Text
+              as="span"
+              letterSpacing={1}
+              fontSize={{ base: "3xl", md: "6xl" }}
+            >
+              : {"  "}Turn Social Media <br />
+              Chaos into Clarity{" "}
+            </Text>
           </Heading>
         </Stack>
 
