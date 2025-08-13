@@ -29,6 +29,7 @@ import {
   FaComment,
   FaEllipsisH,
 } from "react-icons/fa"
+import Logo from "@/assets/app/Tab icon.png"
 
 export default function HeroSection() {
   return (
@@ -134,7 +135,7 @@ export default function HeroSection() {
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <Image src="/src/assets/app/Tab icon.png" />
+                    <Image src={Logo} />
                   </Box>
                   <Text fontSize="lg" fontWeight="bold" color="gray.900">
                     Socially

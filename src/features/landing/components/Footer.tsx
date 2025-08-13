@@ -8,6 +8,7 @@ import {
   List,
   Image,
 } from "@chakra-ui/react"
+import Logo from "@/assets/app/Tab icon.png"
 
 export default function Footer() {
   return (
@@ -25,7 +26,7 @@ export default function Footer() {
                 alignItems="center"
                 justifyContent="center"
               >
-                <Image src="/src/assets/app/Tab icon.png" />
+                <Image src={Logo} />
               </Box>
               <Text fontSize="xl" fontWeight="bold">
                 Socially
