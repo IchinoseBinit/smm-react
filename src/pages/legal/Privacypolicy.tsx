@@ -182,7 +182,66 @@ export default function Privacypolicy() {
                 borderColor="blue.400"
                 pl={4}
               >
-                5. Data Sharing
+                5. YouTube API Data
+              </Heading>
+              <Text color="gray.600" mb={3}>
+                When you connect your YouTube account:
+              </Text>
+              <VStack align="start" gap={3} ml={4}>
+                <Text color="gray.600">
+                  • We collect access tokens, channel information, and video
+                  metadata to manage and schedule your YouTube content.
+                </Text>
+                <Text color="gray.600">
+                  • We comply with the YouTube API Services Terms of Service and
+                  Google Privacy Policy{" "}
+                  <Link
+                    href="https://policies.google.com/privacy"
+                    color="blue.500"
+                    _hover={{ textDecoration: "underline" }}
+                  >
+                    (https://policies.google.com/privacy)
+                  </Link>
+                  .
+                </Text>
+                <Text color="gray.600">
+                  • Your YouTube data is only used to provide features like
+                  video uploads, analytics, and comment management within
+                  Socially.
+                </Text>
+                <Text color="gray.600">
+                  • You can revoke our access at any time via your Google
+                  Account permissions page{" "}
+                  <Link
+                    href="https://myaccount.google.com/permissions"
+                    color="blue.500"
+                    _hover={{ textDecoration: "underline" }}
+                  >
+                    (https://myaccount.google.com/permissions)
+                  </Link>{" "}
+                  or from the Socially dashboard.
+                </Text>
+                <Text color="gray.600">
+                  • In compliance with Google API policy, if you request account
+                  deletion or revoke YouTube permissions, all related YouTube
+                  API data stored by Socially will be permanently deleted within
+                  a reasonable timeframe.
+                </Text>
+              </VStack>
+            </Box>
+
+            {/* Section 6 */}
+            <Box>
+              <Heading
+                as="h2"
+                size="lg"
+                color="gray.800"
+                mb={4}
+                borderLeft="4px solid"
+                borderColor="blue.400"
+                pl={4}
+              >
+                6. Data Sharing
               </Heading>
               <Text color="gray.600" mb={3}>
                 We do not sell or rent your personal data. We may share it only
@@ -204,26 +263,6 @@ export default function Privacypolicy() {
               </VStack>
             </Box>
 
-            {/* Section 6 */}
-            <Box>
-              <Heading
-                as="h2"
-                size="lg"
-                color="gray.800"
-                mb={4}
-                borderLeft="4px solid"
-                borderColor="blue.400"
-                pl={4}
-              >
-                6. Data Retention
-              </Heading>
-              <Text color="gray.600">
-                We retain your data as long as your account is active or as
-                needed to provide services. You can request deletion at any
-                time.
-              </Text>
-            </Box>
-
             {/* Section 7 */}
             <Box>
               <Heading
@@ -235,7 +274,29 @@ export default function Privacypolicy() {
                 borderColor="blue.400"
                 pl={4}
               >
-                7. Your Rights
+                7. Data Retention
+              </Heading>
+              <Text color="gray.600">
+                We retain your data as long as your account is active or as
+                needed to provide services. If you revoke permissions or request
+                deletion, all related data for that platform will be permanently
+                deleted within a reasonable timeframe, in compliance with
+                applicable API policies.
+              </Text>
+            </Box>
+
+            {/* Section 8 */}
+            <Box>
+              <Heading
+                as="h2"
+                size="lg"
+                color="gray.800"
+                mb={4}
+                borderLeft="4px solid"
+                borderColor="blue.400"
+                pl={4}
+              >
+                8. Your Rights
               </Heading>
               <VStack align="start" gap={3} ml={4}>
                 <Text color="gray.600">
@@ -250,26 +311,6 @@ export default function Privacypolicy() {
               </VStack>
             </Box>
 
-            {/* Section 8 */}
-            <Box>
-              <Heading
-                as="h2"
-                size="lg"
-                color="gray.800"
-                mb={4}
-                borderLeft="4px solid"
-                borderColor="blue.400"
-                pl={4}
-              >
-                8. Security
-              </Heading>
-              <Text color="gray.600">
-                We use modern security standards including HTTPS, encryption,
-                access control, and secure storage practices to protect your
-                data.
-              </Text>
-            </Box>
-
             {/* Section 9 */}
             <Box>
               <Heading
@@ -281,12 +322,12 @@ export default function Privacypolicy() {
                 borderColor="blue.400"
                 pl={4}
               >
-                9. Children's Privacy
+                9. Security
               </Heading>
               <Text color="gray.600">
-                Socially is not intended for children under 13. If you're under
-                18, parental or guardian consent is required to use our
-                services.
+                We use modern security standards including HTTPS, encryption,
+                access control, and secure storage practices to protect your
+                data.
               </Text>
             </Box>
 
@@ -301,12 +342,12 @@ export default function Privacypolicy() {
                 borderColor="blue.400"
                 pl={4}
               >
-                10. Changes to This Policy
+                10. Children's Privacy
               </Heading>
               <Text color="gray.600">
-                We may update this Privacy Policy from time to time. We'll
-                notify you of significant changes via email or within the
-                platform.
+                Socially is not intended for children under 13. If you're under
+                18, parental or guardian consent is required to use our
+                services.
               </Text>
             </Box>
 
@@ -321,7 +362,27 @@ export default function Privacypolicy() {
                 borderColor="blue.400"
                 pl={4}
               >
-                11. Contact Us
+                11. Changes to This Policy
+              </Heading>
+              <Text color="gray.600">
+                We may update this Privacy Policy from time to time. We'll
+                notify you of significant changes via email or within the
+                platform.
+              </Text>
+            </Box>
+
+            {/* Section 12 */}
+            <Box>
+              <Heading
+                as="h2"
+                size="lg"
+                color="gray.800"
+                mb={4}
+                borderLeft="4px solid"
+                borderColor="blue.400"
+                pl={4}
+              >
+                12. Contact Us
               </Heading>
               <VStack align="start" gap={2}>
                 <Text color="gray.600">

@@ -253,7 +253,7 @@ export default function Aboutus() {
                     LinkedIn:
                   </Text>{" "}
                   <Link
-                    href="https://linkedin.com/company/socially"
+                    href="https://www.linkedin.com/company/socially1"
                     color="blue.500"
                     _hover={{ textDecoration: "underline" }}
                   >
@@ -264,9 +264,9 @@ export default function Aboutus() {
                   ■{" "}
                   <Text as="span" fontWeight="bold">
                     Facebook:
-                  </Text>{" "}
+                  </Text>
                   <Link
-                    href="https://facebook.com/socially"
+                    href="https://www.facebook.com/profile.php?id=61578875882049"
                     color="blue.500"
                     _hover={{ textDecoration: "underline" }}
                   >

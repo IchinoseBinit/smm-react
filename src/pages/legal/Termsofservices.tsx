@@ -185,6 +185,31 @@ export default function Termsofservices() {
                   settings or the Socially dashboard.
                 </Text>
               </VStack>
+
+              <Text color="gray.700" fontWeight="bold" mb={3}>
+                When you link your YouTube account:
+              </Text>
+              <VStack align="start" gap={3} ml={4}>
+                <Text color="gray.600">
+                  • You allow Socially to upload and manage videos on your
+                  behalf.
+                </Text>
+                <Text color="gray.600">
+                  • You agree to YouTube's Terms of Service, the YouTube API
+                  Services Terms of Service, and Google’s Privacy Policy
+                  (https://policies.google.com/privacy).
+                </Text>
+                <Text color="gray.600">
+                  • We use YouTube APIs in compliance with Google’s API Services
+                  User Data Policy.
+                </Text>
+                <Text color="gray.600">
+                  • You may disconnect YouTube access at any time via your
+                  Google Account permissions page
+                  (https://myaccount.google.com/permissions) or the Socially
+                  dashboard.
+                </Text>
+              </VStack>
             </Box>
 
             {/* Section 7 */}

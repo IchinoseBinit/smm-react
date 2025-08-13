@@ -176,15 +176,16 @@ export default function DateTime({
     () => ({
       pr: "3rem",
       pl: "3rem",
-      h: "12",
+      h: "58px", // Use exact pixel value to match the time picker
       bg: "bg.DEFAULT",
       selfAlign: "first",
-      border: "1px solid",
-      borderColor: "gray.200",
-      borderRadius: "md",
+      border: "1px solid", // Match the time picker border width
+      borderColor: "gray.300",
+      borderRadius: "5px", // Match the time picker border radius
       fontSize: "sm",
       fontWeight: "medium",
       transition: "all 0.2s ease",
+
       _hover: {
         borderColor: "secondary.300",
         boxShadow: "0 0 0 1px var(--chakra-colors-secondary-200)",
@@ -201,7 +202,6 @@ export default function DateTime({
     }),
     []
   )
-
   const now = getCurrentTime()
   // const minAllowedDateTime = getMinAllowedDateTime()
 
@@ -228,7 +228,7 @@ export default function DateTime({
                 selected={selectedDate}
                 onChange={handleDateChange}
                 dateFormat="EEEE, MMM dd, yyyy"
-                placeholderText="Select device key"
+                placeholderText="Select the date"
                 showTimeInput={false}
                 customInput={<Input {...inputStyles} />}
                 minDate={now} // Prevent past dates
@@ -507,7 +507,7 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div style={{ position: "relative" }}>
         <TimePicker
-          label="Select device key"
+          label="Select the Time "
           value={value}
           onChange={handleTimeChange}
           disabled={!selectedDate}
