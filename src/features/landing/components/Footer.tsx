@@ -6,7 +6,9 @@ import {
   Heading,
   Link,
   List,
+  Image,
 } from "@chakra-ui/react"
+import Logo from "@/assets/app/Tab icon.png"
 
 export default function Footer() {
   return (
@@ -18,22 +20,20 @@ export default function Footer() {
               <Box
                 w={8}
                 h={8}
-                bg="green.500"
+                // bg="green.500"
                 rounded="lg"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
               >
-                <Text fontWeight="bold" fontSize="lg" color="white">
-                  S
-                </Text>
+                <Image src={Logo} />
               </Box>
               <Text fontSize="xl" fontWeight="bold">
                 Socially
               </Text>
             </Flex>
             <Text color="gray.400" mb={4}>
-              Socially: Your socials, Simplified!
+              Simplifying brand management for businesses worldwide.
             </Text>
           </Box>
 
@@ -71,8 +71,12 @@ export default function Footer() {
             </Heading>
             <List.Root gap={2} color="gray.400">
               <List.Item>
-                <Link href="#" color="gray.400" _hover={{ color: "white" }}>
-                  About
+                <Link
+                  href="/aboutus"
+                  color="gray.400"
+                  _hover={{ color: "white" }}
+                >
+                  About us
                 </Link>
               </List.Item>
               <List.Item>
@@ -156,7 +160,7 @@ export default function Footer() {
           textAlign="center"
         >
           <Text color="gray.400">
-            &copy; 2024 Socially. All rights reserved.
+            &copy; {new Date().getFullYear()} Socially . All rights reserved.
           </Text>
         </Box>
       </Box>

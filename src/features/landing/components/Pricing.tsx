@@ -7,8 +7,8 @@ import {
   Button,
   Badge,
   List,
-} from "@chakra-ui/react";
-import { FaCheck } from "react-icons/fa";
+} from "@chakra-ui/react"
+import { FaCheck } from "react-icons/fa"
 
 export default function Pricing() {
   return (
@@ -106,7 +106,7 @@ export default function Pricing() {
               left="50%"
               transform="translateX(-50%)"
             >
-              <Badge bg="green.500" color="white">
+              <Badge bg="blue.500" color="white">
                 Most Popular
               </Badge>
             </Box>
@@ -155,9 +155,9 @@ export default function Pricing() {
               </List.Root>
 
               <Button
-                bg="green.500"
+                bg="blue.500"
                 color="white"
-                _hover={{ bg: "green.600" }}
+                _hover={{ bg: "blue.600" }}
                 w="full"
               >
                 Get Started
@@ -217,5 +217,5 @@ export default function Pricing() {
         </SimpleGrid>
       </Box>
     </Box>
-  );
+  )
 }

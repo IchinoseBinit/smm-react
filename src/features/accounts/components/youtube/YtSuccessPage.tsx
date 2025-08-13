@@ -12,9 +12,9 @@ export default function YoutubeSuccessPage() {
       case "success":
         return {
           title: "Youtube Connected",
-          description: "Your Tiktok account has been successfully linked.",
+          description: "Your Youtube account has been successfully linked.",
           color: "red.600",
-        };
+        }
       case "false":
       case "error":
         return {

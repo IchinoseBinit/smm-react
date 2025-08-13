@@ -1,7 +1,7 @@
-import { Box, Flex, Image, Link, Button, Icon } from "@chakra-ui/react";
-import { getStartedLinks } from "../lib/Links";
-import logo from "@/assets/app/Header Logo White.png";
-import { BsRocketTakeoffFill } from "react-icons/bs";
+import { Box, Flex, Image, Link, Button, Icon } from "@chakra-ui/react"
+import { getStartedLinks } from "../lib/Links"
+import logo from "@/assets/app/Header Logo White.png"
+import { BsRocketTakeoffFill } from "react-icons/bs"
 
 export default function Header() {
   return (
@@ -48,8 +48,8 @@ export default function Header() {
           <Link href="#pricing" color="gray.600" _hover={{ color: "gray.900" }}>
             Pricing
           </Link>
-          <Link href="#about" color="gray.600" _hover={{ color: "gray.900" }}>
-            About
+          <Link href="/aboutus" color="gray.600" _hover={{ color: "gray.900" }}>
+            About us
           </Link>
           <Link href="#contact" color="gray.600" _hover={{ color: "gray.900" }}>
             Contact
@@ -67,13 +67,17 @@ export default function Header() {
               Sign In
             </Button>
           </Link>
-          <Link href={getStartedLinks}>
+          <Link href={getStartedLinks} _hover={{ textDecoration: "none" }}>
             <Button
-              bg="green.500"
+              bg="blue.500"
               color="white"
-              _hover={{ bg: "green.600", cursor: "pointer" }}
+              _hover={{
+                bg: "blue.600",
+                cursor: "pointer",
+              }}
               borderRadius={8}
               fontWeight={600}
+              _focus={{ outline: "none" }}
             >
               <Icon>
                 <BsRocketTakeoffFill />

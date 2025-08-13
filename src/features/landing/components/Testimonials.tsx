@@ -6,8 +6,8 @@ import {
   Text,
   Flex,
   Image,
-} from "@chakra-ui/react";
-import { FaStar } from "react-icons/fa";
+} from "@chakra-ui/react"
+import { FaStar } from "react-icons/fa"
 
 export default function Testimonials() {
   return (

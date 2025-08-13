@@ -6,7 +6,7 @@ import {
   Text,
   Flex,
   Stack,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react"
 import {
   FaCalendar,
   FaChartBar,
@@ -14,7 +14,7 @@ import {
   FaHashtag,
   FaComment,
   FaGlobe,
-} from "react-icons/fa";
+} from "react-icons/fa"
 
 export default function FeatureSection() {
   return (
@@ -59,14 +59,14 @@ export default function FeatureSection() {
               <Flex
                 w={16}
                 h={16}
-                bg="green.100"
+                bg="blue.100"
                 rounded="2xl"
                 align="center"
                 justify="center"
                 mx="auto"
                 mb={6}
               >
-                <FaCalendar size={32} color="green.600" />
+                <FaCalendar size={32} color="blue.600" />
               </Flex>
 
               <Card.Title asChild>
@@ -99,14 +99,14 @@ export default function FeatureSection() {
               <Flex
                 w={16}
                 h={16}
-                bg="green.100"
+                bg="blue.100"
                 rounded="2xl"
                 align="center"
                 justify="center"
                 mx="auto"
                 mb={6}
               >
-                <FaChartBar size={32} color="green.600" />
+                <FaChartBar size={32} color="blue.600" />
               </Flex>
 
               <Card.Title asChild>
@@ -139,14 +139,14 @@ export default function FeatureSection() {
               <Flex
                 w={16}
                 h={16}
-                bg="green.100"
+                bg="blue.100"
                 rounded="2xl"
                 align="center"
                 justify="center"
                 mx="auto"
                 mb={6}
               >
-                <FaUsers size={32} color="green.600" />
+                <FaUsers size={32} color="blue.600" />
               </Flex>
 
               <Card.Title asChild>
@@ -179,14 +179,14 @@ export default function FeatureSection() {
               <Flex
                 w={16}
                 h={16}
-                bg="green.100"
+                bg="blue.100"
                 rounded="2xl"
                 align="center"
                 justify="center"
                 mx="auto"
                 mb={6}
               >
-                <FaHashtag size={32} color="green.600" />
+                <FaHashtag size={32} color="blue.600" />
               </Flex>
 
               <Card.Title asChild>
@@ -219,14 +219,14 @@ export default function FeatureSection() {
               <Flex
                 w={16}
                 h={16}
-                bg="green.100"
+                bg="blue.100"
                 rounded="2xl"
                 align="center"
                 justify="center"
                 mx="auto"
                 mb={6}
               >
-                <FaComment size={32} color="green.600" />
+                <FaComment size={32} color="blue.600" />
               </Flex>
 
               <Card.Title asChild>
@@ -259,14 +259,14 @@ export default function FeatureSection() {
               <Flex
                 w={16}
                 h={16}
-                bg="green.100"
+                bg="blue.100"
                 rounded="2xl"
                 align="center"
                 justify="center"
                 mx="auto"
                 mb={6}
               >
-                <FaGlobe size={32} color="green.600" />
+                <FaGlobe size={32} color="blue.600" />
               </Flex>
 
               <Card.Title asChild>
@@ -292,5 +292,5 @@ export default function FeatureSection() {
         </SimpleGrid>
       </Box>
     </Box>
-  );
+  )
 }

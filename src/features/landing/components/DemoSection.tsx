@@ -1,4 +1,4 @@
-import { Box, SimpleGrid, Heading, Text, Image } from "@chakra-ui/react";
+import { Box, SimpleGrid, Heading, Text, Image } from "@chakra-ui/react"
 
 export default function DemoSection() {
   return (

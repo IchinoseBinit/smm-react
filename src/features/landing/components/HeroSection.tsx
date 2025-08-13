@@ -10,11 +10,12 @@ import {
   SimpleGrid,
   Stack,
   Progress,
-  Icon,
+  // Icon,
   Link,
-} from "@chakra-ui/react";
+  Image,
+} from "@chakra-ui/react"
 import {
-  FaPlay,
+  // FaPlay,
   FaSearch,
   FaTh,
   FaUser,
@@ -27,7 +28,8 @@ import {
   FaCalendar,
   FaComment,
   FaEllipsisH,
-} from "react-icons/fa";
+} from "react-icons/fa"
+import Logo from "@/assets/app/Tab icon.png"
 
 export default function HeroSection() {
   return (
@@ -35,31 +37,86 @@ export default function HeroSection() {
       <Box maxW="container.xl" mx="auto" px={4} textAlign="center">
         <Badge
           mb={6}
-          bg="green.100"
-          color="green.700"
-          _hover={{ bg: "green.100" }}
+          bg="blue.100"
+          color="blue.700"
+          _hover={{ bg: "blue.100" }}
           fontSize="sm"
         >
-          🚀 New: AI-Powered Social Media Analytics
+          🚀 Socially: Your socials, Simplified!
         </Badge>
-        <Stack spaceY={{ base: 0, md: 5 }} mb={6}>
+        {/* <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="flex-start"
+          textAlign="center"
+          flexWrap="wrap"
+          gap={4}
+          mb={8}
+        >
+          <Text
+            fontSize={{ base: "3xl", md: "7xl" }}
+            fontWeight="bold"
+            letterSpacing={1}
+            color="blue.500"
+            lineHeight={{ base: "1.1", md: "0.9" }}
+            m={0}
+            alignSelf={"center"}
+            p={0}
+          >
+            Socially:
+          </Text>
+          <Box textAlign="left" fontWeight={"bold"}>
+            <Text
+              fontSize={{ base: "2xl", md: "3xl" }}
+              color="gray.900"
+              // lineHeight={{ base: "1.2", md: "1.1" }}
+              letterSpacing="-0.02em"
+              m={0}
+              p={0}
+              // mb={3}
+            >
+              Turn Social Media
+            </Text>
+            <Text
+              fontSize={{ base: "2xl", md: "3xl" }}
+              color="gray.900"
+              lineHeight={{ base: "1.2", md: "1.1" }}
+              letterSpacing="-0.02em"
+              m={0}
+              p={0}
+            >
+              Chaos into Clarity
+            </Text>
+          </Box>
+        </Box> */}
+
+        <Stack spaceY={{ base: 4, md: 6 }} mb={8} textAlign="center">
           <Heading
             as="h1"
-            fontSize={{ base: "2xl", md: "6xl" }}
-            fontWeight="bold"
+            fontSize={{ base: "3xl", md: "7xl" }}
+            // fontWeight="bold"
             color="gray.900"
-            lineHeight="tight"
+            lineHeight={{ base: "1.1", md: "0.9" }}
+            letterSpacing="-0.02em"
+            maxWidth="900px"
+            mx="auto"
           >
-            Simplify Social Media Management
-          </Heading>
-          <Heading
-            as="h1"
-            fontSize={{ base: "2xl", md: "6xl" }}
-            fontWeight="bold"
-            color="gray.900"
-            lineHeight="tight"
-          >
-            with One Powerful Platform.
+            <Text
+              as="span"
+              fontWeight="bold"
+              letterSpacing={1}
+              color="blue.500"
+            >
+              Socially
+            </Text>
+            <Text
+              as="span"
+              letterSpacing={1}
+              fontSize={{ base: "3xl", md: "6xl" }}
+            >
+              : {"  "}Turn Social Media <br />
+              Chaos into Clarity{" "}
+            </Text>
           </Heading>
         </Stack>
 
@@ -75,10 +132,11 @@ export default function HeroSection() {
           mb={12}
         >
           <Button
+            onClick={() => (window.location.href = "/register")}
             size="lg"
-            bg="green.500"
+            bg="blue.500"
             color="white"
-            _hover={{ bg: "green.600" }}
+            _hover={{ bg: "blue.600" }}
             px={8}
             py={3}
             borderRadius={8}
@@ -86,7 +144,7 @@ export default function HeroSection() {
           >
             Start Free Trial
           </Button>
-          <Button
+          {/* <Button
             size="lg"
             variant="outline"
             borderColor="gray.300"
@@ -98,7 +156,7 @@ export default function HeroSection() {
               <FaPlay size="16px" />
             </Icon>
             Watch Demo
-          </Button>
+          </Button> */}
         </Flex>
 
         {/* Dashboard Preview */}
@@ -126,15 +184,13 @@ export default function HeroSection() {
                   <Box
                     w={8}
                     h={8}
-                    bg="green.500"
+                    // bg="green.500"
                     rounded="lg"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <Text color="white" fontWeight="bold" fontSize="sm">
-                      S
-                    </Text>
+                    <Image src={Logo} />
                   </Box>
                   <Text fontSize="lg" fontWeight="bold" color="gray.900">
                     Socially
@@ -166,7 +222,7 @@ export default function HeroSection() {
                   <Text fontSize="sm" color="gray.600">
                     Eng
                   </Text>
-                  <Box w={8} h={8} bg="green.500" rounded="full" />
+                  <Box w={8} h={8} bg="blue.500" rounded="full" />
                   <Text fontSize="sm" fontWeight="medium">
                     Brooklyn
                   </Text>
@@ -228,8 +284,8 @@ export default function HeroSection() {
                     display="flex"
                     alignItems="center"
                     gap={3}
-                    color="green.600"
-                    bg="green.50"
+                    color="blue.600"
+                    bg="blue.50"
                     py={2}
                     px={3}
                     rounded="lg"
@@ -378,10 +434,10 @@ export default function HeroSection() {
                             h={2}
                           >
                             <Progress.Track bg="gray.50" borderRadius={10}>
-                              <Progress.Range bg="green.500" />
+                              <Progress.Range bg="blue.500" />
                             </Progress.Track>
                           </Progress.Root>
-                          <Text fontSize="xs" color="green.600" ml={2}>
+                          <Text fontSize="xs" color="blue.600" ml={2}>
                             75%
                           </Text>
                         </Flex>
@@ -407,10 +463,10 @@ export default function HeroSection() {
                             h={2}
                           >
                             <Progress.Track bg="gray.50" borderRadius={10}>
-                              <Progress.Range bg="green.500" />
+                              <Progress.Range bg="blue.500" />
                             </Progress.Track>
                           </Progress.Root>
-                          <Text fontSize="xs" color="green.600" ml={2}>
+                          <Text fontSize="xs" color="blue.600" ml={2}>
                             60%
                           </Text>
                         </Flex>
@@ -436,10 +492,10 @@ export default function HeroSection() {
                             h={2}
                           >
                             <Progress.Track bg="gray.50" borderRadius={10}>
-                              <Progress.Range bg="green.500" />
+                              <Progress.Range bg="blue.500" />
                             </Progress.Track>
                           </Progress.Root>
-                          <Text fontSize="xs" color="green.600" ml={2}>
+                          <Text fontSize="xs" color="blue.600" ml={2}>
                             85%
                           </Text>
                         </Flex>
@@ -475,7 +531,7 @@ export default function HeroSection() {
                             <Box
                               w={16}
                               h={16}
-                              bg="green.100"
+                              bg="blue.100"
                               rounded="full"
                               display="flex"
                               alignItems="center"
@@ -483,7 +539,7 @@ export default function HeroSection() {
                               mx="auto"
                               mb={2}
                             >
-                              <FaChartBar size={32} color="green.600" />
+                              <FaChartBar size={32} color="blue.600" />
                             </Box>
                             <Text fontSize="xs" color="gray.500">
                               Chart Visualization
@@ -518,7 +574,7 @@ export default function HeroSection() {
                             <Box
                               w={16}
                               h={16}
-                              bg="green.100"
+                              bg="blue.100"
                               rounded="full"
                               display="flex"
                               alignItems="center"
@@ -526,7 +582,7 @@ export default function HeroSection() {
                               mx="auto"
                               mb={2}
                             >
-                              <FaChartLine size={32} color="green.600" />
+                              <FaChartLine size={32} color="blue.600" />
                             </Box>
                             <Text fontSize="xs" color="gray.500">
                               Time Analytics
@@ -587,8 +643,8 @@ export default function HeroSection() {
                         </Flex>
                         <Box mt={2}>
                           <Badge
-                            bg="green.100"
-                            color="green.700"
+                            bg="blue.100"
+                            color="blue.700"
                             fontSize="xs"
                             px={2}
                             py={1}

@@ -15,12 +15,15 @@ import YoutubeSuccessPage from "./features/accounts/components/youtube/YtSuccess
 import LandingPage from "./pages/landing/Landing"
 import Privacypolicy from "./pages/legal/Privacypolicy"
 import Termsofservices from "./pages/legal/Termsofservices"
+import Aboutus from "./pages/Company/Aboutus"
 function App() {
   return (
     <>
       <Routes>
         {flatRoute({ path: "/", component: <LandingPage /> })}
         {flatRoute({ path: "/privacypolicy", component: <Privacypolicy /> })}
+        {flatRoute({ path: "/aboutus", component: <Aboutus /> })}
+
         {flatRoute({
           path: "/termsofservices",
           component: <Termsofservices />,
