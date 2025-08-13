@@ -11,7 +11,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 export default function CTASection() {
   return (
-    <Box as="section" py={20} bg="green.500">
+    <Box as="section" py={20} bg="blue.500">
       <Box maxW="container.xl" mx="auto" px={4} textAlign="center">
         <Box position="relative">
           <Box position="absolute" top={10} left={10} opacity={0.2}>
@@ -42,7 +42,7 @@ export default function CTASection() {
             Brand Management?
           </Heading>
           <Text fontSize="xl" color="green.100" mb={8} maxW="2xl" mx="auto">
-            Join thousands of businesses already using Brandly to streamline
+            Join thousands of businesses already using Socially to streamline
             their brand operations and drive growth.
           </Text>
           <Flex
@@ -51,9 +51,10 @@ export default function CTASection() {
             justify="center"
           >
             <Button
+              onClick={() => (window.location.href = "/register")}
               size="lg"
               bg="white"
-              color="green.500"
+              color="blue.500"
               _hover={{ bg: "gray.100" }}
               px={8}
               py={3}
@@ -64,7 +65,7 @@ export default function CTASection() {
               </Icon>
               Start Free Trial
             </Button>
-            <Button
+            {/* <Button
               size="lg"
               variant="outline"
               borderColor="white"
@@ -75,10 +76,10 @@ export default function CTASection() {
               rounded="lg"
             >
               Schedule Demo
-            </Button>
+            </Button> */}
           </Flex>
         </Box>
       </Box>
     </Box>
-  );
+  )
 }

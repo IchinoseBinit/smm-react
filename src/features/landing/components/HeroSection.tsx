@@ -10,11 +10,12 @@ import {
   SimpleGrid,
   Stack,
   Progress,
-  Icon,
+  // Icon,
   Link,
-} from "@chakra-ui/react";
+  Image,
+} from "@chakra-ui/react"
 import {
-  FaPlay,
+  // FaPlay,
   FaSearch,
   FaTh,
   FaUser,
@@ -27,7 +28,7 @@ import {
   FaCalendar,
   FaComment,
   FaEllipsisH,
-} from "react-icons/fa";
+} from "react-icons/fa"
 
 export default function HeroSection() {
   return (
@@ -35,12 +36,12 @@ export default function HeroSection() {
       <Box maxW="container.xl" mx="auto" px={4} textAlign="center">
         <Badge
           mb={6}
-          bg="green.100"
-          color="green.700"
-          _hover={{ bg: "green.100" }}
+          bg="blue.100"
+          color="blue.700"
+          _hover={{ bg: "blue.100" }}
           fontSize="sm"
         >
-          🚀 New: AI-Powered Social Media Analytics
+          🚀 Socially: Your socials, Simplified!
         </Badge>
         <Stack spaceY={{ base: 0, md: 5 }} mb={6}>
           <Heading
@@ -50,7 +51,7 @@ export default function HeroSection() {
             color="gray.900"
             lineHeight="tight"
           >
-            Simplify Social Media Management
+            Turn Social Media Chaos
           </Heading>
           <Heading
             as="h1"
@@ -59,14 +60,14 @@ export default function HeroSection() {
             color="gray.900"
             lineHeight="tight"
           >
-            with One Powerful Platform.
+            into Clarity with Socially.
           </Heading>
         </Stack>
 
         <Text fontSize="xl" color="gray.600" mb={8} maxW="2xl" mx="auto">
           Schedule posts, track performance, and manage all your social media
           accounts from one comprehensive dashboard. Grow your audience with
-          Brandlys intelligent social media management tools.
+          Socially intelligent social media management tools.
         </Text>
         <Flex
           direction={{ base: "column", md: "row" }}
@@ -75,10 +76,11 @@ export default function HeroSection() {
           mb={12}
         >
           <Button
+            onClick={() => (window.location.href = "/register")}
             size="lg"
-            bg="green.500"
+            bg="blue.500"
             color="white"
-            _hover={{ bg: "green.600" }}
+            _hover={{ bg: "blue.600" }}
             px={8}
             py={3}
             borderRadius={8}
@@ -86,7 +88,7 @@ export default function HeroSection() {
           >
             Start Free Trial
           </Button>
-          <Button
+          {/* <Button
             size="lg"
             variant="outline"
             borderColor="gray.300"
@@ -98,7 +100,7 @@ export default function HeroSection() {
               <FaPlay size="16px" />
             </Icon>
             Watch Demo
-          </Button>
+          </Button> */}
         </Flex>
 
         {/* Dashboard Preview */}
@@ -126,15 +128,13 @@ export default function HeroSection() {
                   <Box
                     w={8}
                     h={8}
-                    bg="green.500"
+                    // bg="green.500"
                     rounded="lg"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
                   >
-                    <Text color="white" fontWeight="bold" fontSize="sm">
-                      S
-                    </Text>
+                    <Image src="/src/assets/app/Tab icon.png" />
                   </Box>
                   <Text fontSize="lg" fontWeight="bold" color="gray.900">
                     Socially
@@ -166,7 +166,7 @@ export default function HeroSection() {
                   <Text fontSize="sm" color="gray.600">
                     Eng
                   </Text>
-                  <Box w={8} h={8} bg="green.500" rounded="full" />
+                  <Box w={8} h={8} bg="blue.500" rounded="full" />
                   <Text fontSize="sm" fontWeight="medium">
                     Brooklyn
                   </Text>
@@ -228,8 +228,8 @@ export default function HeroSection() {
                     display="flex"
                     alignItems="center"
                     gap={3}
-                    color="green.600"
-                    bg="green.50"
+                    color="blue.600"
+                    bg="blue.50"
                     py={2}
                     px={3}
                     rounded="lg"
@@ -378,10 +378,10 @@ export default function HeroSection() {
                             h={2}
                           >
                             <Progress.Track bg="gray.50" borderRadius={10}>
-                              <Progress.Range bg="green.500" />
+                              <Progress.Range bg="blue.500" />
                             </Progress.Track>
                           </Progress.Root>
-                          <Text fontSize="xs" color="green.600" ml={2}>
+                          <Text fontSize="xs" color="blue.600" ml={2}>
                             75%
                           </Text>
                         </Flex>
@@ -407,10 +407,10 @@ export default function HeroSection() {
                             h={2}
                           >
                             <Progress.Track bg="gray.50" borderRadius={10}>
-                              <Progress.Range bg="green.500" />
+                              <Progress.Range bg="blue.500" />
                             </Progress.Track>
                           </Progress.Root>
-                          <Text fontSize="xs" color="green.600" ml={2}>
+                          <Text fontSize="xs" color="blue.600" ml={2}>
                             60%
                           </Text>
                         </Flex>
@@ -436,10 +436,10 @@ export default function HeroSection() {
                             h={2}
                           >
                             <Progress.Track bg="gray.50" borderRadius={10}>
-                              <Progress.Range bg="green.500" />
+                              <Progress.Range bg="blue.500" />
                             </Progress.Track>
                           </Progress.Root>
-                          <Text fontSize="xs" color="green.600" ml={2}>
+                          <Text fontSize="xs" color="blue.600" ml={2}>
                             85%
                           </Text>
                         </Flex>
@@ -475,7 +475,7 @@ export default function HeroSection() {
                             <Box
                               w={16}
                               h={16}
-                              bg="green.100"
+                              bg="blue.100"
                               rounded="full"
                               display="flex"
                               alignItems="center"
@@ -483,7 +483,7 @@ export default function HeroSection() {
                               mx="auto"
                               mb={2}
                             >
-                              <FaChartBar size={32} color="green.600" />
+                              <FaChartBar size={32} color="blue.600" />
                             </Box>
                             <Text fontSize="xs" color="gray.500">
                               Chart Visualization
@@ -518,7 +518,7 @@ export default function HeroSection() {
                             <Box
                               w={16}
                               h={16}
-                              bg="green.100"
+                              bg="blue.100"
                               rounded="full"
                               display="flex"
                               alignItems="center"
@@ -526,7 +526,7 @@ export default function HeroSection() {
                               mx="auto"
                               mb={2}
                             >
-                              <FaChartLine size={32} color="green.600" />
+                              <FaChartLine size={32} color="blue.600" />
                             </Box>
                             <Text fontSize="xs" color="gray.500">
                               Time Analytics
@@ -587,8 +587,8 @@ export default function HeroSection() {
                         </Flex>
                         <Box mt={2}>
                           <Badge
-                            bg="green.100"
-                            color="green.700"
+                            bg="blue.100"
+                            color="blue.700"
                             fontSize="xs"
                             px={2}
                             py={1}
@@ -723,5 +723,5 @@ export default function HeroSection() {
         </Box>
       </Box>
     </Box>
-  );
+  )
 }

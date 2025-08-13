@@ -15,7 +15,7 @@ export default function DemoSection() {
             Simple Steps to Get Started
           </Heading>
           <Text fontSize="xl" color="gray.600">
-            Get up and running with Brandly in minutes, not hours.
+            Get up and running with Socially in minutes, not hours.
           </Text>
         </Box>
 
@@ -158,5 +158,5 @@ export default function DemoSection() {
         </SimpleGrid>
       </Box>
     </Box>
-  );
+  )
 }
