@@ -34,19 +34,23 @@ import {
   MdFormatStrikethrough,
   MdFormatClear,
 } from "react-icons/md"
-import type { FormatType, TiptapDescriptionEditorProps, ToolbarButtonProps } from "../types"
+import type {
+  FormatType,
+  TiptapDescriptionEditorProps,
+  ToolbarButtonProps,
+} from "../types"
 
-
-
-export const TiptapDescriptionEditor: React.FC<TiptapDescriptionEditorProps> = ({
+export const TiptapDescriptionEditor: React.FC<
+  TiptapDescriptionEditorProps
+> = ({
   placeholder = "Write something awesome",
   value = "",
   onChange,
   onEmojiClick,
   onHashtagClick,
-  minHeight = "100px", // Increased from 200px to 400px
-  maxHeight,
-  fixedHeight = true,
+  // minHeight = "200px", // Good starting height
+  maxHeight = "600px", // Optional: prevent it from getting too tall
+  // fixedHeight = false, // Changed to false for auto-expansion
 }) => {
   const editor = useEditor({
     extensions: [
@@ -59,6 +63,7 @@ export const TiptapDescriptionEditor: React.FC<TiptapDescriptionEditorProps> = (
           keepMarks: true,
           keepAttributes: false,
         },
+        italic: {}, // Explicitly enable italic
       }),
       Underline,
       TextAlign.configure({
@@ -204,7 +209,6 @@ export const TiptapDescriptionEditor: React.FC<TiptapDescriptionEditorProps> = (
         >
           <ButtonGroup size="sm" variant="ghost" gap={1}>
             {/* Text formatting */}
-
             <Box display={"flex"} alignItems="center" gap={1}>
               <Text color={"#00325c"}>Font</Text>
               <VStack gap={0} paddingLeft={8} alignItems="center">
@@ -272,20 +276,29 @@ export const TiptapDescriptionEditor: React.FC<TiptapDescriptionEditorProps> = (
           </ButtonGroup>
         </Flex>
 
-        {/* Editor content - Increased height for writing area */}
+        {/* Editor content - Auto-expanding with fixed initial height */}
         <Box
-          minH={minHeight} // Always use minimum height
-          maxH={maxHeight} // Optional maximum height
-          overflow="auto" // Enable scrolling when content exceeds height
+          minH="300px"
+          maxH={maxHeight}
+          overflow="auto"
           css={{
+            "& .ProseMirror": {
+              minHeight: "300px !important",
+              height: "auto",
+              padding: "16px",
+              outline: "none",
+              border: "none",
+            },
+
             ".tiptap-editor": {
               outline: "none",
               border: "none",
               padding: "16px",
               fontSize: "md",
               lineHeight: "1.6",
-              minHeight: minHeight, // Force minimum height on the editor itself
-              height: fixedHeight ? minHeight : "auto", // Use fixed height or auto
+              minHeight: "300px !important", // Force larger height
+              height: "auto",
+              width: "100%",
               "&:empty:before": {
                 content: `"${placeholder}"`,
                 color: "#a0aec0",
@@ -309,7 +322,7 @@ export const TiptapDescriptionEditor: React.FC<TiptapDescriptionEditorProps> = (
                 fontWeight: "bold",
               },
               "& em": {
-                fontStyle: "italic",
+                fontStyle: "italic !important",
               },
               "& u": {
                 textDecoration: "underline",
@@ -320,8 +333,7 @@ export const TiptapDescriptionEditor: React.FC<TiptapDescriptionEditorProps> = (
             },
           }}
         >
-          {/* Removed width, height, minLength props as they don't work on EditorContent */}
-          <EditorContent height={160} rows={4} cols={50} editor={editor} />
+          <EditorContent editor={editor} />
         </Box>
 
         {/* Footer */}
