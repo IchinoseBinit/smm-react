@@ -37,14 +37,12 @@ export default function DateTime({
   )
   const [selectedTime, setSelectedTime] = useState<any>(null)
 
-  // Get current time dynamically - not memoized to avoid stale closures
   const getCurrentTime = useCallback(() => new Date(), [])
   const getMinAllowedDateTime = useCallback(
     () => addMinutes(getCurrentTime(), 5),
     []
   )
 
-  // Combine date and time when both are selected
   useEffect(() => {
     if (selectedDate && selectedTime) {
       const timeValue = selectedTime
@@ -65,7 +63,6 @@ export default function DateTime({
       console.log("Current Time:", format(now, "yyyy-MM-dd HH:mm:ss"))
       console.log("Min Required:", format(minAllowed, "yyyy-MM-dd HH:mm:ss"))
 
-      // Check if combined date-time is at least 5 minutes in future
       if (isAfter(combinedDateTime, minAllowed)) {
         console.log("✅ Valid: Date-time is at least 5 minutes in future")
         setvalue(
@@ -84,7 +81,6 @@ export default function DateTime({
         setIsScheduled(false)
       }
     } else {
-      // Clear if either date or time is missing
       setvalue("scheduled_time", null, { shouldValidate: true })
       setIsScheduled(false)
     }
@@ -97,14 +93,11 @@ export default function DateTime({
     getMinAllowedDateTime,
   ])
 
-  // Set scheduling mode when date is selected
   useEffect(() => {
     if (selectedDate) {
-      // Set scheduling mode as soon as date is selected
       setIsScheduled(true)
 
       if (selectedTime) {
-        // Full validation only when both are selected
         const timeValue = selectedTime
         const hours = timeValue.hour()
         const minutes = timeValue.minute()
@@ -153,20 +146,17 @@ export default function DateTime({
       const now = getCurrentTime()
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
-      // Don't allow past dates
       if (date < today) {
         console.log("❌ Past date not allowed")
         return
       }
 
       setSelectedDate(date)
-      // Clear time when date changes
       setSelectedTime(null)
     },
     [getCurrentTime]
   )
 
-  // Memoize the callback to prevent infinite loops
   const handleTimeFromDemo = useCallback((timeValue: any) => {
     console.log("Time received from Demo:", timeValue)
     setSelectedTime(timeValue)
@@ -176,7 +166,7 @@ export default function DateTime({
     () => ({
       pr: "3rem",
       pl: "3rem",
-      h: "58px", // Use exact pixel value to match the time picker
+      h: "48px", // Keep this consistent with time picker
       bg: "bg.DEFAULT",
       selfAlign: "first",
       border: "1px solid", // Match the time picker border width
@@ -223,7 +213,12 @@ export default function DateTime({
               Published Date
               <Span color={"red.600"}>*</Span>
             </Field.Label>
-            <Box position="relative">
+            <Box
+              width={"250px"}
+              height={"48px"}
+              position="relative"
+              padding={0}
+            >
               <DatePicker
                 selected={selectedDate}
                 onChange={handleDateChange}
@@ -244,16 +239,6 @@ export default function DateTime({
                   strategy: "fixed",
                 }}
               />
-              {/* <Icon
-                as={FaCalendarAlt}
-                position="absolute"
-                left="3"
-                top="50%"
-                transform="translateY(-50%)"
-                color="green.500"
-                pointerEvents="none"
-                boxSize="1rem"
-              /> */}
               <IoIosArrowDown
                 style={{
                   position: "absolute",
@@ -263,18 +248,6 @@ export default function DateTime({
                   color: "gray",
                 }}
               />
-
-              {/* {selectedDate && (
-                <Icon
-                  as={FaCheckCircle}
-                  position="absolute"
-                  right="3"
-                  top="50%"
-                  transform="translateY(-50%)"
-                  color="green.500"
-                  boxSize="1rem"
-                />
-              )} */}
             </Box>
           </Field.Root>
 
@@ -364,7 +337,6 @@ export default function DateTime({
                   {format(selectedDate, "d MMM,yyyy")}
                 </Text>
 
-                {/* Time with clock icon */}
                 <HStack gap={2} align="center">
                   {/* <Icon as={FaClock} color="gray.500" boxSize="12px" /> */}
                   <Text
@@ -378,7 +350,6 @@ export default function DateTime({
                 </HStack>
               </Flex>
 
-              {/* Status Badge - Right aligned */}
               <Box flexShrink={0}>
                 <Badge
                   bg="white"
@@ -405,30 +376,11 @@ export default function DateTime({
             </Flex>
           </Box>
         )}
-
-        {/* <Box
-          p={3}
-          bg="blue.50"
-          borderLeft="4px solid"
-          borderLeftColor="blue.400"
-          borderRadius="md"
-        >
-          <HStack>
-            <Icon as={FaClock} color="blue.500" boxSize={4} />
-            <Text fontSize="sm" color="blue.700" fontWeight="medium">
-              <strong>Scheduling Rules:</strong> You can schedule for today if
-              it's at least 5 minutes from now (
-              {format(minAllowedDateTime, "h:mm a")}), or any time on future
-              dates.
-            </Text>
-          </HStack>
-        </Box> */}
       </VStack>
     </Box>
   )
 }
 
-// Enhanced Demo component that communicates with parent
 const EnhancedDemo = React.memo(function EnhancedDemo({
   selectedDate,
   onTimeChange,
@@ -444,7 +396,6 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
   const [isInvalidTime, setIsInvalidTime] = useState(false)
   // const [isFocused, setIsFocused] = useState(false)
 
-  // Clear time when date changes
   useEffect(() => {
     setValue(null)
     setIsInvalidTime(false)
@@ -459,7 +410,6 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
 
       const now = getCurrentTime()
 
-      // For today, validate the 5-minute gap
       if (isSameDay(selectedDate, now)) {
         const combinedDateTime = new Date(selectedDate)
         combinedDateTime.setHours(timeValue.hour(), timeValue.minute(), 0, 0)
@@ -468,7 +418,6 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
         return isAfter(combinedDateTime, minAllowedDateTime)
       }
 
-      // For future dates, any time is allowed
       return true
     },
     [selectedDate, getCurrentTime, getMinAllowedDateTime]
@@ -485,7 +434,6 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
         return
       }
 
-      // Always update the display value to allow smooth editing
       setValue(newValue)
 
       // Validate the time
@@ -532,13 +480,13 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
             "& .MuiInputBase-input": {
               padding: "0 48px !important",
               textAlign: "left",
-              color: value ? "#2d3748" : "transparent", // hides hh mm aa until value exists
-              caretColor: value ? "auto" : "transparent", // hides cursor when empty
+              color: value ? "#2d3748" : "transparent",
+              caretColor: value ? "auto" : "transparent",
             },
           }}
           slotProps={{
             textField: {
-              placeholder: "", // remove MUI's placeholder
+              placeholder: "",
             },
           }}
         />
