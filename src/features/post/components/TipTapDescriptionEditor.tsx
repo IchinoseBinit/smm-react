@@ -1,23 +1,23 @@
-// components/TiptapDescriptionEditor.jsx
-import React, { useCallback } from "react"
+import React, { useCallback, useState } from "react"
 import {
   Box,
   Text,
   HStack,
   Icon,
-  Button,
   Flex,
   Span,
   ButtonGroup,
-  VStack,
+  Button,
+  Menu,
+  Portal,
 } from "@chakra-ui/react"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import { IoMdArrowDropup } from "react-icons/io"
-import { IoMdArrowDropdown } from "react-icons/io"
-
 import Underline from "@tiptap/extension-underline"
 import TextAlign from "@tiptap/extension-text-align"
+import FontFamily from "@tiptap/extension-font-family"
+import { TextStyle } from "@tiptap/extension-text-style"
+import { IoMdArrowDropup, IoMdArrowDropdown } from "react-icons/io"
 import {
   FiSmile,
   FiHash,
@@ -40,6 +40,14 @@ import type {
   ToolbarButtonProps,
 } from "../types"
 
+const fonts = [
+  { value: "Arial", label: "Arial", category: "sans-serif" },
+  { value: "Helvetica", label: "Helvetica", category: "sans-serif" },
+  { value: "Times New Roman", label: "Times New Roman", category: "serif" },
+  { value: "Calibri", label: "Calibri", category: "sans-serif" },
+  { value: "Georgia", label: "Georgia", category: "serif" },
+]
+
 export const TiptapDescriptionEditor: React.FC<
   TiptapDescriptionEditorProps
 > = ({
@@ -48,10 +56,12 @@ export const TiptapDescriptionEditor: React.FC<
   onChange,
   onEmojiClick,
   onHashtagClick,
-  // minHeight = "200px", // Good starting height
-  maxHeight = "600px", // Optional: prevent it from getting too tall
-  // fixedHeight = false, // Changed to false for auto-expansion
+  maxHeight = "300px",
 }) => {
+  const [selectedFont, setSelectedFont] = useState("")
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isEmpty, setIsEmpty] = useState(true)
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -63,7 +73,11 @@ export const TiptapDescriptionEditor: React.FC<
           keepMarks: true,
           keepAttributes: false,
         },
-        italic: {}, // Explicitly enable italic
+        italic: {},
+      }),
+      TextStyle,
+      FontFamily.configure({
+        types: ["textStyle"],
       }),
       Underline,
       TextAlign.configure({
@@ -74,7 +88,12 @@ export const TiptapDescriptionEditor: React.FC<
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
       const text = editor.getText()
+      setIsEmpty(text.trim() === "")
       onChange?.(text, html)
+    },
+    onCreate: ({ editor }) => {
+      const text = editor.getText()
+      setIsEmpty(text.trim() === "")
     },
     editorProps: {
       attributes: {
@@ -122,6 +141,23 @@ export const TiptapDescriptionEditor: React.FC<
     },
     [editor]
   )
+
+  const handleFontChange = useCallback(
+    (fontFamily: string) => {
+      if (!editor) return
+
+      setSelectedFont(fontFamily)
+      editor.chain().focus().setFontFamily(fontFamily).run()
+    },
+    [editor]
+  )
+
+  const getCurrentFont = useCallback(() => {
+    if (!editor) return "Arial"
+
+    const { fontFamily } = editor.getAttributes("textStyle")
+    return fontFamily || selectedFont || "Arial"
+  }, [editor, selectedFont])
 
   const isActive = useCallback(
     (format: FormatType) => {
@@ -180,12 +216,30 @@ export const TiptapDescriptionEditor: React.FC<
 
   return (
     <Box maxW="40rem">
-      {/* Label */}
+      {/* Add the italic CSS as a style tag */}
+      <style>
+        {`
+          .tiptap-editor em,
+          .tiptap-editor i,
+          .ProseMirror em,
+          .ProseMirror i {
+            font-style: italic !important;
+          }
+          
+          .tiptap-editor strong em,
+          .tiptap-editor em strong,
+          .tiptap-editor strong i,
+          .tiptap-editor i strong {
+            font-weight: bold !important;
+            font-style: italic !important;
+          }
+        `}
+      </style>
+
       <Text fontSize="lg" fontWeight="semibold" mb={2} color="#00325c">
         Description <Span color="red.500">*</Span>
       </Text>
 
-      {/* Editor container */}
       <Box
         border="1px solid"
         borderColor="gray.200"
@@ -197,7 +251,6 @@ export const TiptapDescriptionEditor: React.FC<
           boxShadow: "0 0 0 1px gray.200",
         }}
       >
-        {/* Toolbar */}
         <Flex
           px={3}
           py={2}
@@ -208,14 +261,60 @@ export const TiptapDescriptionEditor: React.FC<
           gap={1}
         >
           <ButtonGroup size="sm" variant="ghost" gap={1}>
-            {/* Text formatting */}
-            <Box display={"flex"} alignItems="center" gap={1}>
-              <Text color={"#00325c"}>Font</Text>
-              <VStack gap={0} paddingLeft={8} alignItems="center">
-                <IoMdArrowDropup />
-                <IoMdArrowDropdown />
-              </VStack>
+            <Box display="flex" alignItems="center" gap={1}>
+              <Menu.Root onOpenChange={() => setIsMenuOpen(!isMenuOpen)}>
+                <Menu.Trigger asChild>
+                  <Button
+                    size="sm"
+                    minW="70px"
+                    maxW="70px"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    px={1}
+                  >
+                    <Text fontSize="xs">
+                      {selectedFont.length > 6
+                        ? selectedFont.slice(0, 6) + ".."
+                        : selectedFont || "Font"}
+                    </Text>
+                    {isMenuOpen ? (
+                      <IoMdArrowDropup size={10} />
+                    ) : (
+                      <IoMdArrowDropdown size={10} />
+                    )}
+                  </Button>
+                </Menu.Trigger>
+                <Portal>
+                  <Menu.Positioner>
+                    <Menu.Content maxH="200px" overflowY="auto">
+                      {fonts.map((font) => (
+                        <Menu.Item
+                          key={font.value}
+                          value={font.value}
+                          onClick={() => handleFontChange(font.value)}
+                          fontFamily={font.value}
+                          bg={
+                            getCurrentFont() === font.value
+                              ? "blue.50"
+                              : "transparent"
+                          }
+                          _hover={{ bg: "gray.50" }}
+                        >
+                          <Text fontFamily={font.value}>{font.label}</Text>
+                          <Text fontSize="xs" color="gray.500" ml={2}>
+                            {font.category}
+                          </Text>
+                        </Menu.Item>
+                      ))}
+                    </Menu.Content>
+                  </Menu.Positioner>
+                </Portal>
+              </Menu.Root>
             </Box>
+
+            <Box w="1px" h="28px" bg="gray.300" mx={1} />
+
             <ToolbarButton icon={FiBold} tooltip="Bold" format="bold" />
             <ToolbarButton icon={FiItalic} tooltip="Italic" format="italic" />
             <ToolbarButton
@@ -229,10 +328,8 @@ export const TiptapDescriptionEditor: React.FC<
               format="strike"
             />
 
-            {/* Vertical divider */}
             <Box w="1px" h="28px" bg="gray.300" mx={1} />
 
-            {/* Lists */}
             <ToolbarButton
               icon={FiList}
               tooltip="Bullet List"
@@ -244,10 +341,8 @@ export const TiptapDescriptionEditor: React.FC<
               format="orderedList"
             />
 
-            {/* Vertical divider */}
             <Box w="1px" h="28px" bg="gray.300" mx={1} />
 
-            {/* Text alignment */}
             <ToolbarButton
               icon={FiAlignLeft}
               tooltip="Align Left"
@@ -264,10 +359,8 @@ export const TiptapDescriptionEditor: React.FC<
               format="alignRight"
             />
 
-            {/* Vertical divider */}
             <Box w="1px" h="28px" bg="gray.300" mx={1} />
 
-            {/* Clear formatting */}
             <ToolbarButton
               icon={MdFormatClear}
               tooltip="Clear Formatting"
@@ -276,67 +369,72 @@ export const TiptapDescriptionEditor: React.FC<
           </ButtonGroup>
         </Flex>
 
-        {/* Editor content - Auto-expanding with fixed initial height */}
-        <Box
-          minH="300px"
-          maxH={maxHeight}
-          overflow="auto"
-          css={{
-            "& .ProseMirror": {
-              minHeight: "300px !important",
-              height: "auto",
-              padding: "16px",
-              outline: "none",
-              border: "none",
-            },
+        <Box minH="150px" maxH={maxHeight} overflow="auto" position="relative">
+          {isEmpty && (
+            <Text
+              position="absolute"
+              top="16px"
+              left="16px"
+              color="gray.400"
+              pointerEvents="none"
+              zIndex={1}
+              fontSize="md"
+              lineHeight="1.6"
+            >
+              {placeholder}
+            </Text>
+          )}
 
-            ".tiptap-editor": {
-              outline: "none",
-              border: "none",
-              padding: "16px",
-              fontSize: "md",
-              lineHeight: "1.6",
-              minHeight: "300px !important", // Force larger height
-              height: "auto",
-              width: "100%",
-              "&:empty:before": {
-                content: `"${placeholder}"`,
-                color: "#a0aec0",
-                pointerEvents: "none",
-                position: "absolute",
+          <Box
+            css={{
+              "& .ProseMirror": {
+                minHeight: "150px !important",
+                height: "auto",
+                padding: "16px",
+                outline: "none",
+                border: "none",
+                position: "relative",
+                zIndex: 2,
               },
-              "& p": {
-                margin: "0 0 8px 0",
-                "&:last-child": {
-                  marginBottom: 0,
+
+              ".tiptap-editor": {
+                outline: "none",
+                border: "none",
+                fontSize: "md",
+                lineHeight: "1.6",
+                minHeight: "150px !important",
+                height: "auto",
+                width: "100%",
+
+                "& p": {
+                  margin: "0 0 8px 0",
+                  "&:last-child": {
+                    marginBottom: 0,
+                  },
+                },
+                "& ul, & ol": {
+                  paddingLeft: "20px",
+                  margin: "8px 0",
+                },
+                "& li": {
+                  marginBottom: "4px",
+                },
+                "& strong": {
+                  fontWeight: "bold",
+                },
+                "& u": {
+                  textDecoration: "underline",
+                },
+                "& s": {
+                  textDecoration: "line-through",
                 },
               },
-              "& ul, & ol": {
-                paddingLeft: "20px",
-                margin: "8px 0",
-              },
-              "& li": {
-                marginBottom: "4px",
-              },
-              "& strong": {
-                fontWeight: "bold",
-              },
-              "& em": {
-                fontStyle: "italic !important",
-              },
-              "& u": {
-                textDecoration: "underline",
-              },
-              "& s": {
-                textDecoration: "line-through",
-              },
-            },
-          }}
-        >
-          <EditorContent editor={editor} />
+            }}
+          >
+            <EditorContent editor={editor} />
+          </Box>
         </Box>
 
-        {/* Footer */}
         <HStack
           gap={4}
           px={4}
@@ -353,7 +451,6 @@ export const TiptapDescriptionEditor: React.FC<
             </Text>
           </HStack>
 
-          {/* Custom vertical divider */}
           <Box w="1px" h="16px" bg="gray.200" />
 
           <HStack gap={1} cursor="pointer" onClick={onHashtagClick}>

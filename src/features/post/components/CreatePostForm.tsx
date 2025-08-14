@@ -434,8 +434,9 @@ export default function CreatePostForm() {
                   borderColor: "transparent",
                 }}
                 p={4}
-                size={"xl"}
-                fontSize="md"
+                size={"sm"}
+                fontSize="sm"
+                minH="2.5rem" // control height
                 _placeholder={{ color: "gray.500" }}
                 resize="none"
                 rounded="lg"
@@ -451,8 +452,6 @@ export default function CreatePostForm() {
         {/* Description Section with Tiptap Editor */}
         <TiptapDescriptionEditor
           fixedHeight={false}
-          minHeight="200px"
-          maxHeight="200px"
           value={descriptionContent}
           onChange={(text: string) => {
             setDescriptionContent(text)
