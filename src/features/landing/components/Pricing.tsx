@@ -88,6 +88,7 @@ export default function Pricing() {
                 borderColor="gray.300"
                 w="full"
                 borderRadius={8}
+                onClick={() => (window.location.href = "/register")}
               >
                 Get Started
               </Button>
@@ -159,6 +160,7 @@ export default function Pricing() {
                 color="white"
                 _hover={{ bg: "blue.600" }}
                 w="full"
+                onClick={() => (window.location.href = "/register")}
               >
                 Get Started
               </Button>
