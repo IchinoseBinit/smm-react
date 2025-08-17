@@ -16,6 +16,7 @@ import LandingPage from "./pages/landing/Landing";
 import Privacypolicy from "./pages/legal/Privacypolicy"
 import Termsofservices from "./pages/legal/Termsofservices"
 import Aboutus from "./pages/Company/Aboutus"
+import OrganizationSignup from "./pages/organization/OrganizationSignup"
 function App() {
   return (
     <>
@@ -23,6 +24,10 @@ function App() {
         {flatRoute({ path: "/", component: <LandingPage /> })}
         {flatRoute({ path: "/privacypolicy", component: <Privacypolicy /> })}
         {flatRoute({ path: "/aboutus", component: <Aboutus /> })}
+        {flatRoute({
+          path: "/organizationsignup",
+          component: <OrganizationSignup />,
+        })}
         {flatRoute({
           path: "/termsofservices",
           component: <Termsofservices />,
