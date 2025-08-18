@@ -5,9 +5,10 @@ import { useState } from "react"
 
 export default function Manager() {
   const [from, setFrom] = useState(
-    new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
+    new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
   )
   const [to, setTo] = useState(new Date().toISOString().split("T")[0])
+  console.log("from to test", from, "and to test", to)
 
   return (
     <>
@@ -52,7 +53,7 @@ export default function Manager() {
           </HStack>
         </Flex>
 
-        <SocialMediaPosts />
+        <SocialMediaPosts from={from} to={to} />
       </Box>
     </>
   )
