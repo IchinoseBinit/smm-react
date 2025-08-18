@@ -12,16 +12,16 @@ import Manager from "./pages/manager/Manager";
 import FacebookSuccessPage from "./features/accounts/components/facebook/FbSuccessPage";
 import TiktokSuccessPage from "./features/accounts/components/titkok/TkSuccessPage";
 import YoutubeSuccessPage from "./features/accounts/components/youtube/YtSuccessPage"
+import LandingPage from "./pages/landing/Landing"
 import Privacypolicy from "./pages/legal/Privacypolicy"
 import Termsofservices from "./pages/legal/Termsofservices"
 import Aboutus from "./pages/Company/Aboutus"
 import OrganizationSignup from "./pages/organization/OrganizationSignup"
-import Test from "./pages/test"
 function App() {
   return (
     <>
       <Routes>
-        {flatRoute({ path: "/test", component: <Test /> })}
+        {flatRoute({ path: "/", component: <LandingPage /> })}
         {flatRoute({ path: "/privacypolicy", component: <Privacypolicy /> })}
         {flatRoute({ path: "/aboutus", component: <Aboutus /> })}
         {flatRoute({
