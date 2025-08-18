@@ -12,6 +12,7 @@ export const API_ROUTES = {
   USER: {},
   CONNECT_ACC: {
     ALL_Conn_ACC: `${thirdPartyApi}/auth/social/connected-accounts/`,
+    DELETE_Conn_ACC: `${thirdPartyApi}/auth/social/connected-accounts/4/`,
     FACEBOOK: {
       URL: `/v1/auth/social/facebook/login/`,
       PAGES: `${thirdPartyApi}/auth/social/facebook/pages/user/`,

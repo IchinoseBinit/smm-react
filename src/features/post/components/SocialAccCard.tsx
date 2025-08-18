@@ -63,6 +63,7 @@ export default function SocialAccountCard({
         >
           {social_name}
         </Text>
+
         {thumbnail_url && (
           <Image
             position="absolute"
@@ -74,5 +75,5 @@ export default function SocialAccountCard({
         )}
       </Flex>
     </Box>
-  );
+  )
 }
