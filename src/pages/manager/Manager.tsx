@@ -1,24 +1,59 @@
-import { Box, Text } from "@chakra-ui/react";
-import SocialMediaPosts from "@/features/manager/components/SocialMediaPosts";
-import { Helmet } from "react-helmet-async";
+import { Box, Text, Flex, HStack, Input } from "@chakra-ui/react"
+import SocialMediaPosts from "@/features/manager/components/SocialMediaPosts"
+import { Helmet } from "react-helmet-async"
+import { useState } from "react"
 
 export default function Manager() {
+  const [from, setFrom] = useState(
+    new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
+  )
+  const [to, setTo] = useState(new Date().toISOString().split("T")[0])
+
   return (
     <>
       <Helmet>
         <title>Posts</title>
       </Helmet>
       <Box p={{ base: 4, md: 8 }} bg="bg.DEFAULT" minH="100vh">
-        <Text
-          fontSize={{ base: "2xl", md: "3xl" }}
-          fontWeight="bold"
-          mb={6}
-          color="fg.DEFAULT"
-        >
-          Social Media Posts
-        </Text>
+        <Flex justify="space-between" align="end" mb={6}>
+          <Text
+            fontSize={{ base: "2xl", md: "3xl" }}
+            fontWeight="bold"
+            color="fg.DEFAULT"
+          >
+            Posts
+          </Text>
+
+          <HStack spaceX={3} align="end">
+            <Box>
+              <Text fontSize="sm" mb={1} color="fg.MUTED">
+                From
+              </Text>
+              <Input
+                type="date"
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+                size="sm"
+                maxW="40"
+              />
+            </Box>
+            <Box>
+              <Text fontSize="sm" mb={1} color="fg.MUTED">
+                To
+              </Text>
+              <Input
+                type="date"
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+                size="sm"
+                maxW="40"
+              />
+            </Box>
+          </HStack>
+        </Flex>
+
         <SocialMediaPosts />
       </Box>
     </>
-  );
+  )
 }

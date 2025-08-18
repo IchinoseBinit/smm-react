@@ -1,30 +1,30 @@
-import { Badge, Box, Heading, HStack, Text } from "@chakra-ui/react";
-import type { Post } from "../types";
-import { FaFacebook, FaTiktok, FaYoutube, FaInstagram } from "react-icons/fa6";
-import { formatToLocalTime } from "@/lib/helper/formateDateTime";
+import { Badge, Box, Heading, HStack, Text } from "@chakra-ui/react"
+import type { Post } from "../types"
+import { FaFacebook, FaTiktok, FaYoutube, FaInstagram } from "react-icons/fa6"
+import { formatToLocalTime } from "@/lib/helper/formateDateTime"
 
 export default function RenderPosts({ posts }: { posts: Post[] }) {
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
       case "failed":
-        return "red.600";
+        return "red.600"
       case "posted":
-        return "green.600";
+        return "green.600"
       case "scheduled":
-        return "yellow.500";
+        return "yellow.500"
       case "null":
-        return "white";
+        return "white"
       default:
-        return "gray";
+        return "gray"
     }
-  };
+  }
 
   return (
     <>
       {posts?.map((post) => {
         const uniquePlatforms = [
           ...new Set(post?.platform_statuses?.map((p) => p.accountType)),
-        ];
+        ]
         return (
           <Box
             key={post?.id}
@@ -152,24 +152,22 @@ export default function RenderPosts({ posts }: { posts: Post[] }) {
                       borderradius: "full",
                       bg: "gray.100",
                       _dark: { bg: "gray.700" },
-                    };
+                    }
                     if (type === "YOUTUBE")
                       return (
                         <FaYoutube key={i} color="#FF0000" {...iconProps} />
-                      );
+                      )
                     if (type === "FACEBOOK")
                       return (
                         <FaFacebook key={i} color="#1877F2" {...iconProps} />
-                      );
+                      )
                     if (type === "TIKTOK")
-                      return (
-                        <FaTiktok key={i} color="#000000" {...iconProps} />
-                      );
+                      return <FaTiktok key={i} color="#000000" {...iconProps} />
                     if (type === "INSTAGRAM")
                       return (
                         <FaInstagram key={i} color="#E1306C" {...iconProps} />
-                      );
-                    return null;
+                      )
+                    return null
                   })}
                 </HStack>
               </Box>
@@ -184,7 +182,7 @@ export default function RenderPosts({ posts }: { posts: Post[] }) {
               >
                 {post.status == "posted"
                   ? formatToLocalTime(
-                      post?.platform_statuses[0]?.posted_time?.toString(),
+                      post?.platform_statuses[0]?.posted_time?.toString()
                     )
                   : formatToLocalTime(post.scheduled_time)}
               </Text>
@@ -203,8 +201,8 @@ export default function RenderPosts({ posts }: { posts: Post[] }) {
               </Badge>
             </HStack>
           </Box>
-        );
+        )
       })}
     </>
-  );
+  )
 }
