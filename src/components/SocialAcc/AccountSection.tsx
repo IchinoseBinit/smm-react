@@ -14,6 +14,7 @@ import {
 import { IoEllipsisVertical } from "react-icons/io5"
 import { MdDelete } from "react-icons/md"
 import useDeleteConnAcc from "@/features/accounts/hooks/useDeleteAccount"
+import { useAuthUtils } from "@/hooks/useAuthUtils"
 
 type AccountType = string
 
@@ -26,10 +27,12 @@ type AccountSectionProps = {
 }
 
 const DeleteMenu = ({ data }: any) => {
+  const { userId } = useAuthUtils()
+
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   console.log("delete menu", data)
 
-  const deleteMutation = useDeleteConnAcc()
+  const deleteMutation = useDeleteConnAcc(userId)
 
   const handleDeleteClick = () => {
     setIsDialogOpen(true)

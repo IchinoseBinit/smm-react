@@ -12,9 +12,9 @@ const connectedFbAccPages = (user_id: string) =>
 
 
 
-const DELETE_Conn_ACC = ({data}:{data:deleteConnAcc}) =>
+const DELETE_Conn_ACC = ({data,user_id}:{data:deleteConnAcc,user_id:string}) =>
   safeApiCall(() =>
-    axiosInstance.delete(`${API_ROUTES.CONNECT_ACC.DELETE_Conn_ACC}`,{data})
+    axiosInstance.post(`${API_ROUTES.CONNECT_ACC.DELETE_Conn_ACC}${user_id}/delete/`,data)
       .then((res) => res.data),
   );
 export { connectedFbAccPages, DELETE_Conn_ACC }
