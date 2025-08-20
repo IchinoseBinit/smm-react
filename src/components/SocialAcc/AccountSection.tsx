@@ -1,25 +1,7 @@
-import { useState } from "react"
-import {
-  Box,
-  Heading,
-  Button,
-  Portal,
-  CloseButton,
-  Text,
-  Dialog,
-  VStack,
-  Icon,
-  HStack,
-  Image,
-} from "@chakra-ui/react"
+import { Box, Heading, Text, VStack, Icon, HStack } from "@chakra-ui/react"
 import { FaTiktok } from "react-icons/fa6"
-
 import { FaInstagram } from "react-icons/fa6"
-
-import useDeleteConnAcc from "@/features/accounts/hooks/useDeleteAccount"
-import { useAuthUtils } from "@/hooks/useAuthUtils"
 import { FaFacebook } from "react-icons/fa6"
-import Delete from "@/assets/deletebtn.svg"
 import { FaYoutube } from "react-icons/fa6"
 
 type AccountType = string
@@ -32,96 +14,93 @@ type AccountSectionProps = {
   pagesPath?: string
 }
 
-const DeleteMenu = ({ data }: any) => {
-  const { userId } = useAuthUtils()
+// const DeleteMenu = ({ data }: any) => {
+//   const { userId } = useAuthUtils()
+//   const [isDialogOpen, setIsDialogOpen] = useState(false)
+//   console.log("delete menu", data)
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  console.log("delete menu", data)
+//   const deleteMutation = useDeleteConnAcc(userId)
 
-  const deleteMutation = useDeleteConnAcc(userId)
+//   const handleDeleteClick = () => {
+//     setIsDialogOpen(true)
+//   }
 
-  const handleDeleteClick = () => {
-    setIsDialogOpen(true)
-  }
+//   const handleConfirmDelete = () => {
+//     deleteMutation.mutate({ id: data.id, account_type: data.account_type })
+//     console.log("Item deleted")
+//     setIsDialogOpen(false)
+//   }
 
-  const handleConfirmDelete = () => {
-    deleteMutation.mutate({ id: data.id, account_type: data.account_type })
+//   const handleCancel = () => {
+//     setIsDialogOpen(false)
+//   }
 
-    // Add your delete logic here
-    console.log("Item deleted")
-    setIsDialogOpen(false)
-  }
+//   return (
+//     <>
+//       <Box
+//         w={6}
+//         h={6}
+//         display="flex"
+//         alignItems="center"
+//         justifyContent="center"
+//         cursor="pointer"
+//         onClick={handleDeleteClick}
+//       >
+//         <Image src={Delete} />
+//       </Box>
 
-  const handleCancel = () => {
-    setIsDialogOpen(false)
-  }
-
-  return (
-    <>
-      <Box
-        w={6}
-        h={6}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        cursor="pointer"
-        onClick={handleDeleteClick}
-      >
-        {/* <MdDelete color="#ff0000" size={14} /> */}
-        <Image src={Delete} />
-      </Box>
-
-      <Dialog.Root
-        open={isDialogOpen}
-        onOpenChange={(details) => setIsDialogOpen(details.open)}
-      >
-        <Portal>
-          <Dialog.Backdrop />
-          <Dialog.Positioner>
-            <Dialog.Content>
-              <Dialog.Header>
-                <Dialog.Title>Confirm Delete</Dialog.Title>
-              </Dialog.Header>
-              <Dialog.Body>
-                <p>
-                  Are you sure you want to delete this account? This action
-                  cannot be undone.
-                </p>
-              </Dialog.Body>
-              <Dialog.Footer>
-                <Dialog.ActionTrigger asChild>
-                  <Button variant="outline" onClick={handleCancel}>
-                    Cancel
-                  </Button>
-                </Dialog.ActionTrigger>
-                <Button colorScheme="red" onClick={handleConfirmDelete}>
-                  Delete
-                </Button>
-              </Dialog.Footer>
-              <Dialog.CloseTrigger asChild>
-                <CloseButton size="sm" />
-              </Dialog.CloseTrigger>
-            </Dialog.Content>
-          </Dialog.Positioner>
-        </Portal>
-      </Dialog.Root>
-    </>
-  )
-}
+//       <Dialog.Root
+//         open={isDialogOpen}
+//         onOpenChange={(details) => setIsDialogOpen(details.open)}
+//       >
+//         <Portal>
+//           <Dialog.Backdrop />
+//           <Dialog.Positioner>
+//             <Dialog.Content>
+//               <Dialog.Header>
+//                 <Dialog.Title>Confirm Delete</Dialog.Title>
+//               </Dialog.Header>
+//               <Dialog.Body>
+//                 <p>
+//                   Are you sure you want to delete this account? This action
+//                   cannot be undone.
+//                 </p>
+//               </Dialog.Body>
+//               <Dialog.Footer>
+//                 <Dialog.ActionTrigger asChild>
+//                   <Button variant="outline" onClick={handleCancel}>
+//                     Cancel
+//                   </Button>
+//                 </Dialog.ActionTrigger>
+//                 <Button colorScheme="red" onClick={handleConfirmDelete}>
+//                   Delete
+//                 </Button>
+//               </Dialog.Footer>
+//               <Dialog.CloseTrigger asChild>
+//                 <CloseButton size="sm" />
+//               </Dialog.CloseTrigger>
+//             </Dialog.Content>
+//           </Dialog.Positioner>
+//         </Portal>
+//       </Dialog.Root>
+//     </>
+//   )
+// }
 
 const AccountItem = ({ data, Component, pagesPath }: any) => {
+  console.log("Account item", data)
   return (
     <Box w="100%" position="relative">
-      <Component {...data} pagesPath={pagesPath} />
-      <Box
+      <Component data={data} {...data} pagesPath={pagesPath} />
+      {/* <Box
         position="absolute"
         top="30%"
-        right="35px"
+        right={{ base: "20px", sm: "25px", md: "30px", lg: "35px", xl: "40px" }}
         transform="translateY(-50%)"
         zIndex={10}
       >
         <DeleteMenu data={data} />
-      </Box>
+      </Box> */}
     </Box>
   )
 }
@@ -177,12 +156,7 @@ export const AccountSection = ({
               <Heading size="lg" color="gray.800" fontWeight="600">
                 {label.charAt(0) + label.slice(1).toLowerCase()}
               </Heading>
-              <Text
-                color="#5c5c5c"
-                fontSize={"12px"}
-                cursor="pointer"
-                mt={-1} // Negative top margin to pull it closer
-              >
+              <Text color="#5c5c5c" fontSize={"12px"} cursor="pointer" mt={-1}>
                 {filtered.length} connected accounts
               </Text>
             </VStack>
