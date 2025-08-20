@@ -116,7 +116,7 @@ const AccountItem = ({ data, Component, pagesPath }: any) => {
       <Box
         position="absolute"
         top="30%"
-        right="12px"
+        right="35px"
         transform="translateY(-50%)"
         zIndex={10}
       >
@@ -146,11 +146,7 @@ export const AccountSection = ({
       borderColor="blue.100"
       borderRadius="12px"
       p={6}
-      bg="white"
-      _hover={{
-        borderColor: "blue.300",
-      }}
-      transition="all 0.2s"
+      bg="#ffffff"
     >
       {label && (
         <Box
@@ -182,10 +178,9 @@ export const AccountSection = ({
                 {label.charAt(0) + label.slice(1).toLowerCase()}
               </Heading>
               <Text
-                color="gray.700"
-                fontSize="sm"
+                color="#5c5c5c"
+                fontSize={"12px"}
                 cursor="pointer"
-                _hover={{ color: "gray.900" }}
                 mt={-1} // Negative top margin to pull it closer
               >
                 {filtered.length} connected accounts

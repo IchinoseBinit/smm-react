@@ -23,7 +23,7 @@ export default function InstagramAccount({
         bg: { base: "white", _dark: "primary.700" },
         cursor: "pointer",
       }}
-      w="20rem"
+      w="18rem"
       position="relative"
       transition="all 0.2s"
     >

@@ -23,7 +23,7 @@ export default function FacebookAccount({
         bg: { base: "white", _dark: "primary.700" },
         cursor: "pointer",
       }}
-      w="20rem"
+      w="18rem"
       position="relative"
       transition="all 0.2s"
     >
@@ -33,7 +33,9 @@ export default function FacebookAccount({
           fontWeight="semibold"
           color={{ base: "primary.800", _dark: "white" }}
         >
-          <Box as="span">{social_name}</Box>
+          <Box as="span" fontSize={14} fontWeight={"semibold"}>
+            {social_name}
+          </Box>
         </Text>
         {thumbnail_url && (
           <Image
