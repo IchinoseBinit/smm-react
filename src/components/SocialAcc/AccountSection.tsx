@@ -143,7 +143,7 @@ export const AccountSection = ({
   return (
     <Box
       border="1px solid"
-      borderColor="blue.100"
+      borderColor="#ccdeea"
       borderRadius="12px"
       p={6}
       bg="#ffffff"

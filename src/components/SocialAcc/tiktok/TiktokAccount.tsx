@@ -16,7 +16,7 @@ export default function TiktokAccount({
       mt={5}
       borderRadius="12px 12px 12px 0"
       border={"1px solid"}
-      borderColor={"blue.100"}
+      borderColor={"#ccdeea"}
       bg={{ base: "#fbfcff", _dark: "primary.800" }}
       opacity={1.8}
       _hover={{
