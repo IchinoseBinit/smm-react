@@ -1,299 +1,378 @@
+import * as React from "react"
 import {
   Box,
   Field,
   Flex,
-  Icon,
   Input,
   Text,
   VStack,
   HStack,
   Badge,
+  Image,
+  Span,
 } from "@chakra-ui/react"
 import DatePicker from "react-datepicker"
-import { FaCalendarAlt, FaClock, FaCheckCircle } from "react-icons/fa"
 import "react-datepicker/dist/react-datepicker.css"
-import { format } from "date-fns"
+import { format, addMinutes, isAfter, isSameDay } from "date-fns"
 import { useScheduleStore } from "../lib/store/dateTime"
+import { useState, useEffect, useCallback, useMemo } from "react"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { TimePicker } from "@mui/x-date-pickers/TimePicker"
+import Test from "../../../assets/schedule.svg"
+import { IoIosArrowDown } from "react-icons/io"
+
+import { TiTick } from "react-icons/ti"
 
 export default function DateTime({
   setvalue,
-  register,
   scheduled,
 }: {
   setvalue: any
-  register: any
   scheduled: any
 }) {
-  const setIsScheduled = useScheduleStore((s) => s.setIsScheduled)
-  const selectedDate = scheduled ? new Date(scheduled) : null
-  const now = new Date()
+  const { setIsScheduled, isScheduled } = useScheduleStore()
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    scheduled ? new Date(scheduled) : null
+  )
+  const [selectedTime, setSelectedTime] = useState<any>(null)
 
-  const handleDateTimeChange = (date: Date | null) => {
-    if (!date) {
+  const getCurrentTime = useCallback(() => new Date(), [])
+  const getMinAllowedDateTime = useCallback(
+    () => addMinutes(getCurrentTime(), 5),
+    []
+  )
+
+  useEffect(() => {
+    if (selectedDate && selectedTime) {
+      const timeValue = selectedTime
+      const hours = timeValue.hour()
+      const minutes = timeValue.minute()
+
+      // Create combined date-time
+      const combinedDateTime = new Date(selectedDate)
+      combinedDateTime.setHours(hours, minutes, 0, 0)
+
+      const now = getCurrentTime()
+      const minAllowed = getMinAllowedDateTime()
+
+      console.log(
+        "Combined DateTime:",
+        format(combinedDateTime, "yyyy-MM-dd HH:mm:ss")
+      )
+      console.log("Current Time:", format(now, "yyyy-MM-dd HH:mm:ss"))
+      console.log("Min Required:", format(minAllowed, "yyyy-MM-dd HH:mm:ss"))
+
+      if (isAfter(combinedDateTime, minAllowed)) {
+        console.log("✅ Valid: Date-time is at least 5 minutes in future")
+        setvalue(
+          "scheduled_time",
+          format(combinedDateTime, "yyyy-MM-dd'T'HH:mm:ssxxx"),
+          {
+            shouldValidate: true,
+          }
+        )
+        setIsScheduled(true)
+      } else {
+        console.log(
+          "❌ Invalid: Date-time must be at least 5 minutes in future"
+        )
+        setvalue("scheduled_time", null, { shouldValidate: true })
+        setIsScheduled(false)
+      }
+    } else {
       setvalue("scheduled_time", null, { shouldValidate: true })
       setIsScheduled(false)
+    }
+  }, [
+    selectedDate,
+    selectedTime,
+    setvalue,
+    setIsScheduled,
+    getCurrentTime,
+    getMinAllowedDateTime,
+  ])
+
+  useEffect(() => {
+    if (selectedDate) {
+      setIsScheduled(true)
+
+      if (selectedTime) {
+        const timeValue = selectedTime
+        const hours = timeValue.hour()
+        const minutes = timeValue.minute()
+        const combinedDateTime = new Date(selectedDate)
+        combinedDateTime.setHours(hours, minutes, 0, 0)
+
+        const minAllowed = getMinAllowedDateTime()
+
+        if (isAfter(combinedDateTime, minAllowed)) {
+          setvalue(
+            "scheduled_time",
+            format(combinedDateTime, "yyyy-MM-dd'T'HH:mm:ssxxx"),
+            {
+              shouldValidate: true,
+            }
+          )
+        } else {
+          setvalue("scheduled_time", null, { shouldValidate: true })
+        }
+      } else {
+        setvalue("scheduled_time", null, { shouldValidate: true })
+      }
     } else {
-      // Prevent setting past date/time
-      if (date <= now) {
-        return // Don't allow past dates
+      // Clear scheduling mode when no date
+      setIsScheduled(false)
+      setvalue("scheduled_time", null, { shouldValidate: true })
+    }
+  }, [
+    selectedDate,
+    selectedTime,
+    setvalue,
+    setIsScheduled,
+    getMinAllowedDateTime,
+  ])
+
+  const handleDateChange = useCallback(
+    (date: Date | null) => {
+      console.log("Date selected:", date ? format(date, "yyyy-MM-dd") : "None")
+
+      if (!date) {
+        setSelectedDate(null)
+        setSelectedTime(null)
+        return
       }
 
-      setvalue("scheduled_time", format(date, "yyyy-MM-dd'T'HH:mm:ssxxx"), {
-        shouldValidate: true,
-      })
-      setIsScheduled(true)
-    }
-  }
+      const now = getCurrentTime()
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
-  // Filter function to disable past times
-  const filterTime = (time: Date) => {
-    const current = new Date()
+      if (date < today) {
+        console.log("❌ Past date not allowed")
+        return
+      }
 
-    // If selected date is today, only show future times
-    if (
-      selectedDate &&
-      selectedDate.toDateString() === current.toDateString()
-    ) {
-      return time.getTime() > current.getTime()
-    }
-
-    // For future dates, allow all times
-    return true
-  }
-
-  const inputStyles = {
-    pr: "3rem",
-    pl: "3rem",
-    h: "12",
-    bg: "bg.DEFAULT",
-    border: "2px solid",
-    borderColor: "border.DEFAULT",
-    borderRadius: "xl",
-    fontSize: "sm",
-    fontWeight: "medium",
-    transition: "all 0.2s ease",
-    _hover: {
-      borderColor: "secondary.300",
-      boxShadow: "0 0 0 1px var(--chakra-colors-secondary-200)",
+      setSelectedDate(date)
+      setSelectedTime(null)
     },
-    _focus: {
-      borderColor: "secondary.500",
-      boxShadow: "0 0 0 3px var(--chakra-colors-secondary-100)",
-      outline: "none",
-    },
-    _placeholder: {
-      color: "fg.MUTED",
+    [getCurrentTime]
+  )
+
+  const handleTimeFromDemo = useCallback((timeValue: any) => {
+    console.log("Time received from Demo:", timeValue)
+    setSelectedTime(timeValue)
+  }, [])
+
+  const inputStyles = useMemo(
+    () => ({
+      pr: "3rem",
+      pl: "3rem",
+      h: "48px", // Keep this consistent with time picker
+      bg: "bg.DEFAULT",
+      selfAlign: "first",
+      border: "1px solid", // Match the time picker border width
+      borderColor: "gray.300",
+      borderRadius: "5px", // Match the time picker border radius
       fontSize: "sm",
-    },
-  }
+      fontWeight: "medium",
+      transition: "all 0.2s ease",
+
+      _hover: {
+        borderColor: "secondary.300",
+        boxShadow: "0 0 0 1px var(--chakra-colors-secondary-200)",
+      },
+      _focus: {
+        borderColor: "secondary.500",
+        boxShadow: "0 0 0 3px var(--chakra-colors-secondary-100)",
+        outline: "none",
+      },
+      _placeholder: {
+        color: "fg.MUTED",
+        fontSize: "sm",
+      },
+    }),
+    []
+  )
+  const now = getCurrentTime()
+  // const minAllowedDateTime = getMinAllowedDateTime()
 
   return (
     <Box>
       <VStack spaceY={6} align="stretch" w="full">
-        {/* Header Section */}
-        <Box>
-          <HStack mb={2} align="center">
-            {/* <Icon as={FaCalendarAlt} color="secondary.500" boxSize={5} /> */}
-            <Text fontSize="lg" fontWeight="semibold" color="fg.DEFAULT">
-              Schedule Settings
-            </Text>
-          </HStack>
-          <Text fontSize="sm" color="fg.MUTED">
-            Choose when you want your post to be published (future dates only)
-          </Text>
-        </Box>
-
-        {/* Date & Time Inputs */}
         <Flex direction={{ base: "column", lg: "row" }} gap={4} align="stretch">
           {/* Date Picker */}
           <Field.Root flex="1">
             <Field.Label
               fontSize="sm"
               fontWeight="bold"
-              color="fg.DEFAULT"
+              color="#00325c"
               mb={2}
               display="flex"
               alignItems="center"
               gap={2}
             >
-              {/* <Icon as={FaCalendarAlt} color="secondary.400" boxSize={4} /> */}
-              Publication Date
+              Published Date
+              <Span color={"red.600"}>*</Span>
             </Field.Label>
-            <Box position="relative">
+            <Box
+              width={"250px"}
+              height={"48px"}
+              position="relative"
+              padding={0}
+            >
               <DatePicker
                 selected={selectedDate}
-                onChange={handleDateTimeChange}
+                onChange={handleDateChange}
                 dateFormat="EEEE, MMM dd, yyyy"
-                placeholderText="Select publication date"
+                placeholderText="Select the date"
                 showTimeInput={false}
-                customInput={
-                  <Input {...register("scheduled_time")} {...inputStyles} />
-                }
+                customInput={<Input {...inputStyles} />}
                 minDate={now} // Prevent past dates
-                filterDate={(date) => date >= now}
+                filterDate={(date) => {
+                  const today = new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    now.getDate()
+                  )
+                  return date >= today
+                }}
                 popperProps={{
                   strategy: "fixed",
                 }}
               />
-              <Icon
-                as={FaCalendarAlt}
-                position="absolute"
-                left="3"
-                top="50%"
-                transform="translateY(-50%)"
-                color="secondary.400"
-                pointerEvents="none"
-                boxSize="1rem"
+              <IoIosArrowDown
+                style={{
+                  position: "absolute",
+                  right: "13",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "gray",
+                }}
               />
-              {selectedDate && (
-                <Icon
-                  as={FaCheckCircle}
-                  position="absolute"
-                  right="3"
-                  top="50%"
-                  transform="translateY(-50%)"
-                  color="green.500"
-                  boxSize="1rem"
-                />
-              )}
             </Box>
           </Field.Root>
 
-          {/* Time Picker */}
           <Field.Root flex="1">
             <Field.Label
               fontSize="sm"
               fontWeight="bold"
-              color="fg.DEFAULT"
+              color="#00325c"
               mb={2}
               display="flex"
               alignItems="center"
               gap={2}
             >
-              {/* <Icon as={FaClock} color="secondary.400" boxSize={4} /> */}
               Publication Time
+              <Span color={"red.600"}>*</Span>
             </Field.Label>
             <Box position="relative">
-              <DatePicker
-                selected={selectedDate}
-                onChange={handleDateTimeChange}
-                showTimeSelect
-                showTimeSelectOnly
-                filterTime={filterTime} // Filter past times
-                timeIntervals={15}
-                timeFormat="h:mm aa"
-                dateFormat="h:mm aa"
-                placeholderText="Select time"
-                customInput={
-                  <Input {...register("scheduled_time")} {...inputStyles} />
-                }
-                popperProps={{
-                  strategy: "fixed",
-                }}
+              {/* Enhanced Demo component that passes time back */}
+              <EnhancedDemo
+                selectedDate={selectedDate}
+                onTimeChange={handleTimeFromDemo}
+                getCurrentTime={getCurrentTime}
+                getMinAllowedDateTime={getMinAllowedDateTime}
               />
-              {/* Left Icon */}
-              <Icon
-                as={FaClock}
-                position="absolute"
-                left="3"
-                top="50%"
-                transform="translateY(-50%)"
-                color="secondary.400"
-                pointerEvents="none"
-                boxSize="1rem"
-              />
-              {/* Right Status Icon */}
-              {selectedDate && (
-                <Icon
-                  as={FaCheckCircle}
-                  position="absolute"
-                  right="3"
-                  top="50%"
-                  transform="translateY(-50%)"
-                  color="green.500"
-                  boxSize="1rem"
-                />
-              )}
             </Box>
           </Field.Root>
         </Flex>
 
-        {/* Preview Section */}
-        {selectedDate && (
+        {/* UPDATED SCHEDULED CARD - MATCHING FIGMA DESIGN */}
+        {selectedDate && selectedTime && isScheduled && (
           <Box
-            p={5}
-            bg="secondary.50"
-            borderRadius="xl"
-            border="2px solid"
-            borderColor="secondary.200"
+            p={4}
+            bg="#f0f8ff"
+            borderRadius="16px"
+            border="1px solid"
+            // borderColor="rgba(99, 102, 241, 0.15)"
+            borderColor="#f0f8ff"
             position="relative"
             overflow="hidden"
-            transform="scale(1)"
             transition="all 0.2s ease"
             _hover={{
-              transform: "scale(1.02)",
-              boxShadow: "lg",
+              bg: "#f0f8ff",
+              borderColor: "#f0f8ff",
             }}
             _dark={{
-              bg: "secondary.900",
-              borderColor: "secondary.700",
+              bg: "rgba(99, 102, 241, 0.1)",
+              borderColor: "rgba(99, 102, 241, 0.2)",
             }}
           >
-            {/* Top gradient line */}
+            {/* Top accent line - matching purple theme */}
             <Box
               position="absolute"
               top="0"
               left="0"
               right="0"
-              height="3px"
-              bgGradient="linear(to-r, secondary.400, secondary.600)"
+              height="2px"
+              bgGradient="linear(to-r, purple.400, blue.400)"
             />
 
-            <Flex align="center" justify="space-between">
-              <HStack gap={4}>
-                <Box
-                  p={3}
-                  bg="secondary.500"
-                  borderRadius="lg"
-                  color="white"
-                  boxShadow="md"
+            <Flex align="center" gap={4}>
+              {/* Calendar Icon/Image */}
+              <Box
+                flexShrink={0}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Image
+                  src={Test}
+                  alt="Schedule icon"
+                  height={44}
+                  width={44}
+                  boxSize="40px"
+                />
+              </Box>
+
+              {/* Content Section - Date and Time */}
+              <Flex flex={1} direction="column" gap={1}>
+                {/* Date - matching Figma format "7 Aug,2025" */}
+                <Text
+                  fontSize="md"
+                  fontWeight="600"
+                  color="gray.900"
+                  lineHeight="1.2"
+                  _dark={{ color: "gray.100" }}
                 >
-                  <Icon as={FaCalendarAlt} boxSize="1.25rem" />
-                </Box>
-                <VStack align="start" gap={2}>
-                  <HStack>
-                    <Badge
-                      colorScheme="green"
-                      size="sm"
-                      borderRadius="full"
-                      px={3}
-                      py={1}
-                      fontWeight="semibold"
-                    >
-                      ✓ Scheduled
-                    </Badge>
-                  </HStack>
+                  {format(selectedDate, "d MMM,yyyy")}
+                </Text>
+
+                <HStack gap={2} align="center">
+                  {/* <Icon as={FaClock} color="gray.500" boxSize="12px" /> */}
                   <Text
-                    fontSize="lg"
-                    fontWeight="bold"
-                    color="fg.DEFAULT"
-                    lineHeight="short"
+                    fontSize="sm"
+                    color="black"
+                    fontWeight="500"
+                    _dark={{ color: "gray.400" }}
                   >
-                    {format(selectedDate, "EEEE, MMMM do, yyyy")}
+                    {selectedTime.format("h:mm A")}
                   </Text>
-                  <HStack gap={2}>
-                    <Icon as={FaClock} color="secondary.600" boxSize={3} />
-                    <Text
-                      fontSize="sm"
-                      color="secondary.600"
-                      fontWeight="medium"
-                      _dark={{ color: "secondary.300" }}
-                    >
-                      {format(selectedDate, "h:mm aa")}
-                    </Text>
-                  </HStack>
-                </VStack>
-              </HStack>
+                </HStack>
+              </Flex>
+
+              <Box flexShrink={0}>
+                <Badge
+                  bg="white"
+                  border="1px solid"
+                  borderColor="#005399"
+                  borderRadius="full"
+                  px={3}
+                  py={1}
+                  fontSize="xs"
+                  fontWeight="600"
+                  textTransform="none"
+                  _dark={{
+                    bg: "rgba(34, 197, 94, 0.15)",
+                    color: "green.400",
+                    borderColor: "rgba(34, 197, 94, 0.3)",
+                  }}
+                >
+                  <Span color="#005399">Scheduled</Span>
+                  <Box backgroundColor={"#005399"} borderRadius={"full"}>
+                    <TiTick color="white" />
+                  </Box>
+                </Badge>
+              </Box>
             </Flex>
           </Box>
         )}
@@ -301,3 +380,124 @@ export default function DateTime({
     </Box>
   )
 }
+
+const EnhancedDemo = React.memo(function EnhancedDemo({
+  selectedDate,
+  onTimeChange,
+  getCurrentTime,
+  getMinAllowedDateTime,
+}: {
+  selectedDate: Date | null
+  onTimeChange: (time: any) => void
+  getCurrentTime: () => Date
+  getMinAllowedDateTime: () => Date
+}) {
+  const [value, setValue] = useState<any>(null)
+  const [isInvalidTime, setIsInvalidTime] = useState(false)
+  // const [isFocused, setIsFocused] = useState(false)
+
+  useEffect(() => {
+    setValue(null)
+    setIsInvalidTime(false)
+    if (onTimeChange) {
+      onTimeChange(null)
+    }
+  }, [selectedDate, onTimeChange])
+
+  const validateTime = useCallback(
+    (timeValue: any) => {
+      if (!timeValue || !selectedDate) return true
+
+      const now = getCurrentTime()
+
+      if (isSameDay(selectedDate, now)) {
+        const combinedDateTime = new Date(selectedDate)
+        combinedDateTime.setHours(timeValue.hour(), timeValue.minute(), 0, 0)
+        const minAllowedDateTime = getMinAllowedDateTime()
+
+        return isAfter(combinedDateTime, minAllowedDateTime)
+      }
+
+      return true
+    },
+    [selectedDate, getCurrentTime, getMinAllowedDateTime]
+  )
+
+  const handleTimeChange = useCallback(
+    (newValue: any) => {
+      console.log("Time change in EnhancedDemo:", newValue?.format("HH:mm"))
+
+      if (!newValue) {
+        setValue(null)
+        setIsInvalidTime(false)
+        onTimeChange(null)
+        return
+      }
+
+      setValue(newValue)
+
+      // Validate the time
+      const isValid = validateTime(newValue)
+      setIsInvalidTime(!isValid)
+
+      if (isValid) {
+        console.log("✅ Valid time selected")
+        onTimeChange(newValue)
+      } else {
+        console.log("❌ Invalid time - too close to current time")
+        onTimeChange(null) // Clear the parent's time value but keep the display
+      }
+    },
+    [onTimeChange, validateTime]
+  )
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <div style={{ position: "relative" }}>
+        <TimePicker
+          label="Select the Time "
+          value={value}
+          onChange={handleTimeChange}
+          disabled={!selectedDate}
+          format="HH:mm"
+          sx={{
+            width: "100%",
+            "& .MuiInputBase-root": {
+              height: "48px",
+              borderRadius: "12px",
+              backgroundColor: "#ffffff",
+              border: isInvalidTime ? "2px solid #e53e3e" : "2px solid #000000",
+              fontSize: "14px",
+              fontWeight: 500,
+              transition: "all 0.2s ease",
+              "&:hover": {
+                borderColor: isInvalidTime ? "#e53e3e" : "#48bb78",
+              },
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
+            "& .MuiInputBase-input": {
+              padding: "0 48px !important",
+              textAlign: "left",
+              color: value ? "#2d3748" : "transparent",
+              caretColor: value ? "auto" : "transparent",
+            },
+          }}
+          slotProps={{
+            textField: {
+              placeholder: "",
+            },
+          }}
+        />
+      </div>
+      {isInvalidTime &&
+        selectedDate &&
+        isSameDay(selectedDate, getCurrentTime()) && (
+          <Text fontSize="xs" color="red.500" mt={1} fontWeight="medium">
+            Time must be at least 5 minutes from now
+          </Text>
+        )}
+    </LocalizationProvider>
+  )
+})

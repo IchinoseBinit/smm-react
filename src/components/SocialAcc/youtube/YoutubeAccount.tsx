@@ -1,27 +1,30 @@
 import { Box, Flex, Icon, Image, Link, Text } from "@chakra-ui/react";
 import { FaYoutube } from "react-icons/fa6";
 
+
 export default function YoutubeAccount({
   social_name,
   thumbnail_url,
   pagesPath,
 }: {
-  social_name: string;
-  thumbnail_url: string | null;
-  pagesPath?: string;
+  social_name: string
+  thumbnail_url: string | null
+  pagesPath?: string
 }) {
   const content = (
     <Box
       p={4}
       mt={5}
-      borderRadius="2xl"
-      bg={{ base: "blue.50", _dark: "primary.800" }}
+      borderRadius="12px 12px 12px 0"
+      border={"1px solid"}
+      borderColor={"#ccdeea"}
+      bg={{ base: "#fbfcff", _dark: "primary.800" }}
+      opacity={1.8}
       _hover={{
-        bg: { base: "gray.100", _dark: "primary.700" },
+        bg: { base: "white", _dark: "primary.700" },
         cursor: "pointer",
       }}
-      boxShadow="md"
-      w="20rem"
+      w="18rem"
       position="relative"
       transition="all 0.2s"
     >
@@ -40,14 +43,15 @@ export default function YoutubeAccount({
             src={thumbnail_url}
             width="30px"
             height="30px"
+            marginRight={"10px"}
             borderRadius="full"
           />
         )}
       </Flex>
     </Box>
-  );
+  )
 
   return (
     <Box>{pagesPath ? <Link href={pagesPath}>{content}</Link> : content}</Box>
-  );
+  )
 }

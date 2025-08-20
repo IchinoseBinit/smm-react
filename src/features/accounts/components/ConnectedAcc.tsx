@@ -28,6 +28,8 @@ export const ConnectedAcc = () => {
     { type: "YOUTUBE" as AccountType, Component: YoutubeAccount },
     { type: "INSTAGRAM" as AccountType, Component: InstagramAccount },
   ];
+
+  console.log("ConnectedAcc userId", userId)
   if (isLoading)
     return (
       <div>

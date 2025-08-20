@@ -14,14 +14,16 @@ export default function FacebookAccount({
     <Box
       p={4}
       mt={5}
-      borderRadius="2xl"
-      bg={{ base: "blue.50", _dark: "primary.800" }}
+      borderRadius="12px 12px 12px 0"
+      border={"1px solid"}
+      borderColor={"#ccdeea"}
+      bg={{ base: "#fbfcff", _dark: "primary.800" }}
+      opacity={1.8}
       _hover={{
-        bg: { base: "gray.100", _dark: "primary.700" },
+        bg: { base: "white", _dark: "primary.700" },
         cursor: "pointer",
       }}
-      boxShadow="md"
-      w="20rem"
+      w="18rem"
       position="relative"
       transition="all 0.2s"
     >
@@ -31,7 +33,9 @@ export default function FacebookAccount({
           fontWeight="semibold"
           color={{ base: "primary.800", _dark: "white" }}
         >
-          <Box as="span">{social_name}</Box>
+          <Box as="span" fontSize={14} fontWeight={"semibold"}>
+            {social_name}
+          </Box>
         </Text>
         {thumbnail_url && (
           <Image
@@ -41,11 +45,12 @@ export default function FacebookAccount({
             width="30px"
             height="30px"
             borderRadius="full"
+            marginRight={"10px"}
           />
         )}
       </Flex>
     </Box>
-  );
+  )
 
   return (
     <Box>
@@ -63,5 +68,5 @@ export default function FacebookAccount({
         content
       )}
     </Box>
-  );
+  )
 }

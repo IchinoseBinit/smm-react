@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react"
 import {
   Box,
   Button,
@@ -10,42 +10,43 @@ import {
   ProgressCircle,
   Field,
   PinInput,
-} from "@chakra-ui/react";
-import { useNavigate } from "react-router";
-import { toaster } from "@/components/ui/toaster";
-import { LuArrowLeft, LuRefreshCw } from "react-icons/lu";
-import useEmailStore from "@/lib/store/useEmailStore";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useSendOtp, useVerifyOtp } from "@/features/auth/hooks/useAuth";
+} from "@chakra-ui/react"
+import { useNavigate } from "react-router"
+import { toaster } from "@/components/ui/toaster"
+import { LuArrowLeft, LuRefreshCw } from "react-icons/lu"
+import useEmailStore from "@/lib/store/useEmailStore"
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useSendOtp, useVerifyOtp } from "@/features/auth/hooks/useAuth"
 import {
   verifyOtpSchema,
   type VerifyOtpFormData,
-} from "@/features/auth/lib/schema";
+} from "@/features/auth/lib/schema"
 
 const EmailVerification: React.FC = () => {
-  const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const navigate = useNavigate()
+  const [timeLeft, setTimeLeft] = useState(300) // 5 minutes
+  const [isVerifying, setIsVerifying] = useState(false)
+  const [isResending, setIsResending] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const { email } = useEmailStore();
-  const { mutate: sendOtp } = useSendOtp();
-  const { mutate: verifyOtp } = useVerifyOtp();
+  const { email } = useEmailStore()
+  const { mutate: sendOtp } = useSendOtp()
+  const { mutate: verifyOtp } = useVerifyOtp()
 
   const sendOtpFunc = useCallback(
     (e: string) => {
-      sendOtp(e);
+      sendOtp(e)
     },
-    [sendOtp],
-  );
+    [sendOtp]
+  )
+
   useEffect(() => {
     if (!email) {
-      navigate("/register");
+      navigate("/register")
     }
-    sendOtpFunc(email);
-  }, [email, navigate, sendOtpFunc]);
+    sendOtpFunc(email)
+  }, [email, navigate, sendOtpFunc])
 
   const {
     control,
@@ -55,63 +56,72 @@ const EmailVerification: React.FC = () => {
   } = useForm<VerifyOtpFormData>({
     resolver: zodResolver(verifyOtpSchema),
     defaultValues: {},
-  });
+  })
 
   const maskEmail = (email: string) => {
-    if (!email) return "";
-    const [username, domain] = email.split("@");
+    if (!email) return ""
+    const [username, domain] = email.split("@")
     const maskedUsername =
       username.charAt(0) +
       "*".repeat(Math.max(username.length - 2, 2)) +
-      username.charAt(username.length - 1);
-    return `${maskedUsername}@${domain}`;
-  };
+      username.charAt(username.length - 1)
+    return `${maskedUsername}@${domain}`
+  }
+
+  // Format time as MM:SS
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`
+  }
 
   useEffect(() => {
-    startTimer();
+    startTimer()
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, []);
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [])
 
   const startTimer = () => {
-    setTimeLeft(60);
-    if (timerRef.current) clearInterval(timerRef.current);
+    setTimeLeft(300) // 5 minutes = 300 seconds
+    if (timerRef.current) clearInterval(timerRef.current)
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(timerRef.current as ReturnType<typeof setInterval>);
-          return 0;
+          clearInterval(timerRef.current as ReturnType<typeof setInterval>)
+          return 0
         }
-        return prev - 1;
-      });
-    }, 1000);
-  };
+        return prev - 1
+      })
+    }, 1000)
+  }
 
   const handleResendCode = () => {
-    if (timeLeft > 0) return;
+    if (timeLeft > 0) return
 
-    setIsResending(true);
+    setIsResending(true)
     setTimeout(() => {
-      setIsResending(false);
-      sendOtpFunc(email);
-      startTimer();
+      setIsResending(false)
+      sendOtpFunc(email)
+      startTimer()
       toaster.success({
         title: "Code resent",
-        description: `We've sent a new verification code to ${maskEmail(email)}`,
+        description: `We've sent a new verification code to ${maskEmail(
+          email
+        )}`,
         duration: 3000,
-      });
-    }, 1000);
-  };
+      })
+    }, 1000)
+  }
 
   const onSubmit = (data: VerifyOtpFormData) => {
-    const datas = { email, otp: data.otp.join() };
-    setIsVerifying(true);
+    const datas = { email, otp: data.otp.join() }
+    setIsVerifying(true)
     setTimeout(() => {
-      setIsVerifying(false);
-      verifyOtp(datas);
-    }, 1500);
-  };
+      setIsVerifying(false)
+      verifyOtp(datas)
+    }, 1500)
+  }
 
   return (
     <Box
@@ -179,10 +189,12 @@ const EmailVerification: React.FC = () => {
 
           <Flex justify="center" align="center" direction="column">
             <ProgressCircle.Root
-              value={Math.max(0, (timeLeft / 60) * 100)}
+              value={Math.max(0, (timeLeft / 300) * 100)} // Fixed: use 300 instead of 60
               color="brand.500"
             >
-              <ProgressCircle.Label>{timeLeft}s</ProgressCircle.Label>
+              <ProgressCircle.Label>
+                {formatTime(timeLeft)}
+              </ProgressCircle.Label>
             </ProgressCircle.Root>
 
             <Button
@@ -195,7 +207,9 @@ const EmailVerification: React.FC = () => {
               mt={2}
             >
               <LuRefreshCw size={16} />
-              {timeLeft > 0 ? `Resend code in ${timeLeft}s` : "Resend code"}
+              {timeLeft > 0
+                ? `Resend code in ${formatTime(timeLeft)}`
+                : "Resend code"}
             </Button>
           </Flex>
 
@@ -223,7 +237,7 @@ const EmailVerification: React.FC = () => {
         </VStack>
       </>
     </Box>
-  );
-};
+  )
+}
 
-export default EmailVerification;
+export default EmailVerification

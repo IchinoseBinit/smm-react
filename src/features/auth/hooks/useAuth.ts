@@ -53,13 +53,16 @@ const useSendOtp = () => {
 };
 
 const useVerifyOtp = () => {
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: verifyOtp,
-    onSuccess: () =>
+    onSuccess: () => {
       handleSuccess(
         "Email verified!",
-        "Your account has been successfully created",
-      ),
+        "Your account has been successfully created"
+      );
+      navigate("/login"); // Redirect to login page
+    },
     onError: (error: Error) => handleError("Verify Otp failed", error),
   });
 };

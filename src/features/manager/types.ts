@@ -23,4 +23,11 @@ type Post = {
   platform_statuses: PlatformStatus[];
 };
 
-export type { Post, Media, PlatformStatus };
+
+interface StatusConfig {
+  text: string
+  color: string
+  backgroundColor: string
+}
+
+export type { Post, Media, PlatformStatus, StatusConfig };
