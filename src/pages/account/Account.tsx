@@ -8,6 +8,13 @@ import { FaPlus } from "react-icons/fa6"
 export default function Account() {
   const { navigate } = useAuthUtils()
 
+  let backendurl = import.meta.env.VITE_BACKEND_API_URL
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+  console.log("API_BASE_URL", API_BASE_URL)
+
+  console.log("backend url", backendurl)
+  console.log("backend url 1")
+
   return (
     <>
       <Helmet>
