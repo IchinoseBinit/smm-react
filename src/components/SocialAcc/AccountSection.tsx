@@ -128,13 +128,7 @@ export const AccountSection = ({
       bg="#ffffff"
     >
       {label && (
-        <Box
-          mb={4}
-          border="1px solid"
-          borderColor="blue.100"
-          padding={2}
-          borderRadius={9}
-        >
+        <Box mb={4} padding={2} borderRadius={9}>
           <HStack gap={4} align="center">
             {label === "FACEBOOK" && (
               <Icon as={FaFacebook} boxSize={8} color="blue.600" />

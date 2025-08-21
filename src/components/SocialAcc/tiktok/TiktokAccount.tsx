@@ -103,10 +103,16 @@ export default function TiktokAccount({
       _hover={{
         bg: { base: "white", _dark: "primary.700" },
         cursor: "pointer",
+        // Show delete button on hover for ALL screen sizes
+        "& .delete-button": {
+          opacity: 1,
+          visibility: "visible",
+        },
       }}
       w="18rem"
       position="relative"
       transition="all 0.2s"
+      className="group"
     >
       <Flex gap={3}>
         <Icon
@@ -131,7 +137,16 @@ export default function TiktokAccount({
             borderRadius="full"
           />
         )}
-        <Box position={"absolute"} top={-2} right={-2}>
+        <Box
+          position={"absolute"}
+          top={-2}
+          right={-2}
+          className="delete-button"
+          // Hidden by default on ALL screen sizes
+          opacity={0}
+          visibility="hidden"
+          transition="all 0.2s ease-in-out"
+        >
           <DeleteMenu
             data={{
               id: data.id,

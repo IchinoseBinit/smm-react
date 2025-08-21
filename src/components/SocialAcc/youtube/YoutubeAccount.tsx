@@ -1,5 +1,4 @@
 import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react"
-
 import { useState } from "react"
 import { Button, Portal, CloseButton, Dialog } from "@chakra-ui/react"
 import useDeleteConnAcc from "@/features/accounts/hooks/useDeleteAccount"
@@ -103,10 +102,16 @@ export default function YoutubeAccount({
       _hover={{
         bg: { base: "white", _dark: "primary.700" },
         cursor: "pointer",
+        // Show delete button on hover for ALL screen sizes
+        "& .delete-button": {
+          opacity: 1,
+          visibility: "visible",
+        },
       }}
       w="18rem"
       position="relative"
       transition="all 0.2s"
+      className="group"
     >
       <Flex gap={3}>
         <Icon as={FaYoutube} boxSize={6} color="red.600" />
@@ -127,7 +132,16 @@ export default function YoutubeAccount({
             borderRadius="full"
           />
         )}
-        <Box position={"absolute"} top={-2} right={-2}>
+        <Box
+          position={"absolute"}
+          top={-2}
+          right={-2}
+          className="delete-button"
+          // Hidden by default on ALL screen sizes
+          opacity={0}
+          visibility="hidden"
+          transition="all 0.2s ease-in-out"
+        >
           <DeleteMenu
             data={{
               id: data.id,
