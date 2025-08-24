@@ -21,15 +21,17 @@ export const WeekHeader: React.FC<WeekHeaderProps> = ({ weekDays }) => {
           key={day.date.toISOString()}
           p={3}
           textAlign="center"
-          borderLeft="1px"
-          borderColor="border.DEFAULT"
+          borderLeft="1px solid"
+          borderRight="1px solid"
+          borderBottom="1px solid"
+          borderColor={{ base: "primary.50", _dark: "primary.700" }}
         >
           <Text fontSize="md" color="fg.MUTED" fontWeight="medium" mb={1}>
             {day.dayName}
           </Text>
 
           {day.isToday ? (
-            <Circle size="30px" bg="green.500" color="black" mx="auto">
+            <Circle size="30px" bg="#003a6b" color="white" mx="auto">
               <Text fontSize="md">{day.dayNumber}</Text>
             </Circle>
           ) : (
@@ -40,5 +42,5 @@ export const WeekHeader: React.FC<WeekHeaderProps> = ({ weekDays }) => {
         </Box>
       ))}
     </Grid>
-  );
+  )
 };
