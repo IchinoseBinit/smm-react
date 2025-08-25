@@ -19,6 +19,8 @@ import LightLogo from "@/assets/app/Header Logo White.png"
 import DarkLogo from "@/assets/app/Header Logo Black.png"
 import { useColorMode } from "./ui/color-mode"
 
+import Cookies from "js-cookie"
+
 const navItems = [
   { label: "Dashboard", icon: FiHome, href: "/dashboard" },
   { label: "Analytics", icon: FiBarChart2, href: "/analytics" },
@@ -34,6 +36,12 @@ const bottomNavItems = [
   { label: "Help", icon: help, href: "/help" },
   { label: "Logout", icon: Logout, href: "/logout" },
 ]
+
+const handleLogout = () => {
+  Cookies.remove("access_token")
+  Cookies.remove("refresh_token")
+  window.location.reload()
+}
 
 export function Sidebar() {
   const { pathname } = useLocation()
@@ -107,6 +115,38 @@ export function Sidebar() {
       {bottomNavItems.map((item) => {
         const isActive =
           pathname === item.href || pathname.startsWith(`${item.href}/`)
+
+        if (item.label === "Logout") {
+          return (
+            <Box
+              key={item.label}
+              mb={1}
+              cursor="pointer"
+              _hover={{
+                bg: "primary.50",
+                _dark: { bg: "primary.700" },
+              }}
+              bg={
+                isActive
+                  ? { base: "primary.50", _dark: "primary.700" }
+                  : "transparent"
+              }
+              borderRadius="lg"
+              onClick={handleLogout}
+            >
+              <HStack
+                px={{ base: 3, md: 6 }}
+                py={3}
+                spaceX={3}
+                borderRadius="md"
+                justify={{ base: "center", md: "flex-start" }}
+              >
+                <Image src={item.icon} boxSize={5} />
+                <Text fontSize="sm">{item.label}</Text>
+              </HStack>
+            </Box>
+          )
+        }
 
         return (
           <Link
