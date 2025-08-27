@@ -29,10 +29,6 @@ interface CalendarViewProps {
 }
 
 
-type Media = {
-  s3_url: string;
-  order: number;
-};
 
 
 type PostEvent = {
@@ -84,12 +80,30 @@ type MergedPost = {
 
 
 
+
+
+
+
+
+interface TimeGridProps {
+  timeSlots: TimeSlot[]
+  weekDays: WeekDay[]
+  events: CalendarEvent[]
+  onOpen: (e: PlatformCalendarGroup) => void
+}
+
+type Media = {
+  s3_url: string
+  order: number
+}
+
 type PlatformStatus = {
   id: number
   accountType: "FACEBOOK" | "INSTAGRAM" | "TWITTER" | string
   status: "posted" | "scheduled" | "failed" | string
   scheduled_time: string | null
   posted_time: string | null
+  facebook_page_id?: number
 }
 
 type Post = {
@@ -100,7 +114,7 @@ type Post = {
   medias: Media[]
   platform_statuses: PlatformStatus[]
   scheduled_time: string | null
-  status: "posted" | "draft" | "scheduled" | string
+  status: "posted" | "scheduled" | "failed" | string
   surface: "POST" | "STORY" | string
 }
 

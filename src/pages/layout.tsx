@@ -15,9 +15,12 @@ import notificationbing from "@/assets/notification-bing.svg"
 import { useColorMode } from "@/components/ui/color-mode"
 import { useLocation } from "react-router-dom"
 import createPostPencil from "@/assets/createpostpencil.svg"
+import { useEditPostStore } from "@/features/calendar/lib/store/editPost.store"
 
 // Define page titles and configurations for different routes
 const getPageConfig = (pathname: string) => {
+  const { isCreatePostEdit } = useEditPostStore()
+
   const routeConfigMap: Record<
     string,
     { title: string; icon?: string; subtitle?: string }
@@ -25,7 +28,7 @@ const getPageConfig = (pathname: string) => {
     "/dashboard": { title: "Dashboard" },
     "/analytics": { title: "Analytics" },
     "/create": {
-      title: "Create Post",
+      title: isCreatePostEdit ? "Edit Post" : "Create Post",
       icon: createPostPencil,
     },
     "/engagement": { title: "Engagement" },
@@ -54,7 +57,11 @@ const getPageConfig = (pathname: string) => {
   return { title: "Dashboard" }
 }
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const isOpen = useSidebarStore((s) => s.isOpen)
   const isMobile = useBreakpointValue({ base: true, md: false })
   const { colorMode } = useColorMode()
@@ -124,7 +131,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           h="full"
           p={6}
           overflowY="auto"
-          pt={pageConfig.subtitle ? "20" : "16"}
+          pt={pageConfig.subtitle ? "0" : "0"}
         >
           {children}
         </Box>

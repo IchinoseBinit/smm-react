@@ -12,3 +12,6 @@ export const useScheduleStore = create<ScheduleState>((set) => ({
   setIsScheduled: (val) => set({ isScheduled: val }),
   reset: () => set({ isScheduled: false }),
 }));
+
+
+

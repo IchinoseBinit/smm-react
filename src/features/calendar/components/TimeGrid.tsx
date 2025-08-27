@@ -1,13 +1,16 @@
-import React, { useState } from "react"
-import { Grid, Box, Text, VStack, HStack, Badge, Image } from "@chakra-ui/react"
-// import { EventCard } from "./EventCard"
+import React, { useState, useRef } from "react"
+import {
+  Grid,
+  Box,
+  Text,
+  VStack,
+  HStack,
+  Badge,
+  Image,
+  Portal,
+} from "@chakra-ui/react"
 import { format } from "date-fns"
-import type {
-  CalendarEvent,
-  PlatformCalendarGroup,
-  TimeSlot,
-  WeekDay,
-} from "../types"
+
 import CalendarIcon from "@/assets/Calendar.svg"
 import TimeIcon from "@/assets/ClockIcon.svg"
 import useGetPostsByDate from "../hooks/query/useGetPosts"
@@ -16,43 +19,23 @@ import { useAuthUtils } from "@/hooks/useAuthUtils"
 import { WeekHeader } from "./WeekHeader"
 import Pencil from "@/assets/pencil.svg"
 import Cross from "@/assets/cross.svg"
+import type { TimeGridProps, PlatformStatus, Post } from "../types"
+import { useEditPostStore } from "../lib/store/editPost.store"
 
-interface TimeGridProps {
-  timeSlots: TimeSlot[]
-  weekDays: WeekDay[]
-  events: CalendarEvent[]
-  onOpen: (e: PlatformCalendarGroup) => void
-}
+// Card component with Portal for proper z-index
+const Card = ({
+  post,
+  displayTime,
+  position,
+  isVisible,
+}: {
+  post?: Post
+  displayTime?: string
+  position: { top: number; left: number }
+  isVisible: boolean
+}) => {
+  const { navigate } = useAuthUtils()
 
-type Media = {
-  s3_url: string
-  order: number
-}
-
-type PlatformStatus = {
-  id: number
-  accountType: "FACEBOOK" | "INSTAGRAM" | "TWITTER" | string
-  status: "posted" | "scheduled" | "failed" | string
-  scheduled_time: string | null
-  posted_time: string | null
-  facebook_page_id?: number
-}
-
-type Post = {
-  id: number
-  title: string | null
-  description: string
-  is_photo: boolean
-  medias: Media[]
-  platform_statuses: PlatformStatus[]
-  scheduled_time: string | null
-  status: "posted" | "scheduled" | "failed" | string
-  surface: "POST" | "STORY" | string
-}
-
-// Card component with data mapping
-const Card = ({ post, displayTime }: { post?: Post; displayTime?: string }) => {
-  // Default values when no data is available
   const defaultData = {
     title: "Scheduled Post",
     description: "Description Description",
@@ -64,7 +47,6 @@ const Card = ({ post, displayTime }: { post?: Post; displayTime?: string }) => {
     time: "13:12",
   }
 
-  // Map actual data or use defaults
   const cardData = {
     title: post?.title || defaultData.title,
     description: post?.description || defaultData.description,
@@ -82,83 +64,136 @@ const Card = ({ post, displayTime }: { post?: Post; displayTime?: string }) => {
       : defaultData.time,
   }
 
+  const { setIsCreatePostEdit, setPostData } = useEditPostStore()
+
+  const handlePencilClick = () => {
+    if (post) {
+      setIsCreatePostEdit(true)
+      setPostData(post)
+      navigate("/create")
+    }
+  }
+
+  const handleCrossClick = () => {
+    console.log("Delete clicked for post:", post)
+  }
+
+  if (!isVisible) return null
+
   return (
-    <VStack
-      border="1px solid gray"
-      borderRadius="md"
-      p={4}
-      bg="white"
-      gap={3}
-      position="absolute"
-      top="100%"
-      left="0"
-      zIndex={10}
-      minWidth="250px"
-      boxShadow="lg"
-    >
-      <HStack justify="space-between" width="full">
-        <Text fontWeight="medium">{cardData.title}</Text>
-        <HStack gap={2}>
-          <Image src={Pencil} w={4} h={4} cursor="pointer" />
-          <Image src={Cross} w={4} h={4} cursor="pointer" />
+    <Portal>
+      <VStack
+        position="fixed"
+        top={`${position.top}px`}
+        left={`${position.left}px`}
+        border="1px solid gray"
+        borderRadius="md"
+        p={4}
+        bg="white"
+        gap={3}
+        zIndex={99999}
+        minWidth="250px"
+        maxWidth="300px"
+        boxShadow="0 10px 25px rgba(0,0,0,0.15)"
+        _before={{
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          border: "1px solid rgba(0,0,0,0.1)",
+          borderRadius: "md",
+          pointerEvents: "none",
+        }}
+      >
+        <HStack justify="space-between" width="full">
+          <Text fontWeight="medium" fontSize="sm">
+            {cardData.title}
+          </Text>
+          <HStack gap={2}>
+            <Image
+              src={Pencil}
+              w={4}
+              h={4}
+              cursor="pointer"
+              onClick={handlePencilClick}
+              _hover={{ opacity: 0.7 }}
+            />
+            <Image
+              src={Cross}
+              w={4}
+              h={4}
+              cursor="pointer"
+              onClick={handleCrossClick}
+              _hover={{ opacity: 0.7 }}
+            />
+          </HStack>
         </HStack>
-      </HStack>
 
-      <HStack justify="space-between" width="full">
-        <Text fontSize="sm" color="gray.600">
-          Publishing to
-        </Text>
-        <Badge colorScheme="blue">{cardData.accountCount} Accounts</Badge>
-      </HStack>
-
-      <HStack width="full" gap={2} flexWrap="wrap">
-        {cardData.accounts.map((account, index) => (
-          <Badge key={index} variant="outline" colorScheme="gray">
-            {account}
+        <HStack justify="space-between" width="full">
+          <Text fontSize="xs" color="gray.600">
+            Publishing to
+          </Text>
+          <Badge colorScheme="blue" size="sm">
+            {cardData.accountCount} Accounts
           </Badge>
-        ))}
-      </HStack>
-
-      <Text fontSize="sm" color="gray.800" alignSelf="flex-start">
-        {cardData.description}
-      </Text>
-
-      {cardData.image && (
-        <Image
-          borderRadius="md"
-          src={cardData.image}
-          alt="Post image"
-          maxH="120px"
-          objectFit="cover"
-          width="full"
-        />
-      )}
-
-      <HStack justify="space-between" width="full">
-        <HStack>
-          <Image src={CalendarIcon} />
-          <Text fontSize="sm" color="gray.600">
-            {cardData.date}
-          </Text>
         </HStack>
-        <HStack>
-          <Image src={TimeIcon} />
-          <Text fontSize="sm" color="gray.600">
-            {cardData.time}
-          </Text>
+
+        <HStack width="full" gap={2} flexWrap="wrap">
+          {cardData.accounts.map((account, index) => (
+            <Badge key={index} variant="outline" colorScheme="gray" size="sm">
+              {account}
+            </Badge>
+          ))}
         </HStack>
-      </HStack>
-    </VStack>
+
+        <Text fontSize="xs" color="gray.800" alignSelf="flex-start">
+          {cardData.description}
+        </Text>
+
+        {cardData.image && (
+          <Image
+            borderRadius="md"
+            src={cardData.image}
+            alt="Post image"
+            maxH="120px"
+            objectFit="cover"
+            width="full"
+          />
+        )}
+
+        <HStack justify="space-between" width="full">
+          <HStack>
+            <Image src={CalendarIcon} w={3} h={3} />
+            <Text fontSize="xs" color="gray.600">
+              {cardData.date}
+            </Text>
+          </HStack>
+          <HStack>
+            <Image src={TimeIcon} w={3} h={3} />
+            <Text fontSize="xs" color="gray.600">
+              {cardData.time}
+            </Text>
+          </HStack>
+        </HStack>
+      </VStack>
+    </Portal>
   )
 }
 
 export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
   const { userId } = useAuthUtils()
   const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
+  const [cardPosition, setCardPosition] = useState({ top: 0, left: 0 })
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  const from = format(weekDays[0].date, "yyyy-MM-dd")
+  const to = format(weekDays[weekDays.length - 1].date, "yyyy-MM-dd")
 
   const { data, isLoading } = useGetPostsByDate({
-    from: "2025-08-11",
-    to: "2026-12-10",
+    from,
+    to,
     userId,
   }) as {
     data: Post[]
@@ -187,7 +222,6 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
     return null
   }
 
-  // Check if current cell has an event
   const getEventInCell = (dayDate: Date, timeSlotHour: number) => {
     if (!data || !Array.isArray(data)) return null
 
@@ -228,14 +262,12 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
     return null
   }
 
-  // Check if there's an event later in the week at this time
   const hasEventLaterInWeek = (
     currentDayIndex: number,
     timeSlotHour: number
   ) => {
     if (!data || !Array.isArray(data)) return null
 
-    // Check all days after current day
     for (
       let dayIndex = currentDayIndex + 1;
       dayIndex < weekDays.length;
@@ -250,17 +282,14 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
     return null
   }
 
-  // Find the first day that has a timeline for each time slot
   const getFirstTimelineDay = (timeSlotHour: number) => {
     if (!data || !Array.isArray(data)) return -1
 
-    // Check each day from left to right
     for (let dayIndex = 0; dayIndex < weekDays.length; dayIndex++) {
       const dayDate = weekDays[dayIndex].date
       const currentEvent = getEventInCell(dayDate, timeSlotHour)
       const laterEvent = hasEventLaterInWeek(dayIndex, timeSlotHour)
 
-      // If this cell has event or line, this is the first day
       if (currentEvent || laterEvent) {
         return dayIndex
       }
@@ -268,12 +297,31 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
     return -1
   }
 
+  const handleMouseEnter = (eventId: string, event: React.MouseEvent) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    setCardPosition({
+      top: rect.bottom + window.scrollY + 5,
+      left: rect.left + window.scrollX,
+    })
+    setHoveredEvent(eventId)
+  }
+
   if (isLoading) return <CircularLoading />
+
+  const hoveredEventData = hoveredEvent
+    ? (() => {
+        const [dayIndex, timeIndex] = hoveredEvent.split("-").map(Number)
+        const day = weekDays[dayIndex]
+        const slot = timeSlots[timeIndex]
+        return getEventInCell(day.date, slot.hour)
+      })()
+    : null
 
   return (
     <Box flex={1} mt={5} overflowY="hidden">
       <WeekHeader weekDays={weekDays} />
       <Grid
+        ref={gridRef}
         templateColumns="60px repeat(7, 1fr)"
         autoRows="94px"
         position="sticky"
@@ -303,18 +351,10 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
         {/* Grid cells */}
         {weekDays.map((day, dayIndex) =>
           timeSlots.map((slot, timeIndex) => {
-            // Check if this cell has an event
             const currentEvent = getEventInCell(day.date, slot.hour)
-
-            // Check if there's an event later in the week at this time
             const laterEvent = hasEventLaterInWeek(dayIndex, slot.hour)
-
-            // Check if this is the first day of this timeline
             const firstTimelineDay = getFirstTimelineDay(slot.hour)
-
-            // Create unique event ID for hover state
             const eventId = `${dayIndex}-${timeIndex}`
-            const isHovered = hoveredEvent === eventId
 
             return (
               <Box
@@ -332,7 +372,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                 transition="background-color 0.2s"
                 cursor="pointer"
               >
-                {/* If there's an event LATER this week - show line */}
+                {/* Timeline logic remains the same */}
                 {!currentEvent && laterEvent && (
                   <Box
                     position="absolute"
@@ -342,7 +382,6 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                     bottom="0"
                     zIndex="2"
                   >
-                    {/* The continuous line across the cell */}
                     <Box
                       position="absolute"
                       left="0"
@@ -353,10 +392,8 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                       backgroundColor="#003a6b"
                     />
 
-                    {/* Show time badge and start circle ONLY on the very first cell of the timeline */}
                     {dayIndex === firstTimelineDay && (
                       <>
-                        {/* Small white circle at the very start - connected to line */}
                         <Box
                           position="absolute"
                           left="-1px"
@@ -369,7 +406,6 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                           border="2px solid black"
                           zIndex="5"
                         />
-                        {/* Time badge positioned ABOVE the line */}
                         <Box
                           position="absolute"
                           left="8px"
@@ -393,7 +429,6 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                   </Box>
                 )}
 
-                {/* If this cell HAS the event - show event title and circle if it's first cell */}
                 {currentEvent && (
                   <Box
                     position="absolute"
@@ -406,10 +441,9 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                     px={2}
                     backgroundColor="white"
                     zIndex="2"
-                    onMouseEnter={() => setHoveredEvent(eventId)}
+                    onMouseEnter={(e) => handleMouseEnter(eventId, e)}
                     onMouseLeave={() => setHoveredEvent(null)}
                   >
-                    {/* Show start circle only if this is the first cell of timeline */}
                     {dayIndex === firstTimelineDay && (
                       <Box
                         position="absolute"
@@ -452,14 +486,6 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                         ml={2}
                       />
                     </Box>
-
-                    {/* Show Card only when hovered */}
-                    {isHovered && (
-                      <Card
-                        post={currentEvent.post}
-                        displayTime={currentEvent.displayTime}
-                      />
-                    )}
                   </Box>
                 )}
               </Box>
@@ -467,6 +493,16 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
           })
         )}
       </Grid>
+
+      {/* Portal Card outside of grid context */}
+      {hoveredEventData && (
+        <Card
+          post={hoveredEventData.post}
+          displayTime={hoveredEventData.displayTime}
+          position={cardPosition}
+          isVisible={hoveredEvent !== null}
+        />
+      )}
     </Box>
   )
 }

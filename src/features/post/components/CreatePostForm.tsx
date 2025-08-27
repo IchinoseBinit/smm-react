@@ -17,7 +17,6 @@ import {
   // Span,
   Flex,
   Span,
-  // Image,
 } from "@chakra-ui/react"
 
 // import StarterKit from "@tiptap/starter-kit"
@@ -60,9 +59,13 @@ import { SelectSurface } from "./selectSurface"
 import { useContentTypeStore } from "../lib/store/sufaceType"
 import { TiptapDescriptionEditor } from "./TipTapDescriptionEditor"
 import { Switch } from "@chakra-ui/react"
-// import { redirect } from "react-router"
+import { useEditPostStore } from "@/features/calendar/lib/store/editPost.store"
+import useDeleteScheduledPost from "@/features/calendar/hooks/useDeleteSchedul"
 
 export default function CreatePostForm() {
+  const { isCreatePostEdit, postData } = useEditPostStore()
+  const deleteScheduledPostMutation = useDeleteScheduledPost()
+
   const { userId } = useAuthUtils()
   const { data, isLoading } = useAllConnAccounts(userId)
   const isScheduled = useScheduleStore((s) => s.isScheduled)
@@ -247,6 +250,87 @@ export default function CreatePostForm() {
     setValue("platform_statuses", itemArr, { shouldValidate: true })
   }, [itemArr, setValue])
 
+  // Add helper function to extract time
+  const extractTime = (time: string) => {
+    return time.split("T")[1].split("+")[0] // "22:19:00"
+  }
+
+  // Add effect to populate form when editing
+  useEffect(() => {
+    if (isCreatePostEdit && postData) {
+      console.log("Populating form with post data:", postData)
+
+      // Set title
+      if (postData.title) {
+        setTitleContent(postData.title)
+        setValue("title", postData.title, { shouldValidate: true })
+      }
+
+      // Set description
+      if (postData.description) {
+        setDescriptionContent(postData.description)
+        setValue("description", postData.description, { shouldValidate: true })
+      }
+
+      // Set medias
+      if (postData.medias && postData.medias.length > 0) {
+        setValue("medias", postData.medias, { shouldValidate: true })
+      }
+
+      // Set surface type
+      if (postData.surface) {
+        setValue("surface", postData.surface, { shouldValidate: true })
+      }
+
+      // Set scheduled time and schedule state
+      if (postData.scheduled_time) {
+        console.log("Setting scheduled time:", postData.scheduled_time)
+        setValue("scheduled_time", postData.scheduled_time, {
+          shouldValidate: true,
+        })
+        setIsScheduled(true)
+      } else if (postData.platform_statuses?.[0]?.posted_time) {
+        // For published posts, show the published time
+        const publishedTime = postData.platform_statuses[0].posted_time
+        console.log("Setting published time:", publishedTime)
+        console.log("Extracted time:", extractTime(publishedTime))
+        setValue("scheduled_time", publishedTime, {
+          shouldValidate: true,
+        })
+        setIsScheduled(false) // Keep schedule toggle off for published posts
+      } else {
+        setIsScheduled(false)
+      }
+
+      // Set platform statuses and selected accounts
+      if (postData.platform_statuses && postData.platform_statuses.length > 0) {
+        setValue("platform_statuses", postData.platform_statuses, {
+          shouldValidate: true,
+        })
+
+        // Map platform statuses to itemArr format
+        const mappedItems = postData.platform_statuses.map((status) => ({
+          social_account_id: status.id,
+          accountType: status.accountType,
+          facebook_page_id: status.facebook_page_id || null,
+        }))
+        setItemArr(mappedItems)
+      }
+
+      // Set photo flag
+      if (typeof postData.is_photo === "boolean") {
+        setValue("is_photo", postData.is_photo, { shouldValidate: true })
+      }
+    }
+  }, [
+    isCreatePostEdit,
+    postData,
+    setValue,
+    setIsScheduled,
+    setTitleContent,
+    setDescriptionContent,
+  ])
+
   const uploadFiles = async () => {
     console.log("uploadFiles called with payload:", payload)
     const presignedResponse: any = await mutateAsync(payload)
@@ -282,6 +366,9 @@ export default function CreatePostForm() {
   }
 
   const onSubmit = async () => {
+    alert("Form submitted successfully!")
+    console.log("on submit button clicked successfully")
+
     // Check if user has selected accounts before submitting
     if (!hasSelectedAccounts) {
       toaster.error({
@@ -298,6 +385,12 @@ export default function CreatePostForm() {
     setPostLoading(true)
 
     try {
+      // If editing post, delete the scheduled post first
+      if (isCreatePostEdit && postData?.id) {
+        console.log("Deleting scheduled post with ID:", postData.id)
+        await deleteScheduledPostMutation.mutateAsync(postData.id.toString())
+      }
+
       setValue("status", isScheduled ? "scheduled" : "posted", {
         shouldValidate: true,
       })
@@ -340,6 +433,7 @@ export default function CreatePostForm() {
       setValue("surface", currentType, { shouldValidate: true })
 
       const latestData = getValues()
+      console.log("latest dat", latestData)
 
       if (
         !selectedPlatformsType.includes("YOUTUBE") &&
@@ -356,6 +450,8 @@ export default function CreatePostForm() {
       }
 
       await mutateCreatePost(latestData).then((res) => {
+        console.log("mutate create post", res.data)
+
         if (res?.success) {
           openDialog({
             status: isScheduled ? "scheduled" : "posted",
@@ -370,6 +466,12 @@ export default function CreatePostForm() {
       setDescriptionContent("") // Reset description content
       setTitleContent("") // Reset title content
       setTimeout(() => setClearSelectedAcc(true), 0)
+    } catch (error) {
+      console.error("Error in onSubmit:", error)
+      toaster.error({
+        title: "Error",
+        description: "Failed to update post",
+      })
     } finally {
       setPostLoading(false)
     }
@@ -407,7 +509,6 @@ export default function CreatePostForm() {
           </SimpleGrid>
         </Box>
         {/* Media Upload Section with Proper Restrictions */}
-
         {(selectedPlatformsType.includes("YOUTUBE") ||
           selectedPlatformsType.includes("TIKTOK")) && (
           <Box maxW="40rem">
@@ -448,7 +549,6 @@ export default function CreatePostForm() {
             </Box>
           </Box>
         )}
-
         {/* Description Section with Tiptap Editor */}
         <TiptapDescriptionEditor
           fixedHeight={false}
@@ -461,7 +561,6 @@ export default function CreatePostForm() {
           onHashtagClick={handleHashtagClick}
           placeholder="Write something awesome"
         />
-
         <Box p={2} spaceY={6}>
           <Heading color={"#00325c"} fontSize="fontSizes.4xl">
             Media
@@ -524,7 +623,6 @@ export default function CreatePostForm() {
             />
           </FileUpload.Root>
         </Box>
-
         <Box>
           {/* Hashtag suggestions */}
           <Text fontSize="lg" fontWeight="semibold" mb={2} color="#00325c">
@@ -651,7 +749,11 @@ export default function CreatePostForm() {
                       </Text>
                     </Flex>
                     <VStack spaceY={4} align="stretch">
-                      <DateTime setvalue={setValue} scheduled={scheduledTime} />
+                      <DateTime
+                        setvalue={setValue}
+                        scheduled={scheduledTime}
+                        key={scheduledTime} // Force re-render when scheduledTime changes
+                      />
                     </VStack>
                   </Accordion.ItemBody>
                 </Accordion.ItemContent>
@@ -659,7 +761,6 @@ export default function CreatePostForm() {
             </Accordion.Root>
           </Box>
         </Box>
-
         <Flex justify="end" gap={2}>
           <Button
             type="submit"
@@ -667,11 +768,25 @@ export default function CreatePostForm() {
             color="button.DEFAULT"
             _hover={{ bg: "button.HOVER" }}
             _active={{ bg: "button.ACTIVE" }}
-            disabled={!isValid || !hasSelectedAccounts} // Disable submit if no accounts selected
+            disabled={!isValid || !hasSelectedAccounts}
             loading={postLoading}
-            loadingText={isScheduled ? "Scheduling..." : "Posting..."}
+            loadingText={
+              isCreatePostEdit
+                ? isScheduled
+                  ? "Updating Schedule..."
+                  : "Updating Post..."
+                : isScheduled
+                ? "Scheduling..."
+                : "Posting..."
+            }
           >
-            {isScheduled ? "Schedule Post" : "Post Now"}
+            {isCreatePostEdit
+              ? isScheduled
+                ? "Update Schedule"
+                : "Update Post"
+              : isScheduled
+              ? "Schedule Post"
+              : "Post Now"}
           </Button>
         </Flex>
       </VStack>
