@@ -17,7 +17,10 @@ import {
   // Span,
   Flex,
   Span,
+  // Image,
 } from "@chakra-ui/react"
+import useDeleteScheduledPost from "@/features/calendar/hooks/useDeleteSchedule"
+import { useEditPostStore } from "@/features/calendar/lib/store/editPost.store"
 
 // import StarterKit from "@tiptap/starter-kit"
 // import Underline from "@tiptap/extension-underline"
@@ -37,7 +40,7 @@ import { useCreatePost } from "../hooks/query/usePost"
 import useFileUpload from "../hooks/query/useFileUpload"
 import { useUploadStore } from "../lib/store/file"
 import axios from "axios"
-import { useScheduleStore } from "../lib/store/dateTime"
+import { useInitialTimeStore, useScheduleStore } from "../lib/store/dateTime"
 import { useSuccessDialogStore } from "../lib/store/successDialog"
 import { SuccessDialog } from "./SuccessCreatePost"
 import {
@@ -59,13 +62,9 @@ import { SelectSurface } from "./selectSurface"
 import { useContentTypeStore } from "../lib/store/sufaceType"
 import { TiptapDescriptionEditor } from "./TipTapDescriptionEditor"
 import { Switch } from "@chakra-ui/react"
-import { useEditPostStore } from "@/features/calendar/lib/store/editPost.store"
-import useDeleteScheduledPost from "@/features/calendar/hooks/useDeleteSchedul"
+// import { redirect } from "react-router"
 
 export default function CreatePostForm() {
-  const { isCreatePostEdit, postData } = useEditPostStore()
-  const deleteScheduledPostMutation = useDeleteScheduledPost()
-
   const { userId } = useAuthUtils()
   const { data, isLoading } = useAllConnAccounts(userId)
   const isScheduled = useScheduleStore((s) => s.isScheduled)
@@ -76,6 +75,16 @@ export default function CreatePostForm() {
   const [postLoading, setPostLoading] = useState(false)
   const { mutateAsync: mutateCreatePost } = useCreatePost()
   const { openDialog } = useSuccessDialogStore()
+
+  const { isCreatePostEdit, postData } = useEditPostStore()
+  const deleteScheduledPostMutation = useDeleteScheduledPost()
+  const { setInitialTime } = useInitialTimeStore()
+
+  const extractTime = (time: string) => {
+    return time.split("T")[1].split("+")[0] // "22:19:00"
+  }
+
+  // Add effect to populate form when editing
 
   // Add the missing ref declaration
   const fileUploadListRef = useRef<any>(null)
@@ -250,12 +259,40 @@ export default function CreatePostForm() {
     setValue("platform_statuses", itemArr, { shouldValidate: true })
   }, [itemArr, setValue])
 
-  // Add helper function to extract time
-  const extractTime = (time: string) => {
-    return time.split("T")[1].split("+")[0] // "22:19:00"
+  const uploadFiles = async () => {
+    console.log("uploadFiles called with payload:", payload)
+    const presignedResponse: any = await mutateAsync(payload)
+    console.log("presigned_post", presignedResponse)
+    console.log("presigned_post. 1", presignedResponse.presigned_posts)
+
+    await Promise.all(
+      presignedResponse.presigned_posts.map((post: any, i: any) => {
+        const formData = new FormData()
+        Object.entries(post.fields).forEach(([key, value]) => {
+          formData.append(key, value as string)
+        })
+        console.log("payload files", payload.files[i])
+        formData.append("file", payload.files[i].file)
+
+        return axios.post(post.url, formData)
+      })
+    )
+    const urls = presignedResponse.presigned_posts.map(
+      (post: any) => post.url + post.fields.key
+    )
+    console.log("uploaded urls", urls)
+
+    const medias = urls.map((url: string, index: number) => ({
+      s3_url: encodeURI(url),
+      order: index,
+    }))
+    console.log("uploaded urls", medias)
+
+    if (medias.length === 0) return false
+    setValue("medias", medias, { shouldValidate: true })
+    return true
   }
 
-  // Add effect to populate form when editing
   useEffect(() => {
     if (isCreatePostEdit && postData) {
       console.log("Populating form with post data:", postData)
@@ -288,6 +325,12 @@ export default function CreatePostForm() {
         setValue("scheduled_time", postData.scheduled_time, {
           shouldValidate: true,
         })
+        const extractTime = (time: any) => {
+          return time.split("T")[1].split("+")[0] // "22:19:00"
+        }
+        const time = extractTime(postData.scheduled_time)
+        setInitialTime(time)
+
         setIsScheduled(true)
       } else if (postData.platform_statuses?.[0]?.posted_time) {
         // For published posts, show the published time
@@ -331,44 +374,7 @@ export default function CreatePostForm() {
     setDescriptionContent,
   ])
 
-  const uploadFiles = async () => {
-    console.log("uploadFiles called with payload:", payload)
-    const presignedResponse: any = await mutateAsync(payload)
-    console.log("presigned_post", presignedResponse)
-    console.log("presigned_post. 1", presignedResponse.presigned_posts)
-
-    await Promise.all(
-      presignedResponse.presigned_posts.map((post: any, i: any) => {
-        const formData = new FormData()
-        Object.entries(post.fields).forEach(([key, value]) => {
-          formData.append(key, value as string)
-        })
-        console.log("payload files", payload.files[i])
-        formData.append("file", payload.files[i].file)
-
-        return axios.post(post.url, formData)
-      })
-    )
-    const urls = presignedResponse.presigned_posts.map(
-      (post: any) => post.url + post.fields.key
-    )
-    console.log("uploaded urls", urls)
-
-    const medias = urls.map((url: string, index: number) => ({
-      s3_url: encodeURI(url),
-      order: index,
-    }))
-    console.log("uploaded urls", medias)
-
-    if (medias.length === 0) return false
-    setValue("medias", medias, { shouldValidate: true })
-    return true
-  }
-
   const onSubmit = async () => {
-    alert("Form submitted successfully!")
-    console.log("on submit button clicked successfully")
-
     // Check if user has selected accounts before submitting
     if (!hasSelectedAccounts) {
       toaster.error({
@@ -385,12 +391,10 @@ export default function CreatePostForm() {
     setPostLoading(true)
 
     try {
-      // If editing post, delete the scheduled post first
       if (isCreatePostEdit && postData?.id) {
         console.log("Deleting scheduled post with ID:", postData.id)
         await deleteScheduledPostMutation.mutateAsync(postData.id.toString())
       }
-
       setValue("status", isScheduled ? "scheduled" : "posted", {
         shouldValidate: true,
       })
@@ -433,7 +437,6 @@ export default function CreatePostForm() {
       setValue("surface", currentType, { shouldValidate: true })
 
       const latestData = getValues()
-      console.log("latest dat", latestData)
 
       if (
         !selectedPlatformsType.includes("YOUTUBE") &&
@@ -450,8 +453,6 @@ export default function CreatePostForm() {
       }
 
       await mutateCreatePost(latestData).then((res) => {
-        console.log("mutate create post", res.data)
-
         if (res?.success) {
           openDialog({
             status: isScheduled ? "scheduled" : "posted",
@@ -466,12 +467,6 @@ export default function CreatePostForm() {
       setDescriptionContent("") // Reset description content
       setTitleContent("") // Reset title content
       setTimeout(() => setClearSelectedAcc(true), 0)
-    } catch (error) {
-      console.error("Error in onSubmit:", error)
-      toaster.error({
-        title: "Error",
-        description: "Failed to update post",
-      })
     } finally {
       setPostLoading(false)
     }
@@ -509,6 +504,7 @@ export default function CreatePostForm() {
           </SimpleGrid>
         </Box>
         {/* Media Upload Section with Proper Restrictions */}
+
         {(selectedPlatformsType.includes("YOUTUBE") ||
           selectedPlatformsType.includes("TIKTOK")) && (
           <Box maxW="40rem">
@@ -549,6 +545,7 @@ export default function CreatePostForm() {
             </Box>
           </Box>
         )}
+
         {/* Description Section with Tiptap Editor */}
         <TiptapDescriptionEditor
           fixedHeight={false}
@@ -561,6 +558,7 @@ export default function CreatePostForm() {
           onHashtagClick={handleHashtagClick}
           placeholder="Write something awesome"
         />
+
         <Box p={2} spaceY={6}>
           <Heading color={"#00325c"} fontSize="fontSizes.4xl">
             Media
@@ -623,6 +621,7 @@ export default function CreatePostForm() {
             />
           </FileUpload.Root>
         </Box>
+
         <Box>
           {/* Hashtag suggestions */}
           <Text fontSize="lg" fontWeight="semibold" mb={2} color="#00325c">
@@ -749,11 +748,7 @@ export default function CreatePostForm() {
                       </Text>
                     </Flex>
                     <VStack spaceY={4} align="stretch">
-                      <DateTime
-                        setvalue={setValue}
-                        scheduled={scheduledTime}
-                        key={scheduledTime} // Force re-render when scheduledTime changes
-                      />
+                      <DateTime setvalue={setValue} scheduled={scheduledTime} />
                     </VStack>
                   </Accordion.ItemBody>
                 </Accordion.ItemContent>
@@ -761,6 +756,7 @@ export default function CreatePostForm() {
             </Accordion.Root>
           </Box>
         </Box>
+
         <Flex justify="end" gap={2}>
           <Button
             type="submit"
@@ -768,7 +764,7 @@ export default function CreatePostForm() {
             color="button.DEFAULT"
             _hover={{ bg: "button.HOVER" }}
             _active={{ bg: "button.ACTIVE" }}
-            disabled={!isValid || !hasSelectedAccounts}
+            disabled={!isValid || !hasSelectedAccounts} // Disable submit if no accounts selected
             loading={postLoading}
             loadingText={
               isCreatePostEdit
@@ -786,7 +782,7 @@ export default function CreatePostForm() {
                 : "Update Post"
               : isScheduled
               ? "Schedule Post"
-              : "Post Now"}
+              : "Post Now"}{" "}
           </Button>
         </Flex>
       </VStack>

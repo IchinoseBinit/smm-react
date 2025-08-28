@@ -14,13 +14,14 @@ import {
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { format, addMinutes, isAfter, isSameDay } from "date-fns"
-import { useScheduleStore } from "../lib/store/dateTime"
+import { useInitialTimeStore, useScheduleStore } from "../lib/store/dateTime"
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { TimePicker } from "@mui/x-date-pickers/TimePicker"
 import Test from "../../../assets/schedule.svg"
 import { IoIosArrowDown } from "react-icons/io"
+import dayjs from "dayjs"
 
 import { TiTick } from "react-icons/ti"
 
@@ -392,17 +393,70 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
   getCurrentTime: () => Date
   getMinAllowedDateTime: () => Date
 }) {
+  const { initialTime } = useInitialTimeStore()
+
   const [value, setValue] = useState<any>(null)
   const [isInvalidTime, setIsInvalidTime] = useState(false)
-  // const [isFocused, setIsFocused] = useState(false)
 
+  // Convert time string to dayjs object
+  const parseTimeString = useCallback((timeString: string) => {
+    if (!timeString) return null
+
+    try {
+      // Handle "HH:mm:ss" format
+      const timeParts = timeString.split(":")
+      const hours = parseInt(timeParts[0], 10)
+      const minutes = parseInt(timeParts[1], 10)
+
+      // Create dayjs object - use current date with specified time
+      const parsedTime = dayjs()
+        .hour(hours)
+        .minute(minutes)
+        .second(0)
+        .millisecond(0)
+
+      console.log(
+        "Parsed time:",
+        parsedTime.format("HH:mm"),
+        "from string:",
+        timeString
+      )
+      return parsedTime
+    } catch (error) {
+      console.error("Error parsing time string:", error)
+      return null
+    }
+  }, [])
+
+  // Set initial time when component mounts or initialTime changes
   useEffect(() => {
+    if (initialTime) {
+      const parsedTime = parseTimeString(initialTime)
+      console.log("Setting initial time:", parsedTime?.format("HH:mm"))
+      setValue(parsedTime)
+
+      // Don't validate on initial load, just set the value
+      if (parsedTime && onTimeChange) {
+        onTimeChange(parsedTime)
+      }
+    } else {
+      setValue(null)
+    }
+  }, [initialTime, parseTimeString, onTimeChange])
+
+  // Reset when selectedDate changes (but preserve initialTime if it exists)
+  useEffect(() => {
+    // If we have an initialTime, don't reset - keep the initial value
+    if (initialTime) {
+      return
+    }
+
     setValue(null)
     setIsInvalidTime(false)
     if (onTimeChange) {
       onTimeChange(null)
     }
-  }, [selectedDate, onTimeChange])
+  }, [selectedDate, initialTime, onTimeChange])
 
   const validateTime = useCallback(
     (timeValue: any) => {
@@ -451,15 +505,22 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
     [onTimeChange, validateTime]
   )
 
+  // Debug: Log current value
+  useEffect(() => {
+    console.log("Current value state:", value?.format("HH:mm") || "null")
+  }, [value])
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div style={{ position: "relative" }}>
         <TimePicker
-          label="Select the Time "
+          label="Select the Time"
           value={value}
           onChange={handleTimeChange}
           disabled={!selectedDate}
           format="HH:mm"
+          // Add key to force re-render when value changes
+          key={value ? value.format("HH:mm") : "empty"}
           sx={{
             width: "100%",
             "& .MuiInputBase-root": {
@@ -480,13 +541,14 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
             "& .MuiInputBase-input": {
               padding: "0 48px !important",
               textAlign: "left",
+              // Remove these lines that might be hiding the value
               color: value ? "#2d3748" : "transparent",
               caretColor: value ? "auto" : "transparent",
             },
           }}
           slotProps={{
             textField: {
-              placeholder: "",
+              placeholder: "Select the Time",
             },
           }}
         />

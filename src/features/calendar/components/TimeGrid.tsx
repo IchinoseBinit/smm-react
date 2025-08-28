@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import {
   Grid,
   Box,
@@ -187,6 +187,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
   const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
   const [cardPosition, setCardPosition] = useState({ top: 0, left: 0 })
   const gridRef = useRef<HTMLDivElement>(null)
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const from = format(weekDays[0].date, "yyyy-MM-dd")
   const to = format(weekDays[weekDays.length - 1].date, "yyyy-MM-dd")
@@ -298,6 +299,12 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
   }
 
   const handleMouseEnter = (eventId: string, event: React.MouseEvent) => {
+    // Clear any existing timeout
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current)
+      hoverTimeoutRef.current = null
+    }
+
     const rect = event.currentTarget.getBoundingClientRect()
     setCardPosition({
       top: rect.bottom + window.scrollY + 5,
@@ -305,6 +312,22 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
     })
     setHoveredEvent(eventId)
   }
+
+  const handleMouseLeave = () => {
+    // Set timeout to hide card after 1 second
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredEvent(null)
+    }, 1000)
+  }
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current)
+      }
+    }
+  }, [])
 
   if (isLoading) return <CircularLoading />
 
@@ -442,7 +465,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                     backgroundColor="white"
                     zIndex="2"
                     onMouseEnter={(e) => handleMouseEnter(eventId, e)}
-                    onMouseLeave={() => setHoveredEvent(null)}
+                    onMouseLeave={handleMouseLeave}
                   >
                     {dayIndex === firstTimelineDay && (
                       <Box
