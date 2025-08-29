@@ -62,6 +62,7 @@ import { SelectSurface } from "./selectSurface"
 import { useContentTypeStore } from "../lib/store/sufaceType"
 import { TiptapDescriptionEditor } from "./TipTapDescriptionEditor"
 import { Switch } from "@chakra-ui/react"
+import SelectChannelDropdown from "./SelectChannelDropdown"
 // import { redirect } from "react-router"
 
 export default function CreatePostForm() {
@@ -503,49 +504,51 @@ export default function CreatePostForm() {
             ))}
           </SimpleGrid>
         </Box>
-        {/* Media Upload Section with Proper Restrictions */}
-
-        {(selectedPlatformsType.includes("YOUTUBE") ||
-          selectedPlatformsType.includes("TIKTOK")) && (
-          <Box maxW="40rem">
-            {/* Label */}
-            <Text fontSize="lg" fontWeight="semibold" mb={2} color="#00325c">
-              Title <Span color="red.500">*</Span>
-            </Text>
-            <Box
-              border="1px solid"
-              borderColor="gray.200"
-              rounded="lg"
-              overflow="hidden"
-              width="full"
-            >
-              <Textarea
-                placeholder="Write topic name"
-                border="none"
-                _focus={{
-                  borderColor: "transparent",
-                  boxShadow: "none",
-                  outline: "none",
-                }}
-                _hover={{
-                  borderColor: "transparent",
-                }}
-                p={4}
-                size={"sm"}
-                fontSize="sm"
-                minH="2.5rem" // control height
-                _placeholder={{ color: "gray.500" }}
-                resize="none"
-                rounded="lg"
+        <HStack width={"full"} gap={4} alignItems="flex-start">
+          {/* Title Section */}
+          {(selectedPlatformsType.includes("YOUTUBE") ||
+            selectedPlatformsType.includes("TIKTOK")) && (
+            <Box flex="1" maxW="60%">
+              <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
+                Title <Span color="red.500">*</Span>
+              </Text>
+              <Box
+                border="1px solid"
+                borderColor="gray.200"
                 overflow="hidden"
-                backgroundColor={"white"}
-                value={titleContent}
-                onChange={handleTitleChange}
-              />
+                borderRadius={"6px"}
+                height="44px" // Fixed height to match design
+              >
+                <Textarea
+                  placeholder="Write topic name"
+                  border="none"
+                  _focus={{
+                    borderColor: "transparent",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  _hover={{
+                    borderColor: "transparent",
+                  }}
+                  p={3}
+                  fontSize="14px"
+                  height="44px" // Match container height
+                  _placeholder={{ color: "gray.500" }}
+                  resize="none"
+                  value={titleContent}
+                  onChange={handleTitleChange}
+                />
+              </Box>
             </Box>
-          </Box>
-        )}
+          )}
 
+          {/* Channel Selection */}
+          {selectedPlatformsType.includes("YOUTUBE") && (
+            <Box flex="1" maxW="40%">
+              <SelectChannelDropdown />
+            </Box>
+          )}
+        </HStack>
         {/* Description Section with Tiptap Editor */}
         <TiptapDescriptionEditor
           fixedHeight={false}
@@ -558,7 +561,6 @@ export default function CreatePostForm() {
           onHashtagClick={handleHashtagClick}
           placeholder="Write something awesome"
         />
-
         <Box p={2} spaceY={6}>
           <Heading color={"#00325c"} fontSize="fontSizes.4xl">
             Media
@@ -621,7 +623,6 @@ export default function CreatePostForm() {
             />
           </FileUpload.Root>
         </Box>
-
         <Box>
           {/* Hashtag suggestions */}
           <Text fontSize="lg" fontWeight="semibold" mb={2} color="#00325c">
@@ -756,7 +757,6 @@ export default function CreatePostForm() {
             </Accordion.Root>
           </Box>
         </Box>
-
         <Flex justify="end" gap={2}>
           <Button
             type="submit"

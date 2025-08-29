@@ -9,13 +9,13 @@ export default function Create() {
     return (
       <>
         <Helmet>
-          <title>Create a Post </title>
+          <title>Create Post </title>
         </Helmet>
 
         <Box minH="100dvh" overflowY="hidden" p={4}>
           <Box mb={4}>
             <Heading size="2xl" mb={1} color={"#00325c"}>
-              {isCreatePostEdit ? "Edit Post" : "Create Post"}
+              {isCreatePostEdit ? "Edit Post" : " Post Content"}
             </Heading>
             <Text fontSize="sm" color="fg.MUTED">
               Craft your content and engage your audience
