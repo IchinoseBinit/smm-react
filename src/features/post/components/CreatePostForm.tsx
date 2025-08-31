@@ -458,6 +458,11 @@ export default function CreatePostForm() {
           openDialog({
             status: isScheduled ? "scheduled" : "posted",
           })
+
+          // Reload the page after successful submission
+          setTimeout(() => {
+            window.location.reload()
+          }, 2000) // Wait 2 seconds to show success dialog
         }
       })
 
@@ -468,6 +473,12 @@ export default function CreatePostForm() {
       setDescriptionContent("") // Reset description content
       setTitleContent("") // Reset title content
       setTimeout(() => setClearSelectedAcc(true), 0)
+    } catch (error) {
+      console.error("Error in onSubmit:", error)
+      toaster.error({
+        title: "Error",
+        description: "Failed to process post",
+      })
     } finally {
       setPostLoading(false)
     }
@@ -510,7 +521,11 @@ export default function CreatePostForm() {
             selectedPlatformsType.includes("TIKTOK")) && (
             <Box flex="1" maxW="60%">
               <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
-                Title <Span color="red.500">*</Span>
+                Title{" "}
+                <Span fontSize="sm" color={"gray.500"}>
+                  (For Youtube Only )
+                </Span>{" "}
+                <Span color="red.500">*</Span>
               </Text>
               <Box
                 border="1px solid"
