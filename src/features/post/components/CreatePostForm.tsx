@@ -455,24 +455,34 @@ export default function CreatePostForm() {
 
       await mutateCreatePost(latestData).then((res) => {
         if (res?.success) {
+          console.log("Post submitted successfully, resetting form...")
+
+          reset(defaultValues)
+
+          // Reset all local state
+          setDescriptionContent("")
+          setTitleContent("")
+          setItemArr([])
+          setSelectedPlatformsType([])
+
+          // Reset store states
+          resetSurfaceType()
+          setIsScheduled(false)
+          setInitialTime(null)
+
+          setClearFiles(true)
+
+          setTimeout(() => setClearSelectedAcc(true), 0)
+
           openDialog({
             status: isScheduled ? "scheduled" : "posted",
           })
 
-          // Reload the page after successful submission
           setTimeout(() => {
             window.location.reload()
           }, 2000) // Wait 2 seconds to show success dialog
         }
       })
-
-      reset(defaultValues)
-      resetSurfaceType()
-      setIsScheduled(false)
-      setClearFiles(true)
-      setDescriptionContent("") // Reset description content
-      setTitleContent("") // Reset title content
-      setTimeout(() => setClearSelectedAcc(true), 0)
     } catch (error) {
       console.error("Error in onSubmit:", error)
       toaster.error({
