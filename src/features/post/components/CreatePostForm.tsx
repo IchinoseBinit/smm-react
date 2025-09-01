@@ -4,7 +4,7 @@ import {
   Text,
   Button,
   HStack,
-  Tag,
+  // Tag,
   VStack,
   // Field,
   Textarea,
@@ -218,6 +218,69 @@ export default function CreatePostForm() {
     "#TechNews",
   ]
 
+  // Custom validation to prevent submission when scheduling without date/time
+  const isFormValidForSubmission = useMemo(() => {
+    // Basic form validation
+    if (!isValid || !hasSelectedAccounts) {
+      return false
+    }
+
+    // If scheduling is enabled, require date/time to be selected
+    if (isScheduled && !scheduledTime) {
+      return false
+    }
+
+    return true
+  }, [isValid, hasSelectedAccounts, isScheduled, scheduledTime])
+
+  const resetFormDataAndReload = useCallback(() => {
+    // Reset react-hook-form to default values
+    reset(defaultValues)
+
+    // Reset local state variables
+    setDescriptionContent("")
+    setTitleContent("")
+    setItemArr([])
+    setSelectedPlatformsType([])
+
+    // Reset store states
+    resetSurfaceType()
+    setIsScheduled(false)
+    setInitialTime(null)
+
+    // Clear file uploads
+    setClearFiles(true)
+
+    // Clear selected accounts with slight delay to ensure state updates
+    setTimeout(() => setClearSelectedAcc(true), 0)
+
+    // Force clear any lingering form values
+    setValue("title", "", { shouldValidate: false })
+    setValue("description", "", { shouldValidate: false })
+    setValue("medias", [], { shouldValidate: false })
+    setValue("platform_statuses", [], { shouldValidate: false })
+    setValue("scheduled_time", null, { shouldValidate: false })
+    setValue("is_photo", false, { shouldValidate: false })
+    setValue("status", "", { shouldValidate: false })
+
+    // Clear file upload ref if it has a clear method
+    if (fileUploadListRef.current?.clearAll) {
+      fileUploadListRef.current.clearAll()
+    }
+
+    // Reload the page after 1.5 seconds
+    setTimeout(() => {
+      window.location.reload()
+    }, 1500)
+  }, [
+    reset,
+    defaultValues,
+    resetSurfaceType,
+    setIsScheduled,
+    setInitialTime,
+    setClearSelectedAcc,
+    setValue,
+  ])
   // Updated addTag function to work with the editor
   const addTag = useCallback(
     (tag: string) => {
@@ -388,6 +451,17 @@ export default function CreatePostForm() {
       return
     }
 
+    // Prevent submission if scheduling is enabled but no date/time selected
+    if (isScheduled && !scheduledTime) {
+      toaster.error({
+        title: "Schedule Time Required",
+        description: "Please select both date and time when scheduling a post.",
+        duration: 3000,
+        closable: true,
+      })
+      return
+    }
+
     console.log("onsubmit called with:")
     setPostLoading(true)
 
@@ -478,9 +552,7 @@ export default function CreatePostForm() {
             status: isScheduled ? "scheduled" : "posted",
           })
 
-          setTimeout(() => {
-            window.location.reload()
-          }, 2000) // Wait 2 seconds to show success dialog
+          resetFormDataAndReload()
         }
       })
     } catch (error) {
@@ -489,6 +561,7 @@ export default function CreatePostForm() {
         title: "Error",
         description: "Failed to process post",
       })
+      resetFormDataAndReload()
     } finally {
       setPostLoading(false)
     }
@@ -648,28 +721,43 @@ export default function CreatePostForm() {
             />
           </FileUpload.Root>
         </Box>
+
+        {/* Hashtag suggestions section */}
         <Box>
-          {/* Hashtag suggestions */}
-          <Text fontSize="lg" fontWeight="semibold" mb={2} color="#00325c">
-            Hashtags
+          <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
+            Hashtag Suggestions
           </Text>
-          <HStack spaceX={2} wrap="wrap">
+          <Flex wrap="wrap" gap={2}>
             {suggestions.map((tag) => (
-              <Tag.Root
+              <Box
                 key={tag}
-                size="md"
-                p={1}
-                borderRadius="lg"
+                as="button"
+                px={3}
+                py={2}
+                borderRadius="md"
                 cursor="pointer"
                 onClick={() => addTag(tag)}
-                bg="bg.MUTED"
-                color="fg.DEFAULT"
+                backgroundColor="gray.100"
+                color="gray.700"
+                fontSize="sm"
+                fontWeight="medium"
+                border="1px solid"
+                borderColor="gray.200"
+                _hover={{
+                  backgroundColor: "gray.200",
+                  borderColor: "gray.300",
+                }}
+                _active={{
+                  backgroundColor: "gray.300",
+                }}
+                transition="all 0.2s"
               >
-                <Tag.Label>{tag}</Tag.Label>
-              </Tag.Root>
+                {tag}
+              </Box>
             ))}
-          </HStack>
+          </Flex>
         </Box>
+
         {/* Schedule section */}
         <Box
           w="full"
@@ -789,7 +877,7 @@ export default function CreatePostForm() {
             color="button.DEFAULT"
             _hover={{ bg: "button.HOVER" }}
             _active={{ bg: "button.ACTIVE" }}
-            disabled={!isValid || !hasSelectedAccounts} // Disable submit if no accounts selected
+            disabled={!isFormValidForSubmission} // Use custom validation
             loading={postLoading}
             loadingText={
               isCreatePostEdit
