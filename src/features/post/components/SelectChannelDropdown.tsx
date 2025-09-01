@@ -11,7 +11,8 @@ const SelectChannelDropdown = () => {
       <Select.Control
         height="44px"
         borderRadius={"6px"}
-        border={"1px solid #e5e5e8"}
+        backgroundColor={"#f7f7f7"}
+        // border={"1px solid #e5e5e8"}
       >
         <Select.Trigger height="44px" px={3} border={"none"}>
           <Select.ValueText

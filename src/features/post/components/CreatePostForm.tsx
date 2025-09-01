@@ -611,8 +611,8 @@ export default function CreatePostForm() {
                 <Span color="red.500">*</Span>
               </Text>
               <Box
-                border="1px solid"
-                borderColor="gray.200"
+                // border="1px solid"
+                // borderColor="gray.200"
                 overflow="hidden"
                 borderRadius={"6px"}
                 height="44px" // Fixed height to match design
@@ -620,6 +620,7 @@ export default function CreatePostForm() {
                 <Textarea
                   placeholder="Write topic name"
                   border="none"
+                  backgroundColor={"#f7f7f7"}
                   _focus={{
                     borderColor: "transparent",
                     boxShadow: "none",

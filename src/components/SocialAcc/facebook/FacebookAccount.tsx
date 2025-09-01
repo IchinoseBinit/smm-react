@@ -96,8 +96,8 @@ export default function FacebookAccount({
   const content = (
     <Box
       p={4}
-      mt={5}
-      borderRadius="12px 12px 12px 0"
+      mt={2}
+      borderRadius="12px 12px 12px 12px"
       border={"1px solid"}
       borderColor={"#ccdeea"}
       bg={{ base: "#fbfcff", _dark: "primary.800" }}

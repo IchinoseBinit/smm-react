@@ -55,9 +55,11 @@ export function Sidebar() {
       bg="sidebarBg"
       color="fg"
       h="full"
+      backgroundColor={"#fafafa"}
       px={2}
       mt={4}
       zIndex={100}
+      borderRight={"1px solid #e5e5e8"}
     >
       <Flex align="center" mb={4}>
         <HamburgerBar />

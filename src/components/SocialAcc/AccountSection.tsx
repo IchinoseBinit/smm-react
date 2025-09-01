@@ -128,7 +128,7 @@ export const AccountSection = ({
       bg="#ffffff"
     >
       {label && (
-        <Box mb={4} padding={2} borderRadius={9}>
+        <Box mb={2} padding={2} borderRadius={9}>
           <HStack gap={4} align="center">
             {label === "FACEBOOK" && (
               <Icon as={FaFacebook} boxSize={8} color="blue.600" />
@@ -150,7 +150,7 @@ export const AccountSection = ({
               <Heading size="lg" color="gray.800" fontWeight="600">
                 {label.charAt(0) + label.slice(1).toLowerCase()}
               </Heading>
-              <Text color="#5c5c5c" fontSize={"12px"} cursor="pointer" mt={-1}>
+              <Text color="#5c5c5c" fontSize={"12px"} cursor="pointer">
                 {filtered.length} connected accounts
               </Text>
             </VStack>
@@ -158,7 +158,7 @@ export const AccountSection = ({
         </Box>
       )}
 
-      <VStack gap={3} align="stretch">
+      <VStack gap={1} align="stretch">
         {filtered.map((d: any) => (
           <AccountItem
             key={d.id}

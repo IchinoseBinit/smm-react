@@ -35,7 +35,7 @@ const getPageConfig = (pathname: string) => {
     "/calendar": { title: "Calendar" },
     "/posts": { title: "Post" },
     "/account": { title: "Connect Accounts" },
-    "/accounts": { title: "Connect Accounts" },
+    // "/accounts": { title: "Connect Accounts" },
     "/setting": { title: "Settings" },
     "/settings": { title: "Settings" },
     "/help": { title: "Help & Support" },
@@ -94,7 +94,7 @@ export default function DashboardLayout({
         >
           {/* Left side - Title with icon and subtitle */}
           <VStack align="flex-start" gap={1}>
-            <HStack gap={3}>
+            <HStack gap={3} marginLeft={4}>
               {pageConfig.icon && <Image src={pageConfig.icon} boxSize={6} />}
               <Heading
                 size="lg"

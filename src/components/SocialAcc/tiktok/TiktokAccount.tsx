@@ -94,7 +94,7 @@ export default function TiktokAccount({
   const content = (
     <Box
       p={4}
-      mt={5}
+      mt={2}
       borderRadius="12px 12px 12px 0"
       border={"1px solid"}
       borderColor={"#ccdeea"}

@@ -26,10 +26,10 @@ export default function SocialAccountCard({
     <Box
       key={id}
       p={4}
-      mt={5}
+      mt={2}
       mr={4}
-      borderRadius="2xl"
-      bg={{ base: "blue.50", _dark: "primary.800" }}
+      borderRadius="10px"
+      bg={{ base: "#fbfcff", _dark: "primary.800" }}
       _hover={{
         bg: { base: "gray.100", _dark: "primary.700" },
         cursor: "pointer",
@@ -37,8 +37,8 @@ export default function SocialAccountCard({
       boxShadow="md"
       w="20rem"
       position="relative"
-      border="2px solid"
-      borderColor={selected ? "blue.400" : "transparent"}
+      border="1px solid"
+      borderColor={selected ? "#005399" : "transparent"}
       transition="all 0.2s"
     >
       <Box
@@ -50,7 +50,7 @@ export default function SocialAccountCard({
         zIndex="1"
       >
         {selected ? (
-          <BsCheckCircleFill size={20} color="#4299e1" />
+          <BsCheckCircleFill size={20} color="#005399" />
         ) : (
           <BsCircle size={20} color="#A0AEC0" />
         )}

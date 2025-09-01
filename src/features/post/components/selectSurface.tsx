@@ -13,13 +13,15 @@ export const SelectSurface = () => {
       defaultValue={["POST"]}
       size="sm"
       width="120px"
+      borderRadius={7}
+      backgroundColor={"#f7f7f7"}
       onValueChange={
         (val) => setSurfaceType(val.value.map((str) => str)) // ✅ update store
       }
     >
       <Select.HiddenSelect />
-      <Select.Control>
-        <Select.Trigger>
+      <Select.Control borderRadius={7}>
+        <Select.Trigger borderRadius={7} border={"1px solid #ebebeb"}>
           <Select.ValueText />
         </Select.Trigger>
         <Select.IndicatorGroup>
@@ -39,7 +41,7 @@ export const SelectSurface = () => {
         </Select.Positioner>
       </Portal>
     </Select.Root>
-  );
+  )
 };
 
 const frameworks = createListCollection({
