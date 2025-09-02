@@ -1,23 +1,16 @@
-import { useAuthUtils } from "@/hooks/useAuthUtils";
-import {
-  Box,
-  Button,
-  Heading,
-  Image,
-  SimpleGrid,
-  Text,
-} from "@chakra-ui/react";
-import FacebookAccount from "../../../components/SocialAcc/facebook/FacebookAccount";
-import TiktokAccount from "../../../components/SocialAcc/tiktok/TiktokAccount";
-import YoutubeAccount from "../../../components/SocialAcc/youtube/YoutubeAccount";
-import { CircularLoading } from "@/lib/loadings";
-import { AccountSection } from "@/components/SocialAcc/AccountSection";
-import { useAllConnAccounts } from "@/hooks/useConnectedAccounts";
-import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount";
+import { useAuthUtils } from "@/hooks/useAuthUtils"
+import { Box, Button, Heading, Image, SimpleGrid, Text } from "@chakra-ui/react"
+import FacebookAccount from "../../../components/SocialAcc/facebook/FacebookAccount"
+import TiktokAccount from "../../../components/SocialAcc/tiktok/TiktokAccount"
+import YoutubeAccount from "../../../components/SocialAcc/youtube/YoutubeAccount"
+import { CircularLoading } from "@/lib/loadings"
+import { AccountSection } from "@/components/SocialAcc/AccountSection"
+import { useAllConnAccounts } from "@/hooks/useConnectedAccounts"
+import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount"
 
 export const ConnectedAcc = () => {
-  const { navigate, userId } = useAuthUtils();
-  const { data, isLoading } = useAllConnAccounts(userId);
+  const { navigate, userId } = useAuthUtils()
+  const { data, isLoading } = useAllConnAccounts(userId)
   const accountConfigs = [
     {
       type: "FACEBOOK" as AccountType,
@@ -27,7 +20,7 @@ export const ConnectedAcc = () => {
     { type: "TIKTOK" as AccountType, Component: TiktokAccount },
     { type: "YOUTUBE" as AccountType, Component: YoutubeAccount },
     { type: "INSTAGRAM" as AccountType, Component: InstagramAccount },
-  ];
+  ]
 
   console.log("ConnectedAcc userId", userId)
   if (isLoading)
@@ -35,7 +28,7 @@ export const ConnectedAcc = () => {
       <div>
         <CircularLoading />
       </div>
-    );
+    )
   return (
     <>
       {data?.length === 0 ? (
@@ -73,7 +66,12 @@ export const ConnectedAcc = () => {
         </Box>
       ) : (
         <>
-          <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={2} mt={2}>
+          <SimpleGrid
+            columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+            gap={3}
+            mt={6}
+            w="full"
+          >
             {accountConfigs.map(({ type, Component, pagesPath }) => (
               <AccountSection
                 key={type}
@@ -81,12 +79,12 @@ export const ConnectedAcc = () => {
                 label={type}
                 data={data}
                 Component={Component}
-                pagesPath={pagesPath} // ← pass it here
+                pagesPath={pagesPath}
               />
             ))}
           </SimpleGrid>
         </>
       )}
     </>
-  );
-};
+  )
+}

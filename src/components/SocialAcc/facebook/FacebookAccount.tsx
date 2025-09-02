@@ -1,16 +1,16 @@
 import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react"
 import { useState } from "react"
 import { Button, Portal, CloseButton, Dialog } from "@chakra-ui/react"
-
 import useDeleteConnAcc from "@/features/accounts/hooks/useDeleteAccount"
 import { useAuthUtils } from "@/hooks/useAuthUtils"
 import { FaFacebook } from "react-icons/fa6"
 import Delete from "@/assets/deletebtn.svg"
+import { Tooltip } from "@/components/ui/tooltip"
+import useIsTextTruncated from "@/hooks/useTextTruncate"
 
 const DeleteMenu = ({ data }: any) => {
   const { userId } = useAuthUtils()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  console.log("delete menu", data)
 
   const deleteMutation = useDeleteConnAcc(userId)
 
@@ -91,58 +91,62 @@ export default function FacebookAccount({
   thumbnail_url: string | null
   pagesPath?: string
 }) {
-  console.log("FAcebook account", data)
+  const { isTruncated, textRef } = useIsTextTruncated(social_name, 200)
+  console.log("pagepath", pagesPath)
+  const textElement = (
+    <Text
+      ref={textRef}
+      fontWeight="semibold"
+      color={{ base: "primary.800", _dark: "white" }}
+      fontSize="14px"
+    >
+      {social_name}
+    </Text>
+  )
 
   const content = (
     <Box
-      p={4}
-      mt={2}
-      borderRadius="12px 12px 12px 12px"
+      p={3}
+      borderRadius="12px"
       border={"1px solid"}
       borderColor={"#ccdeea"}
       bg={{ base: "#fbfcff", _dark: "primary.800" }}
-      opacity={1.8}
       _hover={{
         bg: { base: "white", _dark: "primary.700" },
         cursor: "pointer",
-        // Show delete button on hover for ALL screen sizes
         "& .delete-button": {
           opacity: 1,
           visibility: "visible",
         },
       }}
-      w="18rem"
+      w="100%"
       position="relative"
       transition="all 0.2s"
       className="group"
     >
-      <Flex gap={3}>
-        <Icon as={FaFacebook} boxSize={6} color="blue.600" />
-        <Text
-          fontWeight="semibold"
-          color={{ base: "primary.800", _dark: "white" }}
-        >
-          <Box as="span" fontSize={14} fontWeight={"semibold"}>
-            {social_name}
-          </Box>
-        </Text>
+      <Flex gap={3} align="center">
+        <Icon as={FaFacebook} boxSize={5} color="blue.600" flexShrink={0} />
+        <Box flex={1} minW={0}>
+          {isTruncated ? (
+            <Tooltip content={social_name}>{textElement}</Tooltip>
+          ) : (
+            textElement
+          )}
+        </Box>
         {thumbnail_url && (
           <Image
-            position="absolute"
-            right={2}
             src={thumbnail_url}
-            width="30px"
-            height="30px"
+            width="24px"
+            height="24px"
             borderRadius="full"
-            marginRight={"10px"}
+            flexShrink={0}
           />
         )}
         <Box
           position={"absolute"}
-          top={-2}
-          right={-2}
+          top={-1}
+          right={-1}
           className="delete-button"
-          // Hidden by default on ALL screen sizes
           opacity={0}
           visibility="hidden"
           transition="all 0.2s ease-in-out"
@@ -158,19 +162,5 @@ export default function FacebookAccount({
     </Box>
   )
 
-  return (
-    <Box>
-      {pagesPath
-        ? // <Link
-          //   href={pagesPath}
-          //   textDecoration="none"
-          //   _focus={{ boxShadow: "none" }}
-          //   _focusVisible={{ boxShadow: "none" }}
-          //   outline="none"
-          // >
-          content
-        : // </Link>
-          content}
-    </Box>
-  )
+  return <Box w="100%">{content}</Box>
 }

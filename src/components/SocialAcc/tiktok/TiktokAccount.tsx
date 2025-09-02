@@ -6,6 +6,8 @@ import { Button, Portal, CloseButton, Dialog } from "@chakra-ui/react"
 import useDeleteConnAcc from "@/features/accounts/hooks/useDeleteAccount"
 import { useAuthUtils } from "@/hooks/useAuthUtils"
 import Delete from "@/assets/deletebtn.svg"
+import { Tooltip } from "@/components/ui/tooltip"
+import useIsTextTruncated from "@/hooks/useTextTruncate"
 
 const DeleteMenu = ({ data }: any) => {
   const { userId } = useAuthUtils()
@@ -91,58 +93,72 @@ export default function TiktokAccount({
   pagesPath?: string
   data: any
 }) {
+  console.log("pagepath", pagesPath)
+
+  const { isTruncated, textRef } = useIsTextTruncated(social_name, 150)
+
+  const textElement = (
+    <Text
+      ref={textRef}
+      fontWeight="semibold"
+      color={{ base: "primary.800", _dark: "white" }}
+      fontSize="14px"
+      // noOfLines={1} // Removed for proper type compatibility
+    >
+      {social_name}
+    </Text>
+  )
+
   const content = (
     <Box
-      p={4}
-      mt={2}
-      borderRadius="12px 12px 12px 0"
+      p={3}
+      borderRadius="12px"
       border={"1px solid"}
       borderColor={"#ccdeea"}
       bg={{ base: "#fbfcff", _dark: "primary.800" }}
-      opacity={1.8}
       _hover={{
         bg: { base: "white", _dark: "primary.700" },
         cursor: "pointer",
-        // Show delete button on hover for ALL screen sizes
         "& .delete-button": {
           opacity: 1,
           visibility: "visible",
         },
       }}
-      w="18rem"
+      w="100%" // Changed from "fit-content" to "100%" to match other components
       position="relative"
       transition="all 0.2s"
       className="group"
     >
-      <Flex gap={3}>
+      <Flex gap={3} align="center">
         <Icon
           as={FaTiktok}
-          boxSize={6}
+          boxSize={5}
           color={{ base: "black", _dark: "white" }}
+          flexShrink={0}
         />
-        <Text
-          fontWeight="semibold"
-          color={{ base: "primary.800", _dark: "white" }}
-        >
-          <Box as="span">{social_name}</Box>
-        </Text>
+        <Box flex={1} minW={0}>
+          {" "}
+          {/* Changed from minW={0} to flex={1} minW={0} for consistent layout */}
+          {isTruncated ? (
+            <Tooltip content={social_name}>{textElement}</Tooltip>
+          ) : (
+            textElement
+          )}
+        </Box>
         {thumbnail_url && (
           <Image
-            position="absolute"
-            right={2}
             src={thumbnail_url}
-            width="30px"
-            height="30px"
-            marginRight={"10px"}
+            width="24px"
+            height="24px"
             borderRadius="full"
+            flexShrink={0}
           />
         )}
         <Box
           position={"absolute"}
-          top={-2}
-          right={-2}
+          top={-1}
+          right={-1}
           className="delete-button"
-          // Hidden by default on ALL screen sizes
           opacity={0}
           visibility="hidden"
           transition="all 0.2s ease-in-out"
@@ -158,5 +174,5 @@ export default function TiktokAccount({
     </Box>
   )
 
-  return <Box>{pagesPath ? content : content}</Box>
+  return <Box w="100%">{content}</Box>
 }
