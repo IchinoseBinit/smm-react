@@ -3,14 +3,19 @@ import {
   Box,
   Button,
   Heading,
-  Image,
+  // Image,
   SimpleGrid,
   Text,
   HStack,
-  VStack,
+  // VStack,
   Icon,
 } from "@chakra-ui/react"
-import { FaArrowLeft, FaFacebook, FaTiktok, FaYoutube } from "react-icons/fa6"
+import {
+  // FaArrowLeft,
+  FaFacebook,
+  FaTiktok,
+  FaYoutube,
+} from "react-icons/fa6"
 
 import FacebookAccount from "../../../components/SocialAcc/facebook/FacebookAccount"
 import TiktokAccount from "../../../components/SocialAcc/tiktok/TiktokAccount"
@@ -24,7 +29,7 @@ import { IoLinkOutline } from "react-icons/io5"
 import { getSocialUrl } from "@/features/accounts/lib/AccUrl"
 
 export const ConnectedAcc = () => {
-  const { navigate, userId } = useAuthUtils()
+  const { userId } = useAuthUtils()
   const { data, isLoading } = useAllConnAccounts(userId)
   const accountConfigs = [
     {
@@ -48,6 +53,9 @@ export const ConnectedAcc = () => {
   const facebookUrl = getSocialUrl("facebook", userId)
   const tiktokUrl = getSocialUrl("tiktok", userId)
   const youtubeUrl = getSocialUrl("youtube", userId)
+  const instagramUrl = getSocialUrl("instagram", userId)
+  console.log("facebook url", facebookUrl)
+  console.log("instragram url", instagramUrl)
   return (
     <>
       {data?.length === 0 ? (

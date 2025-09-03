@@ -212,12 +212,12 @@ export default function SocialMediaPosts() {
       {/* Empty State for No Data */}
       {(!data || data.length === 0) && (
         <Box textAlign="center" py={12}>
-          <Text color="gray.500" fontSize="lg" mb={2}>
+          {/* <Text color="gray.500" fontSize="lg" mb={2}>
             No posts found
           </Text>
           <Text color="gray.400" fontSize="sm">
             Try adjusting your date range to see posts.
-          </Text>
+          </Text> */}
         </Box>
       )}
     </VStack>

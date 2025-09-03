@@ -1,5 +1,5 @@
 export const getSocialUrl = (
-  platform: "facebook" | "tiktok" | "youtube",
+  platform: "facebook" | "tiktok" | "youtube"  | "instagram",
   userId: string,
 ) =>
   `${import.meta.env.VITE_API_BASE_URL}/v1/auth/social/${platform}/login/?user_id=${userId}`;
