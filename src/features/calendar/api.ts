@@ -9,3 +9,16 @@ const deleteScheduledPostApi = (id: string) => {
 }
 
 export { deleteScheduledPostApi }
+
+
+
+const getPostsBydate = (from?: string, to?: string, userId?: string) =>
+  safeApiCall(() =>
+    axiosInstance
+      .get(
+        `${API_URL.POSTS_BY_DATE(userId!)}?from=${from}&to=${to}&sort_by=id&order_by=desc&status=scheduled
+        `,
+      )
+      .then((res) => res.data),
+  );
+export { getPostsBydate };

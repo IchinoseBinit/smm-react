@@ -1,4 +1,4 @@
-import { getPostsBydate } from "@/features/manager/api";
+import { getPostsBydate } from "@/features/calendar/api";
 import { useQuery } from "@tanstack/react-query";
 
 const useGetPostsByDate = ({

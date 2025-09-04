@@ -87,7 +87,7 @@ export default function DashboardLayout({
         {/* Top right header content - positioned absolutely */}
         <HStack
           justifyContent="space-between"
-          width="95%"
+          width="100%"
           borderBottom="1px solid"
           borderColor="gray.200"
           paddingBottom={4}
@@ -108,7 +108,7 @@ export default function DashboardLayout({
           </VStack>
 
           {/* Right side - Search and notification */}
-          <HStack gap={4}>
+          <HStack gap={4} marginRight={4}>
             <Box maxW="300px">
               <QuickActionSearch />
             </Box>

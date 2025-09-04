@@ -5,7 +5,7 @@ const SelectChannelDropdown = () => {
     <Select.Root collection={frameworks} size="md" width="100%">
       <Select.HiddenSelect />
       <Select.Label fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
-        Channels
+        Category
         <Span color="red.500">*</Span>
       </Select.Label>
       <Select.Control
@@ -15,10 +15,7 @@ const SelectChannelDropdown = () => {
         // border={"1px solid #e5e5e8"}
       >
         <Select.Trigger height="44px" px={3} border={"none"}>
-          <Select.ValueText
-            placeholder="Select an account to post to"
-            fontSize="14px"
-          />
+          <Select.ValueText placeholder="Select a category " fontSize="14px" />
         </Select.Trigger>
         <Select.IndicatorGroup>
           <Select.Indicator />
@@ -42,9 +39,10 @@ const SelectChannelDropdown = () => {
 
 const frameworks = createListCollection({
   items: [
-    { label: "Dhenga YT", value: "Dhenga YT" },
-    { label: "Thaquree Vlogs", value: "Thaquree Vlogs" },
-    { label: "MRB Vlogs", value: "MRB Vlogs" },
+    { label: "Technology", value: "Technology" },
+    { label: "Education", value: "Education" },
+    { label: "Environment", value: "Environment" },
+    { label: "Music", value: "Music" },
   ],
 })
 

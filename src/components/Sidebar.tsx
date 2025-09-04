@@ -2,9 +2,9 @@
 import { Flex, HStack, Icon, Link, Text } from "@chakra-ui/react"
 import {
   FiHome,
-  FiBarChart2,
+  // FiBarChart2,
   FiEdit2,
-  FiUsers,
+  // FiUsers,
   FiKey,
   FiCalendar,
 } from "react-icons/fi"
@@ -23,9 +23,9 @@ import Cookies from "js-cookie"
 
 const navItems = [
   { label: "Dashboard", icon: FiHome, href: "/dashboard" },
-  { label: "Analytics", icon: FiBarChart2, href: "/analytics" },
+  // { label: "Analytics", icon: FiBarChart2, href: "/analytics" },
   { label: "Create", icon: FiEdit2, href: "/create" },
-  { label: "Engagement", icon: FiUsers, href: "/engagement" },
+  // { label: "Engagement", icon: FiUsers, href: "/engagement" },
   { label: "Calendar", icon: FiCalendar, href: "/calendar" },
   { label: "Posts", icon: MdManageAccounts, href: "/posts" },
   { label: "Accounts", icon: FiKey, href: "/account" },

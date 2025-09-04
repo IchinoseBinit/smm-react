@@ -26,6 +26,8 @@ import { useEditPostStore } from "@/features/calendar/lib/store/editPost.store"
 // import Underline from "@tiptap/extension-underline"
 // import TextAlign from "@tiptap/extension-text-align"
 
+import { AccountSection } from "@/components/SocialAcc/AccountSection"
+
 import { useForm } from "react-hook-form"
 import { LuUpload } from "react-icons/lu"
 import { FileUploadList } from "./FileUploadList"
@@ -56,14 +58,19 @@ import {
 } from "../lib/store/selectedAcc"
 import { toaster } from "@/components/ui/toaster"
 
-import { PostConnectedAccsSection } from "./ConnectedAccs"
-import { accountConfigs, iconMap } from "../lib/accounts"
+// import { PostConnectedAccsSection } from "./ConnectedAccs"
+// import { accountConfigs, iconMap } from "../lib/accounts"
 import { SelectSurface } from "./selectSurface"
 import { useContentTypeStore } from "../lib/store/sufaceType"
 import { TiptapDescriptionEditor } from "./TipTapDescriptionEditor"
 import { Switch } from "@chakra-ui/react"
 import SelectChannelDropdown from "./SelectChannelDropdown"
+
+import FacebookAccount from "../../../components/SocialAcc/facebook/FacebookAccount"
+import TiktokAccount from "../../../components/SocialAcc/tiktok/TiktokAccount"
+import YoutubeAccount from "../../../components/SocialAcc/youtube/YoutubeAccount"
 // import { redirect } from "react-router"
+import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount"
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils()
@@ -80,6 +87,29 @@ export default function CreatePostForm() {
   const { isCreatePostEdit, postData } = useEditPostStore()
   const deleteScheduledPostMutation = useDeleteScheduledPost()
   const { setInitialTime } = useInitialTimeStore()
+
+  // Create sorted social media configs based on connected accounts count
+  const SocialMediaConfigs = useMemo(() => {
+    const configs = [
+      {
+        type: "FACEBOOK" as AccountType,
+        Component: FacebookAccount,
+        pagesPath: "/account/facebook/pages",
+      },
+      { type: "TIKTOK" as AccountType, Component: TiktokAccount },
+      { type: "YOUTUBE" as AccountType, Component: YoutubeAccount },
+      { type: "INSTAGRAM" as AccountType, Component: InstagramAccount },
+    ]
+
+    if (!data) return configs
+
+    // Sort configs by number of connected accounts (highest first)
+    return configs.sort((a, b) => {
+      const aCount = data.filter((d: any) => d.account_type === a.type).length
+      const bCount = data.filter((d: any) => d.account_type === b.type).length
+      return bCount - aCount // Descending order (highest first)
+    })
+  }, [data])
 
   const extractTime = (time: string) => {
     return time.split("T")[1].split("+")[0] // "22:19:00"
@@ -582,27 +612,53 @@ export default function CreatePostForm() {
           <Text mb={2} fontWeight="bold" color="#00325c">
             Connected Accounts <Span color={"red.600"}>*</Span>
           </Text>
-          {/* <Test width={100} height={100} fill="red" /> */}
-          <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={2} mt={2}>
-            {accountConfigs.map(({ type }, index) => (
-              <PostConnectedAccsSection
-                key={index}
+          {/* <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={2} mt={2}>
+            {accountConfigs
+              .slice()
+              .sort((a, b) => {
+                if (!data) return 0
+                const aCount = data.filter((d: any) => d.account_type === a.type).length
+                const bCount = data.filter((d: any) => d.account_type === b.type).length
+                return bCount - aCount // Descending order (highest first)
+              })
+              .map(({ type }, index) => (
+                <PostConnectedAccsSection
+                  key={index}
+                  type={type}
+                  data={data}
+                  setvalue={setValue}
+                  setItemArr={setItemArr}
+                  selectedPlatforms={selectedPlatforms}
+                  icon={iconMap[type].icon}
+                  iconColor={iconMap[type].color}
+                />
+              ))}
+          </SimpleGrid> */}
+
+          <SimpleGrid
+            columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+            gap={3}
+            mt={6}
+            w="full"
+          >
+            {SocialMediaConfigs.map(({ type, Component, pagesPath }) => (
+              <AccountSection
+                key={type}
                 type={type}
+                label={type}
                 data={data}
-                setvalue={setValue}
-                setItemArr={setItemArr}
-                selectedPlatforms={selectedPlatforms}
-                icon={iconMap[type].icon}
-                iconColor={iconMap[type].color}
+                Component={Component}
+                pagesPath={pagesPath}
               />
             ))}
           </SimpleGrid>
         </Box>
+
         <HStack width={"full"} gap={4} alignItems="flex-start">
           {/* Title Section */}
           {(selectedPlatformsType.includes("YOUTUBE") ||
             selectedPlatformsType.includes("TIKTOK")) && (
-            <Box flex="1" maxW="60%">
+            <Box flex="1" maxW="58%">
               <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
                 Title{" "}
                 <Span fontSize="sm" color={"gray.500"}>
@@ -618,7 +674,7 @@ export default function CreatePostForm() {
                 height="44px" // Fixed height to match design
               >
                 <Textarea
-                  placeholder="Write topic name"
+                  placeholder="Write a title"
                   border="none"
                   backgroundColor={"#f7f7f7"}
                   _focus={{
@@ -643,11 +699,12 @@ export default function CreatePostForm() {
 
           {/* Channel Selection */}
           {selectedPlatformsType.includes("YOUTUBE") && (
-            <Box flex="1" maxW="40%">
+            <Box flex="1" maxW="38%">
               <SelectChannelDropdown />
             </Box>
           )}
         </HStack>
+
         {/* Description Section with Tiptap Editor */}
         <TiptapDescriptionEditor
           fixedHeight={false}
@@ -660,6 +717,42 @@ export default function CreatePostForm() {
           onHashtagClick={handleHashtagClick}
           placeholder="Write something awesome"
         />
+
+        {/* Hashtag suggestions section */}
+        <Box>
+          <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
+            Hashtag Suggestions
+          </Text>
+          <Flex wrap="wrap" gap={2}>
+            {suggestions.map((tag) => (
+              <Box
+                key={tag}
+                as="button"
+                px={3}
+                py={2}
+                borderRadius="md"
+                cursor="pointer"
+                onClick={() => addTag(tag)}
+                backgroundColor="gray.100"
+                color="gray.700"
+                fontSize="sm"
+                fontWeight="medium"
+                border="1px solid"
+                borderColor="gray.200"
+                _hover={{
+                  backgroundColor: "gray.200",
+                  borderColor: "gray.300",
+                }}
+                _active={{
+                  backgroundColor: "gray.300",
+                }}
+                transition="all 0.2s"
+              >
+                {tag}
+              </Box>
+            ))}
+          </Flex>
+        </Box>
         <Box p={2} spaceY={6}>
           <Heading color={"#00325c"} fontSize="fontSizes.4xl">
             Media
@@ -721,42 +814,6 @@ export default function CreatePostForm() {
               showStatusMessages={true}
             />
           </FileUpload.Root>
-        </Box>
-
-        {/* Hashtag suggestions section */}
-        <Box>
-          <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
-            Hashtag Suggestions
-          </Text>
-          <Flex wrap="wrap" gap={2}>
-            {suggestions.map((tag) => (
-              <Box
-                key={tag}
-                as="button"
-                px={3}
-                py={2}
-                borderRadius="md"
-                cursor="pointer"
-                onClick={() => addTag(tag)}
-                backgroundColor="gray.100"
-                color="gray.700"
-                fontSize="sm"
-                fontWeight="medium"
-                border="1px solid"
-                borderColor="gray.200"
-                _hover={{
-                  backgroundColor: "gray.200",
-                  borderColor: "gray.300",
-                }}
-                _active={{
-                  backgroundColor: "gray.300",
-                }}
-                transition="all 0.2s"
-              >
-                {tag}
-              </Box>
-            ))}
-          </Flex>
         </Box>
 
         {/* Schedule section */}

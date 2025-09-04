@@ -7,6 +7,8 @@ import Delete from "@/assets/deletebtn.svg"
 import { FaYoutube } from "react-icons/fa6"
 import { Tooltip } from "@/components/ui/tooltip"
 import useIsTextTruncated from "@/hooks/useTextTruncate"
+import { BsCheckCircleFill, BsCircle } from "react-icons/bs"
+import { useLocation } from "react-router"
 const DeleteMenu = ({ data }: any) => {
   const { userId } = useAuthUtils()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -91,6 +93,10 @@ export default function YoutubeAccount({
   pagesPath?: string
   data: any
 }) {
+    const [selected, setSelected] = useState(false)
+    const { pathname } = useLocation()
+    const isCreatePage = pathname === "/create"
+    const isAccountPage = pathname === "/account"
     console.log("pagepath", pagesPath)
 
     const { isTruncated, textRef } = useIsTextTruncated(social_name, 200)
@@ -116,16 +122,40 @@ export default function YoutubeAccount({
         _hover={{
           bg: { base: "white", _dark: "primary.700" },
           cursor: "pointer",
-          "& .delete-button": {
-            opacity: 1,
-            visibility: "visible",
-          },
+          ...((!isCreatePage) && {
+            "& .delete-button": {
+              opacity: 1,
+              visibility: "visible",
+            },
+          }),
         }}
         w="100%"
         position="relative"
         transition="all 0.2s"
         className="group"
       >
+        {!isAccountPage && (
+          <Box
+            position="absolute"
+            top="-8px"
+            right="-8px"
+            bg={{ base: "white", _dark: "primary.800" }}
+            borderRadius="full"
+            zIndex="1"
+            cursor="pointer"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelected(!selected)
+            }}
+          >
+            {selected ? (
+              <BsCheckCircleFill size={20} color="#005399" />
+            ) : (
+              <BsCircle size={20} color="#A0AEC0" />
+            )}
+          </Box>
+        )}
+
         <Flex gap={3} align="center">
           <Icon as={FaYoutube} boxSize={5} color="red.600" flexShrink={0} />
           <Box flex={1} minW={0}>
