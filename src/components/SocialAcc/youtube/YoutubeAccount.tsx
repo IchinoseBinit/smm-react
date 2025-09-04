@@ -1,32 +1,32 @@
-import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react"
-import { useState } from "react"
-import { Button, Portal, CloseButton, Dialog } from "@chakra-ui/react"
-import useDeleteConnAcc from "@/features/accounts/hooks/useDeleteAccount"
-import { useAuthUtils } from "@/hooks/useAuthUtils"
-import Delete from "@/assets/deletebtn.svg"
-import { FaYoutube } from "react-icons/fa6"
-import { Tooltip } from "@/components/ui/tooltip"
-import useIsTextTruncated from "@/hooks/useTextTruncate"
+import { Box, Flex, Icon, Image, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import { Button, Portal, CloseButton, Dialog } from "@chakra-ui/react";
+import useDeleteConnAcc from "@/features/accounts/hooks/useDeleteAccount";
+import { useAuthUtils } from "@/hooks/useAuthUtils";
+import Delete from "@/assets/deletebtn.svg";
+import { FaYoutube } from "react-icons/fa6";
+import { Tooltip } from "@/components/ui/tooltip";
+import useIsTextTruncated from "@/hooks/useTextTruncate";
 const DeleteMenu = ({ data }: any) => {
-  const { userId } = useAuthUtils()
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  console.log("delete menu", data)
+  const { userId } = useAuthUtils();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  console.log("delete menu", data);
 
-  const deleteMutation = useDeleteConnAcc(userId)
+  const deleteMutation = useDeleteConnAcc(userId);
 
   const handleDeleteClick = () => {
-    setIsDialogOpen(true)
-  }
+    setIsDialogOpen(true);
+  };
 
   const handleConfirmDelete = () => {
-    deleteMutation.mutate({ id: data.id, account_type: data.account_type })
-    console.log("Item deleted")
-    setIsDialogOpen(false)
-  }
+    deleteMutation.mutate({ id: data.id, account_type: data.account_type });
+    console.log("Item deleted");
+    setIsDialogOpen(false);
+  };
 
   const handleCancel = () => {
-    setIsDialogOpen(false)
-  }
+    setIsDialogOpen(false);
+  };
 
   return (
     <>
@@ -77,8 +77,8 @@ const DeleteMenu = ({ data }: any) => {
         </Portal>
       </Dialog.Root>
     </>
-  )
-}
+  );
+};
 
 export default function YoutubeAccount({
   social_name,
@@ -86,83 +86,83 @@ export default function YoutubeAccount({
   pagesPath,
   data,
 }: {
-  social_name: string
-  thumbnail_url: string | null
-  pagesPath?: string
-  data: any
+  social_name: string;
+  thumbnail_url: string | null;
+  pagesPath?: string;
+  data: any;
 }) {
-    console.log("pagepath", pagesPath)
+  console.log("pagepath", pagesPath);
 
-    const { isTruncated, textRef } = useIsTextTruncated(social_name, 200)
+  const { isTruncated, textRef } = useIsTextTruncated(social_name, 200);
 
-    const textElement = (
-      <Text
-        ref={textRef}
-        fontWeight="semibold"
-        color={{ base: "black", _dark: "white" }}
-        fontSize="14px"
-      >
-        {social_name}
-      </Text>
-    )
+  const textElement = (
+    <Text
+      ref={textRef}
+      fontWeight="semibold"
+      color={{ base: "black", _dark: "white" }}
+      fontSize="14px"
+    >
+      {social_name}
+    </Text>
+  );
 
-    const content = (
-      <Box
-        p={3}
-        borderRadius="12px"
-        border={"1px solid"}
-        borderColor={"#ccdeea"}
-        bg={{ base: "#fbfcff", _dark: "primary.800" }}
-        _hover={{
-          bg: { base: "white", _dark: "primary.700" },
-          cursor: "pointer",
-          "& .delete-button": {
-            opacity: 1,
-            visibility: "visible",
-          },
-        }}
-        w="100%"
-        position="relative"
-        transition="all 0.2s"
-        className="group"
-      >
-        <Flex gap={3} align="center">
-          <Icon as={FaYoutube} boxSize={5} color="red.600" flexShrink={0} />
-          <Box flex={1} minW={0}>
-            {isTruncated ? (
-              <Tooltip content={social_name}>{textElement}</Tooltip>
-            ) : (
-              textElement
-            )}
-          </Box>
-          {thumbnail_url && (
-            <Image
-              src={thumbnail_url}
-              width="24px"
-              height="24px"
-              borderRadius="full"
-              flexShrink={0}
-            />
+  const content = (
+    <Box
+      p={3}
+      borderRadius="12px"
+      border={"1px solid"}
+      borderColor={"#ccdeea"}
+      bg={{ base: "#fbfcff", _dark: "primary.800" }}
+      _hover={{
+        bg: { base: "white", _dark: "primary.700" },
+        cursor: "pointer",
+        "& .delete-button": {
+          opacity: 1,
+          visibility: "visible",
+        },
+      }}
+      w="100%"
+      position="relative"
+      transition="all 0.2s"
+      className="group"
+    >
+      <Flex gap={3} align="center">
+        <Icon as={FaYoutube} boxSize={5} color="red.600" flexShrink={0} />
+        <Box flex={1} minW={0}>
+          {isTruncated ? (
+            <Tooltip content={social_name}>{textElement}</Tooltip>
+          ) : (
+            textElement
           )}
-          <Box
-            position={"absolute"}
-            top={-1}
-            right={-1}
-            className="delete-button"
-            opacity={0}
-            visibility="hidden"
-            transition="all 0.2s ease-in-out"
-          >
-            <DeleteMenu
-              data={{
-                id: data.id,
-                account_type: data.account_type,
-              }}
-            />
-          </Box>
-        </Flex>
-      </Box>
-    )
+        </Box>
+        {thumbnail_url && (
+          <Image
+            src={thumbnail_url}
+            width="24px"
+            height="24px"
+            borderRadius="full"
+            flexShrink={0}
+          />
+        )}
+        <Box
+          position={"absolute"}
+          bottom="34px"
+          right="-10px"
+          className="delete-button"
+          opacity={0}
+          visibility="hidden"
+          transition="all 0.2s ease-in-out"
+        >
+          <DeleteMenu
+            data={{
+              id: data.id,
+              account_type: data.account_type,
+            }}
+          />
+        </Box>
+      </Flex>
+    </Box>
+  );
 
-    return <Box w="100%">{content}</Box>
-  }
+  return <Box w="100%">{content}</Box>;
+}

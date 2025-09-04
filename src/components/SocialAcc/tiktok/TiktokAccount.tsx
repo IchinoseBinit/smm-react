@@ -156,8 +156,8 @@ export default function TiktokAccount({
         )}
         <Box
           position={"absolute"}
-          top={-1}
-          right={-1}
+          bottom="34px"
+          right="-10px"
           className="delete-button"
           opacity={0}
           visibility="hidden"
