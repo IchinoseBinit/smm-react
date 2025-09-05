@@ -19,6 +19,7 @@ import {
   Span,
   // Image,
 } from "@chakra-ui/react"
+import type { AccountType } from "@/types/accounts"
 import useDeleteScheduledPost from "@/features/calendar/hooks/useDeleteSchedule"
 import { useEditPostStore } from "@/features/calendar/lib/store/editPost.store"
 
@@ -626,7 +627,16 @@ export default function CreatePostForm() {
     )
 
   return (
-    <Box as="form" onSubmit={handleSubmit(onSubmit)} w="full">
+    <Box
+      as="form"
+      onSubmit={handleSubmit(onSubmit)}
+      w="full"
+      height={"full"}
+      css={{
+        "&::-webkit-scrollbar": { display: "none" },
+      }}
+      overflow="scroll"
+    >
       <VStack spaceY={6} align="stretch">
         <SelectSurface />
         <Box>
@@ -696,7 +706,6 @@ export default function CreatePostForm() {
               <Box
                 // border="1px solid"
                 // borderColor="gray.200"
-                overflow="hidden"
                 borderRadius={"6px"}
                 height="44px" // Fixed height to match design
               >

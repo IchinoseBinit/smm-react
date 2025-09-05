@@ -130,7 +130,10 @@ export default function DashboardLayout({
         <Box
           p={6}
           overflowY="auto"
-          h="calc(100vh - 100px)"
+          css={{
+            "&::-webkit-scrollbar": { display: "none" },
+          }}
+          overflow="scroll"
         >
           {children}
         </Box>

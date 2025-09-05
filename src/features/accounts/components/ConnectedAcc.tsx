@@ -27,6 +27,7 @@ import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount"
 import { IoLinkOutline } from "react-icons/io5"
 
 import { getSocialUrl } from "@/features/accounts/lib/AccUrl"
+import type { AccountType } from "@/types/accounts"
 
 export const ConnectedAcc = () => {
   const { userId } = useAuthUtils()
@@ -45,9 +46,15 @@ export const ConnectedAcc = () => {
   console.log("ConnectedAcc userId", userId)
   if (isLoading)
     return (
-      <div>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        minH="50vh"
+        w="full"
+      >
         <CircularLoading />
-      </div>
+      </Box>
     )
 
   const facebookUrl = getSocialUrl("facebook", userId)

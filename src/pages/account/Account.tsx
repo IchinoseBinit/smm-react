@@ -14,9 +14,15 @@ export default function Account() {
 
   if (isLoading)
     return (
-      <div>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        minH="50vh"
+        w="full"
+      >
         <CircularLoading />
-      </div>
+      </Box>
     )
   return (
     <>

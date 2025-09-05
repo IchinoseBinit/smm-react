@@ -52,3 +52,6 @@ type FormatType =
   | "alignRight"
   | "clearFormat"
 export type { FileMeta, FilesPayload, AccountSectionProps, ToolbarButtonProps, TiptapDescriptionEditorProps, FormatType };
+
+
+export type AccountType = "FACEBOOK" | "TIKTOK" | "YOUTUBE" | "INSTAGRAM";
