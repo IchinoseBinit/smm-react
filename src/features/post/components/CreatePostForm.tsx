@@ -78,6 +78,7 @@ export default function CreatePostForm() {
   const isScheduled = useScheduleStore((s) => s.isScheduled)
   const setIsScheduled = useScheduleStore((s) => s.setIsScheduled)
   const { setClearSelectedAcc } = useClearSelectedAccStore()
+  const { setIds } = useSelectedStore()
   const [itemArr, setItemArr] = useState<any[]>([])
   const [clearFiles, setClearFiles] = useState(false)
   const [postLoading, setPostLoading] = useState(false)
@@ -353,6 +354,20 @@ export default function CreatePostForm() {
     setValue("platform_statuses", itemArr, { shouldValidate: true })
   }, [itemArr, setValue])
 
+  // Auto-select all connected accounts when data loads
+  useEffect(() => {
+    if (data && data.length > 0 && !isCreatePostEdit) {
+      const allAccountIds = data.map((account: any) => account.id)
+      setIds(allAccountIds)
+
+      const allAccountItems = data.map((account: any) => ({
+        accountType: account.account_type,
+        social_account_id: account.id,
+      }))
+      setItemArr(allAccountItems)
+    }
+  }, [data, setIds, setItemArr, isCreatePostEdit])
+
   const uploadFiles = async () => {
     console.log("uploadFiles called with payload:", payload)
     const presignedResponse: any = await mutateAsync(payload)
@@ -597,16 +612,22 @@ export default function CreatePostForm() {
     }
   }
 
-  if (isLoading) return <CircularLoading />
+  if (isLoading)
+    return (
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        minH="50vh"
+        w="full"
+      >
+        <CircularLoading />
+      </Box>
+    )
 
   return (
-    <Box
-      as="form"
-      onSubmit={handleSubmit(onSubmit)}
-      minH="100dvh"
-      overflowY="hidden"
-    >
-      <VStack spaceY={8} align="stretch">
+    <Box as="form" onSubmit={handleSubmit(onSubmit)} w="full">
+      <VStack spaceY={6} align="stretch">
         <SelectSurface />
         <Box>
           <Text mb={2} fontWeight="bold" color="#00325c">
@@ -617,8 +638,12 @@ export default function CreatePostForm() {
               .slice()
               .sort((a, b) => {
                 if (!data) return 0
-                const aCount = data.filter((d: any) => d.account_type === a.type).length
-                const bCount = data.filter((d: any) => d.account_type === b.type).length
+                const aCount = data.filter(
+                  (d: any) => d.account_type === a.type
+                ).length
+                const bCount = data.filter(
+                  (d: any) => d.account_type === b.type
+                ).length
                 return bCount - aCount // Descending order (highest first)
               })
               .map(({ type }, index) => (
@@ -637,7 +662,7 @@ export default function CreatePostForm() {
 
           <SimpleGrid
             columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-            gap={3}
+            gap={6}
             mt={6}
             w="full"
           >
@@ -649,6 +674,8 @@ export default function CreatePostForm() {
                 data={data}
                 Component={Component}
                 pagesPath={pagesPath}
+                setValue={setValue}
+                setItemArr={setItemArr}
               />
             ))}
           </SimpleGrid>
@@ -658,7 +685,7 @@ export default function CreatePostForm() {
           {/* Title Section */}
           {(selectedPlatformsType.includes("YOUTUBE") ||
             selectedPlatformsType.includes("TIKTOK")) && (
-            <Box flex="1" maxW="58%">
+            <Box flex="1" maxW="56%">
               <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
                 Title{" "}
                 <Span fontSize="sm" color={"gray.500"}>
@@ -928,34 +955,36 @@ export default function CreatePostForm() {
             </Accordion.Root>
           </Box>
         </Box>
-        <Flex justify="end" gap={2}>
-          <Button
-            type="submit"
-            bg="secondary.500"
-            color="button.DEFAULT"
-            _hover={{ bg: "button.HOVER" }}
-            _active={{ bg: "button.ACTIVE" }}
-            disabled={!isFormValidForSubmission} // Use custom validation
-            loading={postLoading}
-            loadingText={
-              isCreatePostEdit
+        <Box pb={4}>
+          <Flex justify="end" gap={2}>
+            <Button
+              type="submit"
+              bg="secondary.500"
+              color="button.DEFAULT"
+              _hover={{ bg: "button.HOVER" }}
+              _active={{ bg: "button.ACTIVE" }}
+              disabled={!isFormValidForSubmission} // Use custom validation
+              loading={postLoading}
+              loadingText={
+                isCreatePostEdit
+                  ? isScheduled
+                    ? "Updating Schedule..."
+                    : "Updating Post..."
+                  : isScheduled
+                  ? "Scheduling..."
+                  : "Posting..."
+              }
+            >
+              {isCreatePostEdit
                 ? isScheduled
-                  ? "Updating Schedule..."
-                  : "Updating Post..."
+                  ? "Update Schedule"
+                  : "Update Post"
                 : isScheduled
-                ? "Scheduling..."
-                : "Posting..."
-            }
-          >
-            {isCreatePostEdit
-              ? isScheduled
-                ? "Update Schedule"
-                : "Update Post"
-              : isScheduled
-              ? "Schedule Post"
-              : "Post Now"}{" "}
-          </Button>
-        </Flex>
+                ? "Schedule Post"
+                : "Post Now"}{" "}
+            </Button>
+          </Flex>
+        </Box>
       </VStack>
       <SuccessDialog />
     </Box>

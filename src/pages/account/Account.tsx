@@ -24,7 +24,7 @@ export default function Account() {
         <title>Account </title>
       </Helmet>
       <Box>
-        <Flex justify="space-between" marginTop={6}>
+        <Flex justify="space-between" marginTop={1}>
           <Heading size="2xl">{}</Heading>
           {/* <Heading size="2xl">Connected Accounts</Heading> */}
 

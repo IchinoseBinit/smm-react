@@ -128,10 +128,9 @@ export default function DashboardLayout({
 
         {/* Main content */}
         <Box
-          h="full"
           p={6}
           overflowY="auto"
-          pt={pageConfig.subtitle ? "0" : "0"}
+          h="calc(100vh - 100px)"
         >
           {children}
         </Box>

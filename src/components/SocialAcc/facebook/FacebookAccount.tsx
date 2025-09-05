@@ -9,6 +9,7 @@ import { Tooltip } from "@/components/ui/tooltip"
 import useIsTextTruncated from "@/hooks/useTextTruncate"
 import { BsCheckCircleFill, BsCircle } from "react-icons/bs"
 import { useLocation } from "react-router"
+import { useSelectedStore } from "@/features/post/lib/store/selectedAcc"
 
 const DeleteMenu = ({ data }: any) => {
   const { userId } = useAuthUtils()
@@ -93,10 +94,11 @@ export default function FacebookAccount({
   thumbnail_url: string | null
   pagesPath?: string
 }) {
-  const [selected, setSelected] = useState(false)
+  const { selectedIds, toggleId } = useSelectedStore()
   const { pathname } = useLocation()
   const isCreatePage = pathname === "/create"
   const isAccountPage = pathname === "/account"
+  const selected = selectedIds.includes(data.id)
   const { isTruncated, textRef } = useIsTextTruncated(social_name, 200)
   console.log("pagepath", pagesPath)
   const textElement = (
@@ -120,7 +122,7 @@ export default function FacebookAccount({
       _hover={{
         bg: { base: "white", _dark: "primary.700" },
         cursor: "pointer",
-        ...((!isCreatePage) && {
+        ...(!isCreatePage && {
           "& .delete-button": {
             opacity: 1,
             visibility: "visible",
@@ -143,7 +145,7 @@ export default function FacebookAccount({
           cursor="pointer"
           onClick={(e) => {
             e.stopPropagation()
-            setSelected(!selected)
+            toggleId(data.id)
           }}
         >
           {selected ? (
@@ -174,8 +176,8 @@ export default function FacebookAccount({
         )}
         <Box
           position={"absolute"}
-          top={-1}
-          right={-1}
+          top={-2}
+          right={-3}
           className="delete-button"
           opacity={0}
           visibility="hidden"

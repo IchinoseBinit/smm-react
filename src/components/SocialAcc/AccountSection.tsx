@@ -3,6 +3,8 @@ import { FaTiktok } from "react-icons/fa6"
 import { FaInstagram } from "react-icons/fa6"
 import { FaFacebook } from "react-icons/fa6"
 import { FaYoutube } from "react-icons/fa6"
+import { useSelectedStore } from "@/features/post/lib/store/selectedAcc"
+import { useEffect } from "react"
 
 type AccountType = string
 
@@ -12,10 +14,41 @@ type AccountSectionProps = {
   Component: React.FC<any>
   label?: string
   pagesPath?: string
+  setValue?: any
+  setItemArr?: any
 }
 
-const AccountItem = ({ data, Component, pagesPath }: any) => {
+const AccountItem = ({
+  data,
+  Component,
+  pagesPath,
+  setValue,
+  setItemArr,
+  allData,
+}: any) => {
+  const { selectedIds } = useSelectedStore()
   console.log("Account item", data)
+
+  useEffect(() => {
+    if (!setValue || !setItemArr || !allData) return
+
+    // Update itemArr when selectedIds changes for all accounts
+    setItemArr((_prev: any[]) => {
+      const newItems: any[] = []
+
+      allData.forEach((d: any) => {
+        if (selectedIds.includes(d.id)) {
+          newItems.push({
+            accountType: d.account_type,
+            social_account_id: d.id,
+          })
+        }
+      })
+
+      return newItems
+    })
+  }, [selectedIds, allData, setValue, setItemArr])
+
   return (
     <Box w="100%" position="relative">
       <Component data={data} {...data} pagesPath={pagesPath} />
@@ -29,6 +62,8 @@ export const AccountSection = ({
   Component,
   label,
   pagesPath,
+  setValue,
+  setItemArr,
 }: AccountSectionProps & { pagesPath?: string }) => {
   const filtered = data.filter((d: any) => d.account_type === type)
   console.log("Account Section data", type, data)
@@ -105,6 +140,9 @@ export const AccountSection = ({
             data={d}
             Component={Component}
             pagesPath={pagesPath}
+            setValue={setValue}
+            setItemArr={setItemArr}
+            allData={data}
           />
         ))}
       </VStack>
