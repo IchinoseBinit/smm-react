@@ -39,6 +39,7 @@ const getPageConfig = (pathname: string) => {
     "/setting": { title: "Settings" },
     "/settings": { title: "Settings" },
     "/help": { title: "Help & Support" },
+    "/contact": { title: "Contact Us" },
   }
 
   // Check for exact match first

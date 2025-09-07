@@ -5,6 +5,7 @@ import { FaFacebook } from "react-icons/fa6"
 import { FaYoutube } from "react-icons/fa6"
 import { useSelectedStore } from "@/features/post/lib/store/selectedAcc"
 import { useEffect } from "react"
+import { BsCheckCircleFill, BsCircle } from "react-icons/bs"
 
 type AccountType = string
 
@@ -65,7 +66,33 @@ export const AccountSection = ({
   setValue,
   setItemArr,
 }: AccountSectionProps & { pagesPath?: string }) => {
+  const { selectedIds, toggleId } = useSelectedStore()
   const filtered = data.filter((d: any) => d.account_type === type)
+  
+  // Check if all accounts of this type are selected
+  const isAllAccountsSelected = filtered.length > 0 && filtered.every((account: any) => selectedIds.includes(account.id))
+  
+  // Handle section-level toggle (select/deselect all accounts in this section)
+  const handleSectionToggle = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    
+    if (isAllAccountsSelected) {
+      // Deselect all accounts in this section
+      filtered.forEach((account: any) => {
+        if (selectedIds.includes(account.id)) {
+          toggleId(account.id)
+        }
+      })
+    } else {
+      // Select all accounts in this section
+      filtered.forEach((account: any) => {
+        if (!selectedIds.includes(account.id)) {
+          toggleId(account.id)
+        }
+      })
+    }
+  }
+  
   console.log("Account Section data", type, data)
   console.log("filter ", type, data)
   console.log("label", label)
@@ -86,7 +113,23 @@ export const AccountSection = ({
       flexShrink={1}
     >
       {label && (
-        <Box mb={3} borderRadius={9}>
+        <Box mb={3} borderRadius={9} position={"relative"}>
+          <Box
+            position="absolute"
+            top="8px"
+            right="-8px"
+            bg={{ base: "white", _dark: "primary.800" }}
+            borderRadius="full"
+            zIndex="1"
+            cursor="pointer"
+            onClick={handleSectionToggle}
+          >
+            {isAllAccountsSelected ? (
+              <BsCheckCircleFill size={20} color="#005399" />
+            ) : (
+              <BsCircle size={20} color="#A0AEC0" />
+            )}
+          </Box>
           <HStack gap={4} align="center">
             {label === "FACEBOOK" && (
               <Icon

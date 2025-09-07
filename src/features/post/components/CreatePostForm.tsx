@@ -200,6 +200,7 @@ export default function CreatePostForm() {
           .map((item) => item.accountType)
       )
     )
+    console.log("selectedTypes updated:", selectedTypes)
     setSelectedPlatformsType(selectedTypes)
 
     if (selectedTypes.includes("YOUTUBE")) return YouTubeVideoSchema
@@ -243,11 +244,11 @@ export default function CreatePostForm() {
   const scheduledTime = watch("scheduled_time")
 
   const suggestions = [
-    "#TechTrends",
-    "#Innovation",
-    "#FutureTech",
-    "#DigitalWorld",
-    "#TechNews",
+    "TechTrends",
+    "Innovation",
+    "FutureTech",
+    "DigitalWorld",
+    "TechNews",
   ]
 
   // Custom validation to prevent submission when scheduling without date/time
@@ -316,9 +317,14 @@ export default function CreatePostForm() {
   // Updated addTag function to work with the editor
   const addTag = useCallback(
     (tag: string) => {
-      const value = descriptionContent.length
-        ? `${descriptionContent} ${tag}`
-        : tag
+      // Ensure hashtag starts with #
+      const hashtag = tag.startsWith("#") ? tag : `#${tag.replace("#", "")}`
+
+      const currentContent = descriptionContent.trim()
+      const value = currentContent.length
+        ? `${currentContent} ${hashtag}`
+        : hashtag
+
       setDescriptionContent(value)
       setValue("description", value, { shouldValidate: true })
     },
@@ -631,18 +637,22 @@ export default function CreatePostForm() {
       as="form"
       onSubmit={handleSubmit(onSubmit)}
       w="full"
-      height={"full"}
+      maxHeight="100vh"
+      overflowY="auto"
       css={{
         "&::-webkit-scrollbar": { display: "none" },
+        "-ms-overflow-style": "none",
+        "scrollbar-width": "none",
       }}
-      overflow="scroll"
     >
-      <VStack spaceY={6} align="stretch">
+      <VStack spaceY={6} align="stretch" p={4}>
         <SelectSurface />
         <Box>
-          <Text mb={2} fontWeight="bold" color="#00325c">
-            Connected Accounts <Span color={"red.600"}>*</Span>
-          </Text>
+          <HStack justify="space-between" align="center" mb={4}>
+            <Text fontWeight="bold" color="#00325c">
+              Connected Accounts <Span color={"red.600"}>*</Span>
+            </Text>
+          </HStack>
           {/* <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={2} mt={2}>
             {accountConfigs
               .slice()
@@ -693,8 +703,16 @@ export default function CreatePostForm() {
 
         <HStack width={"full"} gap={4} alignItems="flex-start">
           {/* Title Section */}
-          {(selectedPlatformsType.includes("YOUTUBE") ||
-            selectedPlatformsType.includes("TIKTOK")) && (
+          {(() => {
+            console.log(
+              "Title section check - selectedPlatformsType:",
+              selectedPlatformsType
+            )
+            return (
+              selectedPlatformsType.includes("YOUTUBE") ||
+              selectedPlatformsType.includes("TIKTOK")
+            )
+          })() && (
             <Box flex="1" maxW="56%">
               <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
                 Title{" "}
@@ -734,7 +752,13 @@ export default function CreatePostForm() {
           )}
 
           {/* Channel Selection */}
-          {selectedPlatformsType.includes("YOUTUBE") && (
+          {(() => {
+            console.log(
+              "Channel section check - selectedPlatformsType:",
+              selectedPlatformsType
+            )
+            return selectedPlatformsType.includes("YOUTUBE")
+          })() && (
             <Box flex="1" maxW="38%">
               <SelectChannelDropdown />
             </Box>
@@ -768,7 +792,10 @@ export default function CreatePostForm() {
                 py={2}
                 borderRadius="md"
                 cursor="pointer"
-                onClick={() => addTag(tag)}
+                onClick={(e) => {
+                  e.preventDefault()
+                  addTag(tag)
+                }}
                 backgroundColor="gray.100"
                 color="gray.700"
                 fontSize="sm"
@@ -784,7 +811,7 @@ export default function CreatePostForm() {
                 }}
                 transition="all 0.2s"
               >
-                {tag}
+                #{tag}
               </Box>
             ))}
           </Flex>

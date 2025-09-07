@@ -17,6 +17,7 @@ import Privacypolicy from "./pages/legal/Privacypolicy"
 import Termsofservices from "./pages/legal/Termsofservices"
 import Aboutus from "./pages/Company/Aboutus"
 import OrganizationSignup from "./pages/organization/OrganizationSignup"
+import Contactus from "./pages/Contactus/Contactus"
 function App() {
   return (
     <>
@@ -40,6 +41,10 @@ function App() {
           {layoutRoute({
             path: "/calendar",
             component: <Calendar />,
+          })}
+          {layoutRoute({
+            path: "/contactus",
+            component: <Contactus />,
           })}
           {layoutRoute({
             path: "/posts",

@@ -6,7 +6,10 @@ const SelectChannelDropdown = () => {
       <Select.HiddenSelect />
       <Select.Label fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
         Category
-        <Span color="red.500">*</Span>
+        <Span fontSize="sm" color={"gray.500"}>
+          (For Youtube Only )
+        </Span>{" "}
+        <Span color="red.500">*</Span>{" "}
       </Select.Label>
       <Select.Control
         height="44px"
