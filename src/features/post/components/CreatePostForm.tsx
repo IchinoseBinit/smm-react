@@ -79,7 +79,6 @@ export default function CreatePostForm() {
   const isScheduled = useScheduleStore((s) => s.isScheduled)
   const setIsScheduled = useScheduleStore((s) => s.setIsScheduled)
   const { setClearSelectedAcc } = useClearSelectedAccStore()
-  const { setIds } = useSelectedStore()
   const [itemArr, setItemArr] = useState<any[]>([])
   const [clearFiles, setClearFiles] = useState(false)
   const [postLoading, setPostLoading] = useState(false)
@@ -361,19 +360,7 @@ export default function CreatePostForm() {
     setValue("platform_statuses", itemArr, { shouldValidate: true })
   }, [itemArr, setValue])
 
-  // Auto-select all connected accounts when data loads
-  useEffect(() => {
-    if (data && data.length > 0 && !isCreatePostEdit) {
-      const allAccountIds = data.map((account: any) => account.id)
-      setIds(allAccountIds)
-
-      const allAccountItems = data.map((account: any) => ({
-        accountType: account.account_type,
-        social_account_id: account.id,
-      }))
-      setItemArr(allAccountItems)
-    }
-  }, [data, setIds, setItemArr, isCreatePostEdit])
+  // Don't auto-select accounts on load - let user choose manually
 
   const uploadFiles = async () => {
     console.log("uploadFiles called with payload:", payload)
@@ -708,10 +695,7 @@ export default function CreatePostForm() {
               "Title section check - selectedPlatformsType:",
               selectedPlatformsType
             )
-            return (
-              selectedPlatformsType.includes("YOUTUBE") ||
-              selectedPlatformsType.includes("TIKTOK")
-            )
+            return selectedPlatformsType.includes("YOUTUBE")
           })() && (
             <Box flex="1" maxW="56%">
               <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
