@@ -46,6 +46,7 @@ import {
   useSelectedStore,
 } from "../lib/store/selectedAcc"
 import { toaster } from "@/components/ui/toaster"
+import { useNavigate } from "react-router-dom"
 
 // import { PostConnectedAccsSection } from "./ConnectedAccs"
 // import { accountConfigs, iconMap } from "../lib/accounts"
@@ -63,6 +64,7 @@ import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount"
 export default function CreatePostForm() {
   const { userId } = useAuthUtils()
   const { data, isLoading } = useAllConnAccounts(userId)
+  const navigate = useNavigate()
   const isScheduled = useScheduleStore((s) => s.isScheduled)
   const setIsScheduled = useScheduleStore((s) => s.setIsScheduled)
   const [itemArr, setItemArr] = useState<any[]>([])
@@ -282,6 +284,9 @@ export default function CreatePostForm() {
     setValue("scheduled_time", null, { shouldValidate: false })
     setValue("is_photo", false, { shouldValidate: false })
     setValue("status", "", { shouldValidate: false })
+    
+    // Navigate(0) - React Router way to reload the page
+    navigate(0)
   }, [
     reset,
     defaultValues,
@@ -292,6 +297,7 @@ export default function CreatePostForm() {
     clearSelectedAccounts,
     setPayload,
     setHasVideos,
+    navigate,
   ])
   // Updated addTag function to work with the editor
   const addTag = useCallback(
@@ -579,6 +585,7 @@ export default function CreatePostForm() {
         title: "Error",
         description: "Failed to process post",
       })
+
       resetFormDataAndReload()
     } finally {
       setPostLoading(false)
