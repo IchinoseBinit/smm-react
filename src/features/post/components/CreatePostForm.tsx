@@ -112,7 +112,7 @@ export default function CreatePostForm() {
   const [descriptionContent, setDescriptionContent] = useState("")
   const [titleContent, setTitleContent] = useState("")
 
-  const { payload, hasVideos } = useUploadStore()
+  const { payload, hasVideos, setPayload, setHasVideos } = useUploadStore()
   const { mutateAsync } = useFileUpload()
   const { selectedIds, clear: clearSelectedAccounts } = useSelectedStore()
   const { resetSurfaceType } = useContentTypeStore()
@@ -269,23 +269,10 @@ export default function CreatePostForm() {
     // Clear selected social media accounts
     clearSelectedAccounts()
 
-    // Clear file uploads - force multiple clearing methods
+    // Clear file uploads - use multiple methods for production reliability
     setClearFiles(true)
-    
-    // Clear the upload store directly
-    const uploadStore = useUploadStore.getState()
-    uploadStore.setPayload({ files: [] })
-    uploadStore.setHasVideos(false)
-    
-    // Clear file upload ref if it has a clear method
-    if (fileUploadListRef.current?.clearAll) {
-      fileUploadListRef.current.clearAll()
-    }
-    
-    // Reset file clearing flag after a short delay
-    setTimeout(() => {
-      setClearFiles(false)
-    }, 100)
+    setPayload({ files: [] })
+    setHasVideos(false)
 
     // Force clear any lingering form values
     setValue("title", "", { shouldValidate: false })
@@ -303,6 +290,8 @@ export default function CreatePostForm() {
     setInitialTime,
     setValue,
     clearSelectedAccounts,
+    setPayload,
+    setHasVideos,
   ])
   // Updated addTag function to work with the editor
   const addTag = useCallback(
@@ -469,6 +458,7 @@ export default function CreatePostForm() {
   ])
 
   const onSubmit = async () => {
+    console.log("onSubmit called")
     // Check if user has selected accounts before submitting
     if (!hasSelectedAccounts) {
       toaster.error({
