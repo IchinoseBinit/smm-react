@@ -60,11 +60,7 @@ import TiktokAccount from "../../../components/SocialAcc/tiktok/TiktokAccount"
 import YoutubeAccount from "../../../components/SocialAcc/youtube/YoutubeAccount"
 import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount"
 
-interface CreatePostFormProps {
-  onResetForm?: () => void
-}
-
-export default function CreatePostForm({ onResetForm }: CreatePostFormProps = {}) {
+export default function CreatePostForm() {
   const { userId } = useAuthUtils()
   const { data, isLoading } = useAllConnAccounts(userId)
   const isScheduled = useScheduleStore((s) => s.isScheduled)
@@ -118,7 +114,7 @@ export default function CreatePostForm({ onResetForm }: CreatePostFormProps = {}
 
   const { payload, hasVideos } = useUploadStore()
   const { mutateAsync } = useFileUpload()
-  const { selectedIds } = useSelectedStore()
+  const { selectedIds, clear: clearSelectedAccounts } = useSelectedStore()
   const { resetSurfaceType } = useContentTypeStore()
   const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>(
     []
@@ -256,11 +252,58 @@ export default function CreatePostForm({ onResetForm }: CreatePostFormProps = {}
   }, [isValid, hasSelectedAccounts, isScheduled, scheduledTime])
 
   const resetFormDataAndReload = useCallback(() => {
-    // Use React key trick to remount the entire component instead of window.location.reload()
-    if (onResetForm) {
-      onResetForm()
+    // Reset react-hook-form to default values
+    reset(defaultValues)
+
+    // Reset local state variables
+    setDescriptionContent("")
+    setTitleContent("")
+    setItemArr([])
+    setSelectedPlatformsType([])
+
+    // Reset store states
+    resetSurfaceType()
+    setIsScheduled(false)
+    setInitialTime(null)
+
+    // Clear selected social media accounts
+    clearSelectedAccounts()
+
+    // Clear file uploads - force multiple clearing methods
+    setClearFiles(true)
+    
+    // Clear the upload store directly
+    const uploadStore = useUploadStore.getState()
+    uploadStore.setPayload({ files: [] })
+    uploadStore.setHasVideos(false)
+    
+    // Clear file upload ref if it has a clear method
+    if (fileUploadListRef.current?.clearAll) {
+      fileUploadListRef.current.clearAll()
     }
-  }, [onResetForm])
+    
+    // Reset file clearing flag after a short delay
+    setTimeout(() => {
+      setClearFiles(false)
+    }, 100)
+
+    // Force clear any lingering form values
+    setValue("title", "", { shouldValidate: false })
+    setValue("description", "", { shouldValidate: false })
+    setValue("medias", [], { shouldValidate: false })
+    setValue("platform_statuses", [], { shouldValidate: false })
+    setValue("scheduled_time", null, { shouldValidate: false })
+    setValue("is_photo", false, { shouldValidate: false })
+    setValue("status", "", { shouldValidate: false })
+  }, [
+    reset,
+    defaultValues,
+    resetSurfaceType,
+    setIsScheduled,
+    setInitialTime,
+    setValue,
+    clearSelectedAccounts,
+  ])
   // Updated addTag function to work with the editor
   const addTag = useCallback(
     (tag: string) => {
