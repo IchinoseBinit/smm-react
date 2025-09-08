@@ -15,7 +15,6 @@ import { useSelectedStore } from "@/features/post/lib/store/selectedAcc"
 const DeleteMenu = ({ data }: any) => {
   const { userId } = useAuthUtils()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  console.log("delete menu", data)
 
   const deleteMutation = useDeleteConnAcc(userId)
 
@@ -25,7 +24,6 @@ const DeleteMenu = ({ data }: any) => {
 
   const handleConfirmDelete = () => {
     deleteMutation.mutate({ id: data.id, account_type: data.account_type })
-    console.log("Item deleted")
     setIsDialogOpen(false)
   }
 

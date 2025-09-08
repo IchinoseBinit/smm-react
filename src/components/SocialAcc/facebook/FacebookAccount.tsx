@@ -23,7 +23,6 @@ const DeleteMenu = ({ data }: any) => {
 
   const handleConfirmDelete = () => {
     deleteMutation.mutate({ id: data.id, account_type: data.account_type })
-    console.log("Item deleted")
     setIsDialogOpen(false)
   }
 

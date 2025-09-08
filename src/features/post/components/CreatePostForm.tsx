@@ -4,36 +4,25 @@ import {
   Text,
   Button,
   HStack,
-  // Tag,
   VStack,
-  // Field,
   Textarea,
   FileUpload,
   Icon,
   Heading,
-  // Input,
   SimpleGrid,
   Accordion,
-  // Span,
   Flex,
   Span,
-  // Image,
 } from "@chakra-ui/react"
 import type { AccountType } from "@/types/accounts"
 import useDeleteScheduledPost from "@/features/calendar/hooks/useDeleteSchedule"
 import { useEditPostStore } from "@/features/calendar/lib/store/editPost.store"
-
-// import StarterKit from "@tiptap/starter-kit"
-// import Underline from "@tiptap/extension-underline"
-// import TextAlign from "@tiptap/extension-text-align"
 
 import { AccountSection } from "@/components/SocialAcc/AccountSection"
 
 import { useForm } from "react-hook-form"
 import { LuUpload } from "react-icons/lu"
 import { FileUploadList } from "./FileUploadList"
-// import { FiSmile, FiHash } from "react-icons/fi"
-// import { Sparkles } from "lucide-react"
 
 import DateTime from "./DateTime"
 import { useAuthUtils } from "@/hooks/useAuthUtils"
@@ -54,7 +43,6 @@ import {
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
-  useClearSelectedAccStore,
   useSelectedStore,
 } from "../lib/store/selectedAcc"
 import { toaster } from "@/components/ui/toaster"
@@ -70,15 +58,17 @@ import SelectChannelDropdown from "./SelectChannelDropdown"
 import FacebookAccount from "../../../components/SocialAcc/facebook/FacebookAccount"
 import TiktokAccount from "../../../components/SocialAcc/tiktok/TiktokAccount"
 import YoutubeAccount from "../../../components/SocialAcc/youtube/YoutubeAccount"
-// import { redirect } from "react-router"
 import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount"
 
-export default function CreatePostForm() {
+interface CreatePostFormProps {
+  onResetForm?: () => void
+}
+
+export default function CreatePostForm({ onResetForm }: CreatePostFormProps = {}) {
   const { userId } = useAuthUtils()
   const { data, isLoading } = useAllConnAccounts(userId)
   const isScheduled = useScheduleStore((s) => s.isScheduled)
   const setIsScheduled = useScheduleStore((s) => s.setIsScheduled)
-  const { setClearSelectedAcc } = useClearSelectedAccStore()
   const [itemArr, setItemArr] = useState<any[]>([])
   const [clearFiles, setClearFiles] = useState(false)
   const [postLoading, setPostLoading] = useState(false)
@@ -266,53 +256,11 @@ export default function CreatePostForm() {
   }, [isValid, hasSelectedAccounts, isScheduled, scheduledTime])
 
   const resetFormDataAndReload = useCallback(() => {
-    // Reset react-hook-form to default values
-    reset(defaultValues)
-
-    // Reset local state variables
-    setDescriptionContent("")
-    setTitleContent("")
-    setItemArr([])
-    setSelectedPlatformsType([])
-
-    // Reset store states
-    resetSurfaceType()
-    setIsScheduled(false)
-    setInitialTime(null)
-
-    // Clear file uploads
-    setClearFiles(true)
-
-    // Clear selected accounts with slight delay to ensure state updates
-    setTimeout(() => setClearSelectedAcc(true), 0)
-
-    // Force clear any lingering form values
-    setValue("title", "", { shouldValidate: false })
-    setValue("description", "", { shouldValidate: false })
-    setValue("medias", [], { shouldValidate: false })
-    setValue("platform_statuses", [], { shouldValidate: false })
-    setValue("scheduled_time", null, { shouldValidate: false })
-    setValue("is_photo", false, { shouldValidate: false })
-    setValue("status", "", { shouldValidate: false })
-
-    // Clear file upload ref if it has a clear method
-    if (fileUploadListRef.current?.clearAll) {
-      fileUploadListRef.current.clearAll()
+    // Use React key trick to remount the entire component instead of window.location.reload()
+    if (onResetForm) {
+      onResetForm()
     }
-
-    // Reload the page after 1.5 seconds
-    setTimeout(() => {
-      window.location.reload()
-    }, 1500)
-  }, [
-    reset,
-    defaultValues,
-    resetSurfaceType,
-    setIsScheduled,
-    setInitialTime,
-    setClearSelectedAcc,
-    setValue,
-  ])
+  }, [onResetForm])
   // Updated addTag function to work with the editor
   const addTag = useCallback(
     (tag: string) => {
@@ -584,8 +532,6 @@ export default function CreatePostForm() {
           setInitialTime(null)
 
           setClearFiles(true)
-
-          setTimeout(() => setClearSelectedAcc(true), 0)
 
           openDialog({
             status: isScheduled ? "scheduled" : "posted",

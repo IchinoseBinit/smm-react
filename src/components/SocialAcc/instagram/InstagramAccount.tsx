@@ -15,7 +15,6 @@ import { useSelectedStore } from "@/features/post/lib/store/selectedAcc"
 const DeleteMenu = ({ data }: any) => {
   const { userId } = useAuthUtils()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  console.log("delete menu", data)
 
   const deleteMutation = useDeleteConnAcc(userId)
 
@@ -25,7 +24,6 @@ const DeleteMenu = ({ data }: any) => {
 
   const handleConfirmDelete = () => {
     deleteMutation.mutate({ id: data.id, account_type: data.account_type })
-    console.log("Item deleted")
     setIsDialogOpen(false)
   }
 
@@ -101,7 +99,6 @@ export default function InstagramAccount({
   const isCreatePage = pathname === "/create"
   const isAccountPage = pathname === "/account"
   const selected = selectedIds.includes(data.id)
-  console.log("pagepath", pagesPath)
 
   const { isTruncated, textRef } = useIsTextTruncated(social_name, 200)
 
@@ -115,6 +112,7 @@ export default function InstagramAccount({
       {social_name}
     </Text>
   )
+  console.log("pagepath", pagesPath)
 
   const content = (
     <Box

@@ -28,7 +28,6 @@ const AccountItem = ({
   allData,
 }: any) => {
   const { selectedIds } = useSelectedStore()
-  console.log("Account item", data)
 
   useEffect(() => {
     if (!setValue || !setItemArr || !allData) return
@@ -68,14 +67,16 @@ export const AccountSection = ({
 }: AccountSectionProps & { pagesPath?: string }) => {
   const { selectedIds, toggleId } = useSelectedStore()
   const filtered = data.filter((d: any) => d.account_type === type)
-  
+
   // Check if all accounts of this type are selected
-  const isAllAccountsSelected = filtered.length > 0 && filtered.every((account: any) => selectedIds.includes(account.id))
-  
+  const isAllAccountsSelected =
+    filtered.length > 0 &&
+    filtered.every((account: any) => selectedIds.includes(account.id))
+
   // Handle section-level toggle (select/deselect all accounts in this section)
   const handleSectionToggle = (e: React.MouseEvent) => {
     e.stopPropagation()
-    
+
     if (isAllAccountsSelected) {
       // Deselect all accounts in this section
       filtered.forEach((account: any) => {
@@ -92,10 +93,6 @@ export const AccountSection = ({
       })
     }
   }
-  
-  console.log("Account Section data", type, data)
-  console.log("filter ", type, data)
-  console.log("label", label)
 
   if (!filtered.length) return null
 
