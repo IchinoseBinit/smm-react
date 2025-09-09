@@ -4,6 +4,7 @@ import { FaInstagram } from "react-icons/fa6"
 import { FaFacebook } from "react-icons/fa6"
 import { FaYoutube } from "react-icons/fa6"
 import { useSelectedStore } from "@/features/post/lib/store/selectedAcc"
+import { useClearSelectedAccStore } from "@/features/post/lib/store/selectedAcc"
 import { useEffect } from "react"
 import { BsCheckCircleFill, BsCircle } from "react-icons/bs"
 
@@ -65,8 +66,22 @@ export const AccountSection = ({
   setValue,
   setItemArr,
 }: AccountSectionProps & { pagesPath?: string }) => {
-  const { selectedIds, toggleId } = useSelectedStore()
+  const { selectedIds, toggleId, forceReset } = useSelectedStore()
+  const { clearSelectedAcc } = useClearSelectedAccStore()
   const filtered = data.filter((d: any) => d.account_type === type)
+
+  // Listen for clear events and force reset selections
+  useEffect(() => {
+    if (clearSelectedAcc) {
+      // Clear all selections when clear flag is set
+      forceReset()
+      
+      // Also clear itemArr to ensure form state is cleared
+      if (setItemArr) {
+        setItemArr([])
+      }
+    }
+  }, [clearSelectedAcc, forceReset, setItemArr])
 
   // Check if all accounts of this type are selected
   const isAllAccountsSelected =

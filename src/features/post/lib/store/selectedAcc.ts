@@ -17,9 +17,10 @@ type SelectedState = {
   toggleId: (id: number) => void;
   setIds: (ids: number[]) => void;
   clear: () => void;
+  forceReset: () => void;
 };
 
-export const useSelectedStore = create<SelectedState>((set) => ({
+export const useSelectedStore = create<SelectedState>((set, get) => ({
   selectedIds: [],
   toggleId: (id) =>
     set((state) => ({
@@ -28,5 +29,22 @@ export const useSelectedStore = create<SelectedState>((set) => ({
         : [...state.selectedIds, id],
     })),
   setIds: (ids) => set({ selectedIds: ids }),
-  clear: () => set({ selectedIds: [] }),
+  clear: () => {
+    // Immediate clearing with multiple approaches for production reliability
+    set({ selectedIds: [] });
+    
+    // Force a second clear after a microtask to ensure persistence
+    setTimeout(() => {
+      set({ selectedIds: [] });
+    }, 0);
+  },
+  forceReset: () => {
+    // Nuclear option for production environments
+    set({ selectedIds: [] });
+    
+    // Force multiple clears with different timing
+    setTimeout(() => set({ selectedIds: [] }), 0);
+    setTimeout(() => set({ selectedIds: [] }), 10);
+    setTimeout(() => set({ selectedIds: [] }), 50);
+  },
 }));
