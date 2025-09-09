@@ -20,7 +20,7 @@ type SelectedState = {
   forceReset: () => void;
 };
 
-export const useSelectedStore = create<SelectedState>((set, get) => ({
+export const useSelectedStore = create<SelectedState>((set) => ({
   selectedIds: [],
   toggleId: (id) =>
     set((state) => ({
