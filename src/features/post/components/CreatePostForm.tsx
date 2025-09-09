@@ -42,9 +42,7 @@ import {
 } from "@/components/SocialAcc/zod"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import {
-  useSelectedStore,
-} from "../lib/store/selectedAcc"
+import { useSelectedStore } from "../lib/store/selectedAcc"
 import { toaster } from "@/components/ui/toaster"
 
 // import { PostConnectedAccsSection } from "./ConnectedAccs"
