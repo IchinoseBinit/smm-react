@@ -30,21 +30,10 @@ export const useSelectedStore = create<SelectedState>((set) => ({
     })),
   setIds: (ids) => set({ selectedIds: ids }),
   clear: () => {
-    // Immediate clearing with multiple approaches for production reliability
     set({ selectedIds: [] });
-    
-    // Force a second clear after a microtask to ensure persistence
-    setTimeout(() => {
-      set({ selectedIds: [] });
-    }, 0);
   },
   forceReset: () => {
-    // Nuclear option for production environments
+    // Simple, reliable clearing
     set({ selectedIds: [] });
-    
-    // Force multiple clears with different timing
-    setTimeout(() => set({ selectedIds: [] }), 0);
-    setTimeout(() => set({ selectedIds: [] }), 10);
-    setTimeout(() => set({ selectedIds: [] }), 50);
   },
 }));

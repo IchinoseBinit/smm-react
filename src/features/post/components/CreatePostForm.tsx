@@ -112,8 +112,8 @@ export default function CreatePostForm() {
 
   const { payload, hasVideos, setPayload, setHasVideos } = useUploadStore()
   const { mutateAsync } = useFileUpload()
-  const { selectedIds, clear: clearSelectedAccounts, forceReset: forceResetAccounts } = useSelectedStore()
-  const { resetSurfaceType, forceReset: forceResetSurface } = useContentTypeStore()
+  const { selectedIds, clear: clearSelectedAccounts } = useSelectedStore()
+  const { resetSurfaceType } = useContentTypeStore()
   const { setClearSelectedAcc } = useClearSelectedAccStore()
   const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>(
     []
@@ -250,93 +250,43 @@ export default function CreatePostForm() {
     return true
   }, [isValid, hasSelectedAccounts, isScheduled, scheduledTime])
 
-  const resetFormDataAndReload = useCallback(async () => {
+  const resetFormDataAndReload = useCallback(() => {
+    console.log("🔄 Starting simple, reliable form reset...")
+    
     try {
-      console.log("🔄 Starting comprehensive form reset...")
-      
-      // Step 1: Trigger clear flag for AccountSection components
-      setClearSelectedAcc(true)
-      
-      // Step 2: Multiple clearing approaches for production reliability
+      // Clear everything immediately and synchronously
       clearSelectedAccounts()
-      forceResetAccounts()
-      
-      // Step 3: Reset react-hook-form with explicit field clearing
-      reset(defaultValues)
-      
-      // Step 4: Reset local state variables immediately
+      resetSurfaceType()
+      setIsScheduled(false)
+      setInitialTime(null)
       setDescriptionContent("")
       setTitleContent("")
       setItemArr([])
       setSelectedPlatformsType([])
-
-      // Step 5: Reset all store states with force methods
-      resetSurfaceType()
-      forceResetSurface()
-      setIsScheduled(false)
-      setInitialTime(null)
-
-      // Step 6: Clear file uploads with multiple methods
       setClearFiles(true)
       setPayload({ files: [] })
       setHasVideos(false)
-
-      // Step 7: Force clear all form values individually
-      const fieldsToReset = [
-        { field: "title", value: "" },
-        { field: "description", value: "" },
-        { field: "medias", value: [] },
-        { field: "platform_statuses", value: [] },
-        { field: "scheduled_time", value: null },
-        { field: "is_photo", value: false },
-        { field: "status", value: "" },
-        { field: "surface", value: "POST" }
-      ]
+      setClearSelectedAcc(true)
       
-      fieldsToReset.forEach(({ field, value }) => {
-        setValue(field as any, value, { shouldValidate: false })
-      })
-
-      // Step 8: Reset clear flag after a delay
-      setTimeout(() => {
-        setClearSelectedAcc(false)
-      }, 100)
-
-      // Step 9: Additional clearing attempts with delays for production
-      setTimeout(() => {
-        clearSelectedAccounts()
-        setItemArr([])
-        setSelectedPlatformsType([])
-      }, 50)
-      
-      setTimeout(() => {
-        forceResetAccounts()
-        setPayload({ files: [] })
-      }, 150)
-
-      // Step 10: Final nuclear option - page reload
-      setTimeout(() => {
-        console.log("🚀 Performing page reload for complete reset")
-        window.location.href = window.location.href
-      }, 300)
-      
+      // Reset form
+      reset(defaultValues)
     } catch (error) {
-      console.error("❌ Error during form reset:", error)
-      // Fallback: immediate page reload
-      window.location.href = window.location.href
+      console.error("❌ Error during clearing:", error)
     }
+    
+    // Simple, reliable page reload
+    console.log("🚀 Reloading page...")
+    window.location.reload()
   }, [
-    reset,
-    defaultValues,
+    clearSelectedAccounts,
     resetSurfaceType,
     setIsScheduled,
     setInitialTime,
-    setValue,
-    clearSelectedAccounts,
-    forceResetAccounts,
-    setClearSelectedAcc,
     setPayload,
     setHasVideos,
+    setClearSelectedAcc,
+    reset,
+    defaultValues,
   ])
   // Updated addTag function to work with the editor
   const addTag = useCallback(
@@ -594,27 +544,15 @@ export default function CreatePostForm() {
 
       await mutateCreatePost(latestData).then(async (res) => {
         if (res?.success) {
-          console.log("✅ Post submitted successfully, initiating comprehensive reset...")
+          console.log("✅ Post submitted successfully, initiating production-safe reset...")
 
           // Show success dialog first
           openDialog({
             status: isScheduled ? "scheduled" : "posted",
           })
 
-          // Immediate reset attempt
-          setClearSelectedAcc(true)
-          clearSelectedAccounts()
-          forceResetAccounts()
-          
-          // Quick local state reset
-          setDescriptionContent("")
-          setTitleContent("")
-          setItemArr([])
-          setSelectedPlatformsType([])
-          setClearFiles(true)
-
-          // Then comprehensive reset with reload
-          await resetFormDataAndReload()
+          // Simple, reliable reset with reload
+          resetFormDataAndReload()
         }
       })
     } catch (error) {
@@ -624,14 +562,9 @@ export default function CreatePostForm() {
         description: "Failed to process post",
       })
 
-      // Force clear everything on error
+      // Simple reset on error
       console.log("🧹 Clearing form due to error...")
-      setClearSelectedAcc(true)
-      clearSelectedAccounts()
-      forceResetAccounts()
-      
-      // Comprehensive reset on error
-      await resetFormDataAndReload()
+      resetFormDataAndReload()
     } finally {
       setPostLoading(false)
     }
