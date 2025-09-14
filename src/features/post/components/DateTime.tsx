@@ -397,6 +397,7 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
 
   const [value, setValue] = useState<any>(null)
   const [isInvalidTime, setIsInvalidTime] = useState(false)
+  const [open, setOpen] = useState(false)
 
   // Convert time string to dayjs object
   const parseTimeString = useCallback((timeString: string) => {
@@ -480,6 +481,21 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
   const handleTimeChange = useCallback(
     (newValue: any) => {
       console.log("Time change in EnhancedDemo:", newValue?.format("HH:mm"))
+      // Only update the display value if it's actually different
+      setValue((prevValue: any) => {
+        if (!prevValue && !newValue) return prevValue
+        if (!prevValue || !newValue) return newValue
+        if (prevValue.isSame(newValue)) return prevValue
+        return newValue
+      })
+    },
+    []
+  )
+
+  const handleAccept = useCallback(
+    (newValue: any) => {
+      console.log("Time accepted in EnhancedDemo:", newValue?.format("HH:mm"))
+      setOpen(false) // Close modal on accept
 
       if (!newValue) {
         setValue(null)
@@ -505,6 +521,14 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
     [onTimeChange, validateTime]
   )
 
+  const handleClose = useCallback(() => {
+    setOpen(false)
+  }, [])
+
+  const handleOpen = useCallback(() => {
+    setOpen(true)
+  }, [])
+
   // Debug: Log current value
   useEffect(() => {
     console.log("Current value state:", value?.format("HH:mm") || "null")
@@ -517,10 +541,13 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
           label="Select the Time"
           value={value}
           onChange={handleTimeChange}
+          onAccept={handleAccept}
+          onClose={handleClose}
+          open={open}
+          onOpen={handleOpen}
           disabled={!selectedDate}
           format="HH:mm"
-          // Add key to force re-render when value changes
-          key={value ? value.format("HH:mm") : "empty"}
+          closeOnSelect={false}
           sx={{
             width: "100%",
             "& .MuiInputBase-root": {
@@ -530,7 +557,7 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
               border: isInvalidTime ? "2px solid #e53e3e" : "2px solid #000000",
               fontSize: "14px",
               fontWeight: 500,
-              transition: "all 0.2s ease",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               "&:hover": {
                 borderColor: isInvalidTime ? "#e53e3e" : "#48bb78",
               },
@@ -541,14 +568,30 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
             "& .MuiInputBase-input": {
               padding: "0 48px !important",
               textAlign: "left",
-              // Remove these lines that might be hiding the value
-              color: value ? "#2d3748" : "transparent",
-              caretColor: value ? "auto" : "transparent",
+              color: "#2d3748",
+              transition: "color 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            },
+            "& .MuiPickersPopper-root": {
+              "& .MuiPaper-root": {
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              },
+            },
+            "& .MuiClock-root": {
+              transition: "all 0.2s ease",
+            },
+            "& .MuiClockNumber-root": {
+              transition: "all 0.2s ease",
             },
           }}
           slotProps={{
             textField: {
               placeholder: "Select the Time",
+            },
+            actionBar: {
+              actions: ['accept', 'cancel'],
+            },
+            popper: {
+              disablePortal: false,
             },
           }}
         />

@@ -596,6 +596,8 @@ export default function CreatePostForm() {
         "scrollbar-width": "none",
       }}
     >
+      <Heading paddingLeft={4}>Post Content</Heading>
+      <Text paddingLeft={4}>Craft your content and engage your audience</Text>
       <VStack spaceY={6} align="stretch" p={4}>
         <SelectSurface />
         <Box>
