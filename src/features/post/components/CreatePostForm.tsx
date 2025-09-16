@@ -4,31 +4,25 @@ import {
   Text,
   Button,
   HStack,
-  Tag,
   VStack,
-  // Field,
   Textarea,
   FileUpload,
   Icon,
   Heading,
-  // Input,
   SimpleGrid,
   Accordion,
-  // Span,
   Flex,
   Span,
-  // Image,
 } from "@chakra-ui/react"
+import type { AccountType } from "@/types/accounts"
+import useDeleteScheduledPost from "@/features/calendar/hooks/useDeleteSchedule"
+import { useEditPostStore } from "@/features/calendar/lib/store/editPost.store"
 
-// import StarterKit from "@tiptap/starter-kit"
-// import Underline from "@tiptap/extension-underline"
-// import TextAlign from "@tiptap/extension-text-align"
+import { AccountSection } from "@/components/SocialAcc/AccountSection"
 
 import { useForm } from "react-hook-form"
 import { LuUpload } from "react-icons/lu"
 import { FileUploadList } from "./FileUploadList"
-// import { FiSmile, FiHash } from "react-icons/fi"
-// import { Sparkles } from "lucide-react"
 
 import DateTime from "./DateTime"
 import { useAuthUtils } from "@/hooks/useAuthUtils"
@@ -38,7 +32,7 @@ import { useCreatePost } from "../hooks/query/usePost"
 import useFileUpload from "../hooks/query/useFileUpload"
 import { useUploadStore } from "../lib/store/file"
 import axios from "axios"
-import { useScheduleStore } from "../lib/store/dateTime"
+import { useInitialTimeStore, useScheduleStore } from "../lib/store/dateTime"
 import { useSuccessDialogStore } from "../lib/store/successDialog"
 import { SuccessDialog } from "./SuccessCreatePost"
 import {
@@ -48,31 +42,65 @@ import {
 } from "@/components/SocialAcc/zod"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import {
-  useClearSelectedAccStore,
-  useSelectedStore,
-} from "../lib/store/selectedAcc"
+import { useSelectedStore, useClearSelectedAccStore } from "../lib/store/selectedAcc"
 import { toaster } from "@/components/ui/toaster"
 
-import { PostConnectedAccsSection } from "./ConnectedAccs"
-import { accountConfigs, iconMap } from "../lib/accounts"
+// import { PostConnectedAccsSection } from "./ConnectedAccs"
+// import { accountConfigs, iconMap } from "../lib/accounts"
 import { SelectSurface } from "./selectSurface"
 import { useContentTypeStore } from "../lib/store/sufaceType"
 import { TiptapDescriptionEditor } from "./TipTapDescriptionEditor"
 import { Switch } from "@chakra-ui/react"
-// import { redirect } from "react-router"
+import SelectChannelDropdown from "./SelectChannelDropdown"
+
+import FacebookAccount from "../../../components/SocialAcc/facebook/FacebookAccount"
+import TiktokAccount from "../../../components/SocialAcc/tiktok/TiktokAccount"
+import YoutubeAccount from "../../../components/SocialAcc/youtube/YoutubeAccount"
+import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount"
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils()
   const { data, isLoading } = useAllConnAccounts(userId)
   const isScheduled = useScheduleStore((s) => s.isScheduled)
   const setIsScheduled = useScheduleStore((s) => s.setIsScheduled)
-  const { setClearSelectedAcc } = useClearSelectedAccStore()
   const [itemArr, setItemArr] = useState<any[]>([])
   const [clearFiles, setClearFiles] = useState(false)
   const [postLoading, setPostLoading] = useState(false)
   const { mutateAsync: mutateCreatePost } = useCreatePost()
   const { openDialog } = useSuccessDialogStore()
+
+  const { isCreatePostEdit, postData } = useEditPostStore()
+  const deleteScheduledPostMutation = useDeleteScheduledPost()
+  const { setInitialTime } = useInitialTimeStore()
+
+  // Create sorted social media configs based on connected accounts count
+  const SocialMediaConfigs = useMemo(() => {
+    const configs = [
+      {
+        type: "FACEBOOK" as AccountType,
+        Component: FacebookAccount,
+        pagesPath: "/account/facebook/pages",
+      },
+      { type: "TIKTOK" as AccountType, Component: TiktokAccount },
+      { type: "YOUTUBE" as AccountType, Component: YoutubeAccount },
+      { type: "INSTAGRAM" as AccountType, Component: InstagramAccount },
+    ]
+
+    if (!data) return configs
+
+    // Sort configs by number of connected accounts (highest first)
+    return configs.sort((a, b) => {
+      const aCount = data.filter((d: any) => d.account_type === a.type).length
+      const bCount = data.filter((d: any) => d.account_type === b.type).length
+      return bCount - aCount // Descending order (highest first)
+    })
+  }, [data])
+
+  const extractTime = (time: string) => {
+    return time.split("T")[1].split("+")[0] // "22:19:00"
+  }
+
+  // Add effect to populate form when editing
 
   // Add the missing ref declaration
   const fileUploadListRef = useRef<any>(null)
@@ -82,10 +110,11 @@ export default function CreatePostForm() {
   const [descriptionContent, setDescriptionContent] = useState("")
   const [titleContent, setTitleContent] = useState("")
 
-  const { payload, hasVideos } = useUploadStore()
+  const { payload, hasVideos, setPayload, setHasVideos } = useUploadStore()
   const { mutateAsync } = useFileUpload()
-  const { selectedIds } = useSelectedStore()
+  const { selectedIds, clear: clearSelectedAccounts } = useSelectedStore()
   const { resetSurfaceType } = useContentTypeStore()
+  const { setClearSelectedAcc } = useClearSelectedAccStore()
   const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>(
     []
   )
@@ -155,6 +184,7 @@ export default function CreatePostForm() {
           .map((item) => item.accountType)
       )
     )
+    console.log("selectedTypes updated:", selectedTypes)
     setSelectedPlatformsType(selectedTypes)
 
     if (selectedTypes.includes("YOUTUBE")) return YouTubeVideoSchema
@@ -198,19 +228,82 @@ export default function CreatePostForm() {
   const scheduledTime = watch("scheduled_time")
 
   const suggestions = [
-    "#TechTrends",
-    "#Innovation",
-    "#FutureTech",
-    "#DigitalWorld",
-    "#TechNews",
+    "TechTrends",
+    "Innovation",
+    "FutureTech",
+    "DigitalWorld",
+    "TechNews",
   ]
 
+  // Custom validation to prevent submission when scheduling without date/time
+  const isFormValidForSubmission = useMemo(() => {
+    // Basic form validation
+    if (!isValid || !hasSelectedAccounts) {
+      return false
+    }
+
+    // Require description content (minimum criteria)
+    if (!descriptionContent || descriptionContent.trim().length === 0) {
+      return false
+    }
+
+    // If scheduling is enabled, require date/time to be selected
+    if (isScheduled && !scheduledTime) {
+      return false
+    }
+
+    return true
+  }, [isValid, hasSelectedAccounts, descriptionContent, isScheduled, scheduledTime])
+
+  const resetFormDataAndReload = useCallback(() => {
+    console.log("🔄 Starting simple, reliable form reset...")
+    
+    try {
+      // Clear everything immediately and synchronously
+      clearSelectedAccounts()
+      resetSurfaceType()
+      setIsScheduled(false)
+      setInitialTime(null)
+      setDescriptionContent("")
+      setTitleContent("")
+      setItemArr([])
+      setSelectedPlatformsType([])
+      setClearFiles(true)
+      setPayload({ files: [] })
+      setHasVideos(false)
+      setClearSelectedAcc(true)
+      
+      // Reset form
+      reset(defaultValues)
+    } catch (error) {
+      console.error("❌ Error during clearing:", error)
+    }
+    
+    // Simple, reliable page reload
+    console.log("🚀 Reloading page...")
+    window.location.reload()
+  }, [
+    clearSelectedAccounts,
+    resetSurfaceType,
+    setIsScheduled,
+    setInitialTime,
+    setPayload,
+    setHasVideos,
+    setClearSelectedAcc,
+    reset,
+    defaultValues,
+  ])
   // Updated addTag function to work with the editor
   const addTag = useCallback(
     (tag: string) => {
-      const value = descriptionContent.length
-        ? `${descriptionContent} ${tag}`
-        : tag
+      // Ensure hashtag starts with #
+      const hashtag = tag.startsWith("#") ? tag : `#${tag.replace("#", "")}`
+
+      const currentContent = descriptionContent.trim()
+      const value = currentContent.length
+        ? `${currentContent} ${hashtag}`
+        : hashtag
+
       setDescriptionContent(value)
       setValue("description", value, { shouldValidate: true })
     },
@@ -247,6 +340,8 @@ export default function CreatePostForm() {
     setValue("platform_statuses", itemArr, { shouldValidate: true })
   }, [itemArr, setValue])
 
+  // Don't auto-select accounts on load - let user choose manually
+
   const uploadFiles = async () => {
     console.log("uploadFiles called with payload:", payload)
     const presignedResponse: any = await mutateAsync(payload)
@@ -281,7 +376,89 @@ export default function CreatePostForm() {
     return true
   }
 
+  useEffect(() => {
+    if (isCreatePostEdit && postData) {
+      console.log("Populating form with post data:", postData)
+
+      // Set title
+      if (postData.title) {
+        setTitleContent(postData.title)
+        setValue("title", postData.title, { shouldValidate: true })
+      }
+
+      // Set description
+      if (postData.description) {
+        setDescriptionContent(postData.description)
+        setValue("description", postData.description, { shouldValidate: true })
+      }
+
+      // Set medias
+      if (postData.medias && postData.medias.length > 0) {
+        setValue("medias", postData.medias, { shouldValidate: true })
+      }
+
+      // Set surface type
+      if (postData.surface) {
+        setValue("surface", postData.surface, { shouldValidate: true })
+      }
+
+      // Set scheduled time and schedule state
+      if (postData.scheduled_time) {
+        console.log("Setting scheduled time:", postData.scheduled_time)
+        setValue("scheduled_time", postData.scheduled_time, {
+          shouldValidate: true,
+        })
+        const extractTime = (time: any) => {
+          return time.split("T")[1].split("+")[0] // "22:19:00"
+        }
+        const time = extractTime(postData.scheduled_time)
+        setInitialTime(time)
+
+        setIsScheduled(true)
+      } else if (postData.platform_statuses?.[0]?.posted_time) {
+        // For published posts, show the published time
+        const publishedTime = postData.platform_statuses[0].posted_time
+        console.log("Setting published time:", publishedTime)
+        console.log("Extracted time:", extractTime(publishedTime))
+        setValue("scheduled_time", publishedTime, {
+          shouldValidate: true,
+        })
+        setIsScheduled(false) // Keep schedule toggle off for published posts
+      } else {
+        setIsScheduled(false)
+      }
+
+      // Set platform statuses and selected accounts
+      if (postData.platform_statuses && postData.platform_statuses.length > 0) {
+        setValue("platform_statuses", postData.platform_statuses, {
+          shouldValidate: true,
+        })
+
+        // Map platform statuses to itemArr format
+        const mappedItems = postData.platform_statuses.map((status) => ({
+          social_account_id: status.id,
+          accountType: status.accountType,
+          facebook_page_id: status.facebook_page_id || null,
+        }))
+        setItemArr(mappedItems)
+      }
+
+      // Set photo flag
+      if (typeof postData.is_photo === "boolean") {
+        setValue("is_photo", postData.is_photo, { shouldValidate: true })
+      }
+    }
+  }, [
+    isCreatePostEdit,
+    postData,
+    setValue,
+    setIsScheduled,
+    setTitleContent,
+    setDescriptionContent,
+  ])
+
   const onSubmit = async () => {
+    console.log("onSubmit called")
     // Check if user has selected accounts before submitting
     if (!hasSelectedAccounts) {
       toaster.error({
@@ -294,10 +471,36 @@ export default function CreatePostForm() {
       return
     }
 
+    // Check if user has provided description content
+    if (!descriptionContent || descriptionContent.trim().length === 0) {
+      toaster.error({
+        title: "Description Required",
+        description: "Please write some content for your post before submitting.",
+        duration: 3000,
+        closable: true,
+      })
+      return
+    }
+
+    // Prevent submission if scheduling is enabled but no date/time selected
+    if (isScheduled && !scheduledTime) {
+      toaster.error({
+        title: "Schedule Time Required",
+        description: "Please select both date and time when scheduling a post.",
+        duration: 3000,
+        closable: true,
+      })
+      return
+    }
+
     console.log("onsubmit called with:")
     setPostLoading(true)
 
     try {
+      if (isCreatePostEdit && postData?.id) {
+        console.log("Deleting scheduled post with ID:", postData.id)
+        await deleteScheduledPostMutation.mutateAsync(postData.id.toString())
+      }
       setValue("status", isScheduled ? "scheduled" : "posted", {
         shouldValidate: true,
       })
@@ -355,99 +558,178 @@ export default function CreatePostForm() {
         ).toISOString()
       }
 
-      await mutateCreatePost(latestData).then((res) => {
+      await mutateCreatePost(latestData).then(async (res) => {
         if (res?.success) {
+          console.log("✅ Post submitted successfully, initiating production-safe reset...")
+
+          // Show success dialog first
           openDialog({
             status: isScheduled ? "scheduled" : "posted",
           })
+
+          // Simple, reliable reset with reload
+          resetFormDataAndReload()
         }
       })
+    } catch (error) {
+      console.error("❌ Error in onSubmit:", error)
+      toaster.error({
+        title: "Error",
+        description: "Failed to process post",
+      })
 
-      reset(defaultValues)
-      resetSurfaceType()
-      setIsScheduled(false)
-      setClearFiles(true)
-      setDescriptionContent("") // Reset description content
-      setTitleContent("") // Reset title content
-      setTimeout(() => setClearSelectedAcc(true), 0)
+      // Simple reset on error
+      console.log("🧹 Clearing form due to error...")
+      resetFormDataAndReload()
     } finally {
       setPostLoading(false)
     }
   }
 
-  if (isLoading) return <CircularLoading />
+  if (isLoading)
+    return (
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        minH="50vh"
+        w="full"
+      >
+        <CircularLoading />
+      </Box>
+    )
 
   return (
     <Box
       as="form"
       onSubmit={handleSubmit(onSubmit)}
-      minH="100dvh"
-      overflowY="hidden"
+      w="full"
+      maxHeight="100vh"
+      overflowY="auto"
+      css={{
+        "&::-webkit-scrollbar": { display: "none" },
+        "-ms-overflow-style": "none",
+        "scrollbar-width": "none",
+      }}
     >
-      <VStack spaceY={8} align="stretch">
+      <Heading paddingLeft={4}>Post Content</Heading>
+      <Text paddingLeft={4}>Craft your content and engage your audience</Text>
+      <VStack spaceY={6} align="stretch" p={4}>
         <SelectSurface />
         <Box>
-          <Text mb={2} fontWeight="bold" color="#00325c">
-            Connected Accounts <Span color={"red.600"}>*</Span>
-          </Text>
-          {/* <Test width={100} height={100} fill="red" /> */}
-          <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={2} mt={2}>
-            {accountConfigs.map(({ type }, index) => (
-              <PostConnectedAccsSection
-                key={index}
+          <HStack justify="space-between" align="center" mb={4}>
+            <Text fontWeight="bold" color="#00325c">
+              Connected Accounts <Span color={"red.600"}>*</Span>
+            </Text>
+          </HStack>
+          {/* <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={2} mt={2}>
+            {accountConfigs
+              .slice()
+              .sort((a, b) => {
+                if (!data) return 0
+                const aCount = data.filter(
+                  (d: any) => d.account_type === a.type
+                ).length
+                const bCount = data.filter(
+                  (d: any) => d.account_type === b.type
+                ).length
+                return bCount - aCount // Descending order (highest first)
+              })
+              .map(({ type }, index) => (
+                <PostConnectedAccsSection
+                  key={index}
+                  type={type}
+                  data={data}
+                  setvalue={setValue}
+                  setItemArr={setItemArr}
+                  selectedPlatforms={selectedPlatforms}
+                  icon={iconMap[type].icon}
+                  iconColor={iconMap[type].color}
+                />
+              ))}
+          </SimpleGrid> */}
+
+          <SimpleGrid
+            columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+            gap={6}
+            mt={6}
+            w="full"
+          >
+            {SocialMediaConfigs.map(({ type, Component, pagesPath }) => (
+              <AccountSection
+                key={type}
                 type={type}
+                label={type}
                 data={data}
-                setvalue={setValue}
+                Component={Component}
+                pagesPath={pagesPath}
+                setValue={setValue}
                 setItemArr={setItemArr}
-                selectedPlatforms={selectedPlatforms}
-                icon={iconMap[type].icon}
-                iconColor={iconMap[type].color}
               />
             ))}
           </SimpleGrid>
         </Box>
-        {/* Media Upload Section with Proper Restrictions */}
 
-        {(selectedPlatformsType.includes("YOUTUBE") ||
-          selectedPlatformsType.includes("TIKTOK")) && (
-          <Box maxW="40rem">
-            {/* Label */}
-            <Text fontSize="lg" fontWeight="semibold" mb={2} color="#00325c">
-              Title <Span color="red.500">*</Span>
-            </Text>
-            <Box
-              border="1px solid"
-              borderColor="gray.200"
-              rounded="lg"
-              overflow="hidden"
-              width="full"
-            >
-              <Textarea
-                placeholder="Write topic name"
-                border="none"
-                _focus={{
-                  borderColor: "transparent",
-                  boxShadow: "none",
-                  outline: "none",
-                }}
-                _hover={{
-                  borderColor: "transparent",
-                }}
-                p={4}
-                size={"sm"}
-                fontSize="sm"
-                minH="2.5rem" // control height
-                _placeholder={{ color: "gray.500" }}
-                resize="none"
-                rounded="lg"
-                overflow="hidden"
-                backgroundColor={"white"}
-                value={titleContent}
-                onChange={handleTitleChange}
-              />
+        <HStack width={"full"} gap={4} alignItems="flex-start">
+          {/* Title Section */}
+          {(() => {
+            console.log(
+              "Title section check - selectedPlatformsType:",
+              selectedPlatformsType
+            )
+            return selectedPlatformsType.includes("YOUTUBE")
+          })() && (
+            <Box flex="1" maxW="56%">
+              <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
+                Title{" "}
+                <Span fontSize="sm" color={"gray.500"}>
+                  (For Youtube Only )
+                </Span>{" "}
+                <Span color="red.500">*</Span>
+              </Text>
+              <Box
+                // border="1px solid"
+                // borderColor="gray.200"
+                borderRadius={"6px"}
+                height="44px" // Fixed height to match design
+              >
+                <Textarea
+                  placeholder="Write a title"
+                  border="none"
+                  backgroundColor={"#f7f7f7"}
+                  _focus={{
+                    borderColor: "transparent",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  _hover={{
+                    borderColor: "transparent",
+                  }}
+                  p={3}
+                  fontSize="14px"
+                  height="44px" // Match container height
+                  _placeholder={{ color: "gray.500" }}
+                  resize="none"
+                  value={titleContent}
+                  onChange={handleTitleChange}
+                />
+              </Box>
             </Box>
-          </Box>
-        )}
+          )}
+
+          {/* Channel Selection */}
+          {(() => {
+            console.log(
+              "Channel section check - selectedPlatformsType:",
+              selectedPlatformsType
+            )
+            return selectedPlatformsType.includes("YOUTUBE")
+          })() && (
+            <Box flex="1" maxW="38%">
+              <SelectChannelDropdown />
+            </Box>
+          )}
+        </HStack>
 
         {/* Description Section with Tiptap Editor */}
         <TiptapDescriptionEditor
@@ -462,6 +744,44 @@ export default function CreatePostForm() {
           placeholder="Write something awesome"
         />
 
+        {/* Hashtag suggestions section */}
+        <Box>
+          <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
+            Hashtag Suggestions
+          </Text>
+          <Flex wrap="wrap" gap={2}>
+            {suggestions.map((tag) => (
+              <Box
+                key={tag}
+                as="button"
+                px={3}
+                py={2}
+                borderRadius="md"
+                cursor="pointer"
+                onClick={(e) => {
+                  e.preventDefault()
+                  addTag(tag)
+                }}
+                backgroundColor="gray.100"
+                color="gray.700"
+                fontSize="sm"
+                fontWeight="medium"
+                border="1px solid"
+                borderColor="gray.200"
+                _hover={{
+                  backgroundColor: "gray.200",
+                  borderColor: "gray.300",
+                }}
+                _active={{
+                  backgroundColor: "gray.300",
+                }}
+                transition="all 0.2s"
+              >
+                #{tag}
+              </Box>
+            ))}
+          </Flex>
+        </Box>
         <Box p={2} spaceY={6}>
           <Heading color={"#00325c"} fontSize="fontSizes.4xl">
             Media
@@ -525,28 +845,6 @@ export default function CreatePostForm() {
           </FileUpload.Root>
         </Box>
 
-        <Box>
-          {/* Hashtag suggestions */}
-          <Text fontSize="lg" fontWeight="semibold" mb={2} color="#00325c">
-            Hashtags
-          </Text>
-          <HStack spaceX={2} wrap="wrap">
-            {suggestions.map((tag) => (
-              <Tag.Root
-                key={tag}
-                size="md"
-                p={1}
-                borderRadius="lg"
-                cursor="pointer"
-                onClick={() => addTag(tag)}
-                bg="bg.MUTED"
-                color="fg.DEFAULT"
-              >
-                <Tag.Label>{tag}</Tag.Label>
-              </Tag.Root>
-            ))}
-          </HStack>
-        </Box>
         {/* Schedule section */}
         <Box
           w="full"
@@ -659,21 +957,36 @@ export default function CreatePostForm() {
             </Accordion.Root>
           </Box>
         </Box>
-
-        <Flex justify="end" gap={2}>
-          <Button
-            type="submit"
-            bg="secondary.500"
-            color="button.DEFAULT"
-            _hover={{ bg: "button.HOVER" }}
-            _active={{ bg: "button.ACTIVE" }}
-            disabled={!isValid || !hasSelectedAccounts} // Disable submit if no accounts selected
-            loading={postLoading}
-            loadingText={isScheduled ? "Scheduling..." : "Posting..."}
-          >
-            {isScheduled ? "Schedule Post" : "Post Now"}
-          </Button>
-        </Flex>
+        <Box pb={4}>
+          <Flex justify="end" gap={2}>
+            <Button
+              type="submit"
+              bg="secondary.500"
+              color="button.DEFAULT"
+              _hover={{ bg: "button.HOVER" }}
+              _active={{ bg: "button.ACTIVE" }}
+              disabled={!isFormValidForSubmission} // Use custom validation
+              loading={postLoading}
+              loadingText={
+                isCreatePostEdit
+                  ? isScheduled
+                    ? "Updating Schedule..."
+                    : "Updating Post..."
+                  : isScheduled
+                  ? "Scheduling..."
+                  : "Posting..."
+              }
+            >
+              {isCreatePostEdit
+                ? isScheduled
+                  ? "Update Schedule"
+                  : "Update Post"
+                : isScheduled
+                ? "Schedule Post"
+                : "Post Now"}{" "}
+            </Button>
+          </Flex>
+        </Box>
       </VStack>
       <SuccessDialog />
     </Box>

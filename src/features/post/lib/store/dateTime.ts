@@ -12,3 +12,15 @@ export const useScheduleStore = create<ScheduleState>((set) => ({
   setIsScheduled: (val) => set({ isScheduled: val }),
   reset: () => set({ isScheduled: false }),
 }));
+
+
+type InitialTimeState = {
+  initialTime: any | null | Date;
+  setInitialTime: (time: any | Date | null) => void;
+};
+
+
+export const useInitialTimeStore = create<InitialTimeState>((set) => ({
+  initialTime: null,
+  setInitialTime: (time) => set({ initialTime: time }),
+}));

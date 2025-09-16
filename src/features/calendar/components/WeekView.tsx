@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Box } from "@chakra-ui/react";
 import { CalendarHeader } from "./CalendarHeader";
-import { WeekHeader } from "./WeekHeader";
+// import { WeekHeader } from "./WeekHeader";
 import { TimeGrid } from "./TimeGrid";
 import type { CalendarEvent, PlatformCalendarGroup } from "../types";
 import {
@@ -74,7 +74,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
         onAddEvent={handleAddEvent}
       />
 
-      <WeekHeader weekDays={weekDays} />
+      {/* <WeekHeader weekDays={weekDays} /> */}
 
       <Box>
         <TimeGrid
@@ -94,5 +94,5 @@ export const WeekView: React.FC<WeekViewProps> = ({
         onDelete={onEventDelete}
       />
     </Box>
-  );
+  )
 };

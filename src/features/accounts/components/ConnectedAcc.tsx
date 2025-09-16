@@ -1,23 +1,37 @@
-import { useAuthUtils } from "@/hooks/useAuthUtils";
+import { useAuthUtils } from "@/hooks/useAuthUtils"
 import {
   Box,
   Button,
   Heading,
-  Image,
+  // Image,
   SimpleGrid,
   Text,
-} from "@chakra-ui/react";
-import FacebookAccount from "../../../components/SocialAcc/facebook/FacebookAccount";
-import TiktokAccount from "../../../components/SocialAcc/tiktok/TiktokAccount";
-import YoutubeAccount from "../../../components/SocialAcc/youtube/YoutubeAccount";
-import { CircularLoading } from "@/lib/loadings";
-import { AccountSection } from "@/components/SocialAcc/AccountSection";
-import { useAllConnAccounts } from "@/hooks/useConnectedAccounts";
-import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount";
+  HStack,
+  // VStack,
+  Icon,
+} from "@chakra-ui/react"
+import {
+  // FaArrowLeft,
+  FaFacebook,
+  FaTiktok,
+  FaYoutube,
+} from "react-icons/fa6"
+
+import FacebookAccount from "../../../components/SocialAcc/facebook/FacebookAccount"
+import TiktokAccount from "../../../components/SocialAcc/tiktok/TiktokAccount"
+import YoutubeAccount from "../../../components/SocialAcc/youtube/YoutubeAccount"
+import { CircularLoading } from "@/lib/loadings"
+import { AccountSection } from "@/components/SocialAcc/AccountSection"
+import { useAllConnAccounts } from "@/hooks/useConnectedAccounts"
+import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount"
+import { IoLinkOutline } from "react-icons/io5"
+
+import { getSocialUrl } from "@/features/accounts/lib/AccUrl"
+import type { AccountType } from "@/types/accounts"
 
 export const ConnectedAcc = () => {
-  const { navigate, userId } = useAuthUtils();
-  const { data, isLoading } = useAllConnAccounts(userId);
+  const { userId } = useAuthUtils()
+  const { data, isLoading } = useAllConnAccounts(userId)
   const accountConfigs = [
     {
       type: "FACEBOOK" as AccountType,
@@ -27,53 +41,94 @@ export const ConnectedAcc = () => {
     { type: "TIKTOK" as AccountType, Component: TiktokAccount },
     { type: "YOUTUBE" as AccountType, Component: YoutubeAccount },
     { type: "INSTAGRAM" as AccountType, Component: InstagramAccount },
-  ];
+  ]
 
   console.log("ConnectedAcc userId", userId)
   if (isLoading)
     return (
-      <div>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        minH="50vh"
+        w="full"
+      >
         <CircularLoading />
-      </div>
-    );
+      </Box>
+    )
+
+  const facebookUrl = getSocialUrl("facebook", userId)
+  const tiktokUrl = getSocialUrl("tiktok", userId)
+  const youtubeUrl = getSocialUrl("youtube", userId)
+  const instagramUrl = getSocialUrl("instagram", userId)
+  console.log("facebook url", facebookUrl)
+  console.log("instragram url", instagramUrl)
   return (
     <>
       {data?.length === 0 ? (
         <Box
-          boxSize={40}
           display="flex"
           alignItems="center"
           justifyContent="center"
           flexDirection="column"
           w="full"
-          mt={20}
+          py={20}
         >
-          <Image
-            src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTMIqiMHpK1y1uDtxqyxQwLbb_fAhM9XQ99rh6SNzYP54Jcr2Uu"
-            alt="placeholder"
-            height="auto"
-            width="18rem"
-            borderRadius="30px"
-          />
-          <Box textAlign="center" mt={5}>
-            <Heading>No connected accounts</Heading>
-            <Text fontSize="sm" color="primary.500">
-              Connect your account to manage your content
+          <Box textAlign="center">
+            <Heading size="xl" mb={4}>
+              Connect your social media accounts
+            </Heading>
+
+            <Box mb={5}>
+              <Icon as={IoLinkOutline} boxSize={12} color="gray.400" />
+            </Box>
+
+            <Text fontSize="lg" color="gray.600" mb={2}>
+              No accounts connected
             </Text>
-            <Button
-              variant="subtle"
-              flex={1}
-              borderRadius="xl"
-              mt={5}
-              onClick={() => navigate("/account/connect")}
-            >
-              Connect account
-            </Button>
+
+            <Text fontSize="sm" color="gray.600" mb={8}>
+              Would you like to connect to the following accounts
+            </Text>
+
+            <HStack gap={4} justifyContent="center">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => (window.location.href = facebookUrl)}
+              >
+                <Icon as={FaFacebook} color="blue.500" />
+                Facebook
+              </Button>
+
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => (window.location.href = tiktokUrl)}
+              >
+                <Icon as={FaTiktok} color="black" />
+                Tiktok
+              </Button>
+
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => (window.location.href = youtubeUrl)}
+              >
+                <Icon as={FaYoutube} color="red.500" />
+                Youtube
+              </Button>
+            </HStack>
           </Box>
         </Box>
       ) : (
         <>
-          <SimpleGrid columns={{ base: 1, lg: 2, xl: 3 }} gridGap={2} mt={2}>
+          <SimpleGrid
+            columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+            gap={3}
+            mt={6}
+            w="full"
+          >
             {accountConfigs.map(({ type, Component, pagesPath }) => (
               <AccountSection
                 key={type}
@@ -81,12 +136,12 @@ export const ConnectedAcc = () => {
                 label={type}
                 data={data}
                 Component={Component}
-                pagesPath={pagesPath} // ← pass it here
+                pagesPath={pagesPath}
               />
             ))}
           </SimpleGrid>
         </>
       )}
     </>
-  );
-};
+  )
+}

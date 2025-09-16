@@ -1,7 +1,6 @@
 export const getSocialUrl = (
-  platform: "facebook" | "tiktok" | "youtube",
+  platform: "facebook" | "tiktok" | "youtube"  | "instagram",
   userId: string,
-): string => {
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-    return `${API_BASE_URL}/v1/auth/social/${platform}/login/?user_id=${userId}`;
-};
+) =>
+  `${import.meta.env.VITE_API_BASE_URL}/v1/auth/social/${platform}/login/?user_id=${userId}`;
+  // `https://socially.work/v1/auth/social/${platform}/login/?user_id=${userId}`;

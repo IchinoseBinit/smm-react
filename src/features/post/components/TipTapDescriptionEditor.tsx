@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useState, useEffect } from "react"
 import {
   Box,
   Text,
@@ -101,6 +101,14 @@ export const TiptapDescriptionEditor: React.FC<
       },
     },
   })
+
+  // Update editor content when value prop changes externally
+  useEffect(() => {
+    if (editor && value !== editor.getText()) {
+      editor.commands.setContent(value)
+      setIsEmpty(value.trim() === "")
+    }
+  }, [editor, value])
 
   const toggleFormat = useCallback(
     (format: FormatType) => {

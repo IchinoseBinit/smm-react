@@ -17,6 +17,7 @@ type SelectedState = {
   toggleId: (id: number) => void;
   setIds: (ids: number[]) => void;
   clear: () => void;
+  forceReset: () => void;
 };
 
 export const useSelectedStore = create<SelectedState>((set) => ({
@@ -28,5 +29,11 @@ export const useSelectedStore = create<SelectedState>((set) => ({
         : [...state.selectedIds, id],
     })),
   setIds: (ids) => set({ selectedIds: ids }),
-  clear: () => set({ selectedIds: [] }),
+  clear: () => {
+    set({ selectedIds: [] });
+  },
+  forceReset: () => {
+    // Simple, reliable clearing
+    set({ selectedIds: [] });
+  },
 }));

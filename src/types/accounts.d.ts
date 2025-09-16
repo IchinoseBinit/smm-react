@@ -1,1 +1,3 @@
-type AccountType = "FACEBOOK" | "TIKTOK" | "YOUTUBE" | "INSTAGRAM";
+export type AccountType = "FACEBOOK" | "TIKTOK" | "YOUTUBE" | "INSTAGRAM";
+
+

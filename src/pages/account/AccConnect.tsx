@@ -5,11 +5,11 @@ import { Helmet } from "react-helmet-async";
 import { FaArrowLeft, FaFacebook, FaTiktok, FaYoutube } from "react-icons/fa6";
 
 export default function AccConnect() {
-  const { userId, navigate } = useAuthUtils();
+  const { userId, navigate } = useAuthUtils()
 
-  const facebookUrl = getSocialUrl("facebook", userId);
-  const tiktokUrl = getSocialUrl("tiktok", userId);
-  const youtubeUrl = getSocialUrl("youtube", userId);
+  const facebookUrl = getSocialUrl("facebook", userId)
+  const tiktokUrl = getSocialUrl("tiktok", userId)
+  const youtubeUrl = getSocialUrl("youtube", userId)
 
   return (
     <>
@@ -70,5 +70,5 @@ export default function AccConnect() {
         </Box>
       </Box>
     </>
-  );
+  )
 }

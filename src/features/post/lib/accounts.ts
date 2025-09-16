@@ -1,5 +1,5 @@
 import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa6";
-
+import type { AccountType } from "../types";
 const accountConfigs = [
   { type: "FACEBOOK" as AccountType },
   { type: "TIKTOK" as AccountType },

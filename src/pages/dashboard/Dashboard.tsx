@@ -1,5 +1,5 @@
 import { MainContent } from "@/features/dashboard/components/MainContent";
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react"
 import { Helmet } from "react-helmet-async";
 
 export default function Dashboard() {
@@ -10,16 +10,16 @@ export default function Dashboard() {
       </Helmet>
 
       <Box h="full" overflowY="auto" p={4}>
-        <Box mb={4}>
-          <Heading size="3xl" mb={1}>
+        {/* <Box mb={4}> */}
+        {/* <Heading size="3xl" mb={1}>
             Dashboard
           </Heading>
           <Text fontSize="sm" color="fg.MUTED">
             Overview of your social media performance
-          </Text>
-        </Box>
+          </Text> */}
+        {/* </Box> */}
         <MainContent />
       </Box>
     </>
-  );
+  )
 }

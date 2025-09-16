@@ -14,13 +14,14 @@ import {
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { format, addMinutes, isAfter, isSameDay } from "date-fns"
-import { useScheduleStore } from "../lib/store/dateTime"
+import { useInitialTimeStore, useScheduleStore } from "../lib/store/dateTime"
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { TimePicker } from "@mui/x-date-pickers/TimePicker"
 import Test from "../../../assets/schedule.svg"
 import { IoIosArrowDown } from "react-icons/io"
+import dayjs from "dayjs"
 
 import { TiTick } from "react-icons/ti"
 
@@ -392,17 +393,71 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
   getCurrentTime: () => Date
   getMinAllowedDateTime: () => Date
 }) {
+  const { initialTime } = useInitialTimeStore()
+
   const [value, setValue] = useState<any>(null)
   const [isInvalidTime, setIsInvalidTime] = useState(false)
-  // const [isFocused, setIsFocused] = useState(false)
+  const [open, setOpen] = useState(false)
 
+  // Convert time string to dayjs object
+  const parseTimeString = useCallback((timeString: string) => {
+    if (!timeString) return null
+
+    try {
+      // Handle "HH:mm:ss" format
+      const timeParts = timeString.split(":")
+      const hours = parseInt(timeParts[0], 10)
+      const minutes = parseInt(timeParts[1], 10)
+
+      // Create dayjs object - use current date with specified time
+      const parsedTime = dayjs()
+        .hour(hours)
+        .minute(minutes)
+        .second(0)
+        .millisecond(0)
+
+      console.log(
+        "Parsed time:",
+        parsedTime.format("HH:mm"),
+        "from string:",
+        timeString
+      )
+      return parsedTime
+    } catch (error) {
+      console.error("Error parsing time string:", error)
+      return null
+    }
+  }, [])
+
+  // Set initial time when component mounts or initialTime changes
   useEffect(() => {
+    if (initialTime) {
+      const parsedTime = parseTimeString(initialTime)
+      console.log("Setting initial time:", parsedTime?.format("HH:mm"))
+      setValue(parsedTime)
+
+      // Don't validate on initial load, just set the value
+      if (parsedTime && onTimeChange) {
+        onTimeChange(parsedTime)
+      }
+    } else {
+      setValue(null)
+    }
+  }, [initialTime, parseTimeString, onTimeChange])
+
+  // Reset when selectedDate changes (but preserve initialTime if it exists)
+  useEffect(() => {
+    // If we have an initialTime, don't reset - keep the initial value
+    if (initialTime) {
+      return
+    }
+
     setValue(null)
     setIsInvalidTime(false)
     if (onTimeChange) {
       onTimeChange(null)
     }
-  }, [selectedDate, onTimeChange])
+  }, [selectedDate, initialTime, onTimeChange])
 
   const validateTime = useCallback(
     (timeValue: any) => {
@@ -426,6 +481,21 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
   const handleTimeChange = useCallback(
     (newValue: any) => {
       console.log("Time change in EnhancedDemo:", newValue?.format("HH:mm"))
+      // Only update the display value if it's actually different
+      setValue((prevValue: any) => {
+        if (!prevValue && !newValue) return prevValue
+        if (!prevValue || !newValue) return newValue
+        if (prevValue.isSame(newValue)) return prevValue
+        return newValue
+      })
+    },
+    []
+  )
+
+  const handleAccept = useCallback(
+    (newValue: any) => {
+      console.log("Time accepted in EnhancedDemo:", newValue?.format("HH:mm"))
+      setOpen(false) // Close modal on accept
 
       if (!newValue) {
         setValue(null)
@@ -451,15 +521,33 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
     [onTimeChange, validateTime]
   )
 
+  const handleClose = useCallback(() => {
+    setOpen(false)
+  }, [])
+
+  const handleOpen = useCallback(() => {
+    setOpen(true)
+  }, [])
+
+  // Debug: Log current value
+  useEffect(() => {
+    console.log("Current value state:", value?.format("HH:mm") || "null")
+  }, [value])
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div style={{ position: "relative" }}>
         <TimePicker
-          label="Select the Time "
+          label="Select the Time"
           value={value}
           onChange={handleTimeChange}
+          onAccept={handleAccept}
+          onClose={handleClose}
+          open={open}
+          onOpen={handleOpen}
           disabled={!selectedDate}
           format="HH:mm"
+          closeOnSelect={false}
           sx={{
             width: "100%",
             "& .MuiInputBase-root": {
@@ -469,7 +557,7 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
               border: isInvalidTime ? "2px solid #e53e3e" : "2px solid #000000",
               fontSize: "14px",
               fontWeight: 500,
-              transition: "all 0.2s ease",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               "&:hover": {
                 borderColor: isInvalidTime ? "#e53e3e" : "#48bb78",
               },
@@ -480,13 +568,30 @@ const EnhancedDemo = React.memo(function EnhancedDemo({
             "& .MuiInputBase-input": {
               padding: "0 48px !important",
               textAlign: "left",
-              color: value ? "#2d3748" : "transparent",
-              caretColor: value ? "auto" : "transparent",
+              color: "#2d3748",
+              transition: "color 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            },
+            "& .MuiPickersPopper-root": {
+              "& .MuiPaper-root": {
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              },
+            },
+            "& .MuiClock-root": {
+              transition: "all 0.2s ease",
+            },
+            "& .MuiClockNumber-root": {
+              transition: "all 0.2s ease",
             },
           }}
           slotProps={{
             textField: {
-              placeholder: "",
+              placeholder: "Select the Time",
+            },
+            actionBar: {
+              actions: ['accept', 'cancel'],
+            },
+            popper: {
+              disablePortal: false,
             },
           }}
         />

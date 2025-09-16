@@ -1,14 +1,13 @@
-import { Box, Text, Flex, HStack, Input } from "@chakra-ui/react"
+import { Box } from "@chakra-ui/react"
 import SocialMediaPosts from "@/features/manager/components/SocialMediaPosts"
 import { Helmet } from "react-helmet-async"
-import { useState } from "react"
 
 export default function Manager() {
-  const [from, setFrom] = useState(
-    new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
-  )
-  const [to, setTo] = useState(new Date().toISOString().split("T")[0])
-  console.log("from to test", from, "and to test", to)
+  // const [from, setFrom] = useState(
+  //   new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
+  // )
+  // const [to, setTo] = useState(new Date().toISOString().split("T")[0])
+  // console.log("from to test", from, "and to test", to)
 
   return (
     <>
@@ -16,7 +15,7 @@ export default function Manager() {
         <title>Posts</title>
       </Helmet>
       <Box p={{ base: 4, md: 8 }} bg="bg.DEFAULT" minH="100vh">
-        <Flex justify="space-between" align="end" mb={6}>
+        {/* <Flex justify="space-between" align="end" mb={6}>
           <Text
             fontSize={{ base: "2xl", md: "3xl" }}
             fontWeight="bold"
@@ -51,9 +50,10 @@ export default function Manager() {
               />
             </Box>
           </HStack>
-        </Flex>
+        </Flex> */}
 
-        <SocialMediaPosts from={from} to={to} />
+        {/* <SocialMediaPosts from={from} to={to} /> */}
+        <SocialMediaPosts />
       </Box>
     </>
   )

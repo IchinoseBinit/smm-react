@@ -16,7 +16,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onNextWeek,
 }) => {
   return (
-    <Flex p={4} borderColor="border.DEFAULT" bg="bg.DEFAULT">
+    <Flex p={4} borderColor="red" bg="bg.DEFAULT">
       <HStack spaceX={2}>
         <IconButton
           size="sm"
@@ -50,5 +50,5 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
       </HStack>
       <Box w="120px" /> {/* Spacer for balance */}
     </Flex>
-  );
+  )
 };

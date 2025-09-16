@@ -132,8 +132,8 @@ const SocialPostCard = ({ post }: { post: Post }) => {
         <Image
           src={womenimg}
           alt="Post preview"
-          width="60px"
-          height="60px"
+          width="75px"
+          height="90px"
           objectFit="cover"
           borderRadius="md"
         />
