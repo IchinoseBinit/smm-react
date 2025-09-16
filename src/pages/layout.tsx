@@ -77,14 +77,10 @@ export default function DashboardLayout({
   return (
     <Flex h="100dvh" bg="white">
       {/* Desktop sidebar */}
-      {!isMobile && (
-        <Box width="240px" flexShrink={0}>
-          <Sidebar />
-        </Box>
-      )}
+      {!isMobile && <Sidebar />}
 
       {/* Main content area - no separate header */}
-      <Box flex="1" bg="white" mt={4}>
+      <Box flex="1" bg="white" mt={4} ml={!isMobile ? "240px" : 0}>
         {/* Top right header content - positioned absolutely */}
         <HStack
           justifyContent="space-between"

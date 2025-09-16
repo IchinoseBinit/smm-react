@@ -42,27 +42,32 @@ const Contactus = () => {
   }
 
   return (
-    <Container maxW="7xl" >
+    <Container maxW="7xl">
       {/* Top Section - Hero with Image */}
-      <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={6}  mb={8} alignItems="center">
+      <Grid
+        templateColumns={{ base: "1fr", lg: "1fr 1fr" }}
+        gap={6}
+        mb={8}
+        alignItems="center"
+      >
         {/* Left - Hero Content */}
         <VStack align="start" gap={6}>
           <Box>
-            <Heading 
-              size="2xl" 
-              color="gray.800" 
-              mb={4}
-              fontWeight="600"
-            >
+            <Heading size="2xl" color="gray.800" mb={4} fontWeight="600">
               Get in touch
             </Heading>
             <Text color="gray.600" fontSize="lg" mb={6}>
-              We'd love to hear from you. Send us a message and we will respond as soon as possible.
+              We'd love to hear from you. Send us a message and we will respond
+              as soon as possible.
             </Text>
           </Box>
 
           {/* Response Time Info */}
-          <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4} w="full">
+          <Grid
+            templateColumns={{ base: "1fr", md: "1fr 1fr" }}
+            gap={4}
+            w="full"
+          >
             <HStack gap={3} p={4} bg="blue.50" borderRadius="lg">
               <Icon as={FiCheckCircle} color="blue.500" boxSize={5} />
               <VStack align="start" gap={1}>
@@ -99,13 +104,23 @@ const Contactus = () => {
             alignItems="center"
             justifyContent="center"
           >
-            <Image src={ContactusSvg} alt='contact us' width={"full"} height={"full"} objectFit="cover"/>
+            <Image
+              src={ContactusSvg}
+              alt="contact us"
+              width={"full"}
+              height={"full"}
+              objectFit="cover"
+            />
           </Box>
         </Box>
       </Grid>
 
       {/* Bottom Section - Form and Contact Info */}
-      <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={8} alignItems="start">
+      <Grid
+        templateColumns={{ base: "1fr", lg: "1fr 1fr" }}
+        gap={8}
+        alignItems="start"
+      >
         {/* Left Side - Contact Form */}
         <Box
           bg="white"
@@ -122,149 +137,150 @@ const Contactus = () => {
                   Send us a Message
                 </Heading>
                 <Text color="gray.600" fontSize="md" mb={4}>
-                  Fill out the form and we will get back to you as soon as possible.
+                  Fill out the form and we will get back to you as soon as
+                  possible.
                 </Text>
               </Box>
 
-                    {/* Name Fields */}
-                    <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4}>
-                      <Field.Root>
-                        <Field.Label color="gray.700" fontWeight="medium">
-                          First Name
-                        </Field.Label>
-                        <Input
-                          name="firstName"
-                          placeholder="John"
-                          value={formData.firstName}
-                          onChange={handleInputChange}
-                          bg="gray.50"
-                          border="1px solid"
-                          borderColor="gray.200"
-                          _focus={{
-                            borderColor: "blue.400",
-                            boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)"
-                          }}
-                        />
-                      </Field.Root>
+              {/* Name Fields */}
+              <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4}>
+                <Field.Root>
+                  <Field.Label color="gray.700" fontWeight="medium">
+                    First Name
+                  </Field.Label>
+                  <Input
+                    name="firstName"
+                    placeholder="John"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    bg="gray.50"
+                    border="1px solid"
+                    borderColor="gray.200"
+                    _focus={{
+                      borderColor: "blue.400",
+                      boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)",
+                    }}
+                  />
+                </Field.Root>
 
-                      <Field.Root>
-                        <Field.Label color="gray.700" fontWeight="medium">
-                          Last Name
-                        </Field.Label>
-                        <Input
-                          name="lastName"
-                          placeholder="Doe"
-                          value={formData.lastName}
-                          onChange={handleInputChange}
-                          bg="gray.50"
-                          border="1px solid"
-                          borderColor="gray.200"
-                          _focus={{
-                            borderColor: "blue.400",
-                            boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)"
-                          }}
-                        />
-                      </Field.Root>
-                    </Grid>
+                <Field.Root>
+                  <Field.Label color="gray.700" fontWeight="medium">
+                    Last Name
+                  </Field.Label>
+                  <Input
+                    name="lastName"
+                    placeholder="Doe"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    bg="gray.50"
+                    border="1px solid"
+                    borderColor="gray.200"
+                    _focus={{
+                      borderColor: "blue.400",
+                      boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)",
+                    }}
+                  />
+                </Field.Root>
+              </Grid>
 
-                    {/* Contact Fields */}
-                    <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4}>
-                      <Field.Root>
-                        <Field.Label color="gray.700" fontWeight="medium">
-                          Email
-                        </Field.Label>
-                        <Input
-                          name="email"
-                          type="email"
-                          placeholder="john@gmail.com"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          bg="gray.50"
-                          border="1px solid"
-                          borderColor="gray.200"
-                          _focus={{
-                            borderColor: "blue.400",
-                            boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)"
-                          }}
-                        />
-                      </Field.Root>
+              {/* Contact Fields */}
+              <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4}>
+                <Field.Root>
+                  <Field.Label color="gray.700" fontWeight="medium">
+                    Email
+                  </Field.Label>
+                  <Input
+                    name="email"
+                    type="email"
+                    placeholder="john@gmail.com"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    bg="gray.50"
+                    border="1px solid"
+                    borderColor="gray.200"
+                    _focus={{
+                      borderColor: "blue.400",
+                      boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)",
+                    }}
+                  />
+                </Field.Root>
 
-                      <Field.Root>
-                        <Field.Label color="gray.700" fontWeight="medium">
-                          Phone Number
-                        </Field.Label>
-                        <Input
-                          name="phoneNumber"
-                          placeholder="+977 980-1234776"
-                          value={formData.phoneNumber}
-                          onChange={handleInputChange}
-                          bg="gray.50"
-                          border="1px solid"
-                          borderColor="gray.200"
-                          _focus={{
-                            borderColor: "blue.400",
-                            boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)"
-                          }}
-                        />
-                      </Field.Root>
-                    </Grid>
+                <Field.Root>
+                  <Field.Label color="gray.700" fontWeight="medium">
+                    Phone Number
+                  </Field.Label>
+                  <Input
+                    name="phoneNumber"
+                    placeholder="+977 980-1234776"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    bg="gray.50"
+                    border="1px solid"
+                    borderColor="gray.200"
+                    _focus={{
+                      borderColor: "blue.400",
+                      boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)",
+                    }}
+                  />
+                </Field.Root>
+              </Grid>
 
-                    {/* Subject */}
-                    <Field.Root>
-                      <Field.Label color="gray.700" fontWeight="medium">
-                        Subject
-                      </Field.Label>
-                      <Input
-                        name="subject"
-                        placeholder="Select a Subject"
-                        value={formData.subject}
-                        onChange={handleInputChange}
-                        bg="gray.50"
-                        border="1px solid"
-                        borderColor="gray.200"
-                        _focus={{
-                          borderColor: "blue.400",
-                          boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)"
-                        }}
-                      />
-                    </Field.Root>
+              {/* Subject */}
+              <Field.Root>
+                <Field.Label color="gray.700" fontWeight="medium">
+                  Subject
+                </Field.Label>
+                <Input
+                  name="subject"
+                  placeholder="Select a Subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  bg="gray.50"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  _focus={{
+                    borderColor: "blue.400",
+                    boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)",
+                  }}
+                />
+              </Field.Root>
 
-                    {/* Message */}
-                    <Field.Root>
-                      <Field.Label color="gray.700" fontWeight="medium">
-                        Message
-                      </Field.Label>
-                      <Textarea
-                        name="message"
-                        placeholder="Please write us details about your enquiry..."
-                        value={formData.message}
-                        onChange={handleInputChange}
-                        rows={5}
-                        bg="gray.50"
-                        border="1px solid"
-                        borderColor="gray.200"
-                        _focus={{
-                          borderColor: "blue.400",
-                          boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)"
-                        }}
-                        resize="vertical"
-                      />
-                    </Field.Root>
+              {/* Message */}
+              <Field.Root>
+                <Field.Label color="gray.700" fontWeight="medium">
+                  Message
+                </Field.Label>
+                <Textarea
+                  name="message"
+                  placeholder="Please write us details about your enquiry..."
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  rows={5}
+                  bg="gray.50"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  _focus={{
+                    borderColor: "blue.400",
+                    boxShadow: "0 0 0 1px rgb(59, 130, 246, 0.3)",
+                  }}
+                  resize="vertical"
+                />
+              </Field.Root>
 
-                    {/* Submit Button */}
-                    <Button
-                      type="submit"
-                      colorScheme="green"
-                      size="lg"
-                      w="full"
-                      bg="green.500"
-                      _hover={{ bg: "green.600" }}
-                      _active={{ bg: "green.700" }}
-                    >
-                      Send Message
-                    </Button>
-                  </VStack>
-                </form>
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                colorScheme="green"
+                size="lg"
+                w="full"
+                bg="green.500"
+                _hover={{ bg: "green.600" }}
+                _active={{ bg: "green.700" }}
+              >
+                Send Message
+              </Button>
+            </VStack>
+          </form>
         </Box>
 
         {/* Right Side - Contact Information */}
@@ -290,12 +306,7 @@ const Contactus = () => {
             <VStack gap={6} align="stretch">
               {/* Phone */}
               <HStack gap={4} p={4} bg="white" borderRadius="lg" boxShadow="sm">
-                <Box
-                  p={3}
-                  bg="blue.100"
-                  borderRadius="lg"
-                  color="blue.600"
-                >
+                <Box p={3} bg="blue.100" borderRadius="lg" color="blue.600">
                   <Icon as={FiPhone} boxSize={6} />
                 </Box>
                 <VStack align="start" gap={1} flex={1}>
@@ -303,20 +314,19 @@ const Contactus = () => {
                     Phone Number
                   </Text>
                   <VStack align="start" gap={0}>
-                    <Text color="gray.600" fontSize="sm">+977 980-1234776</Text>
-                    <Text color="gray.600" fontSize="sm">+977 980-1234776</Text>
+                    <Text color="gray.600" fontSize="sm">
+                      +9779705414890
+                    </Text>
+                    <Text color="gray.600" fontSize="sm">
+                      +9779705414890
+                    </Text>
                   </VStack>
                 </VStack>
               </HStack>
 
               {/* Email */}
               <HStack gap={4} p={4} bg="white" borderRadius="lg" boxShadow="sm">
-                <Box
-                  p={3}
-                  bg="green.100"
-                  borderRadius="lg"
-                  color="green.600"
-                >
+                <Box p={3} bg="green.100" borderRadius="lg" color="green.600">
                   <Icon as={FiMail} boxSize={6} />
                 </Box>
                 <VStack align="start" gap={1} flex={1}>
@@ -324,19 +334,21 @@ const Contactus = () => {
                     Email
                   </Text>
                   <Text color="gray.600" fontSize="sm">
-                    team@gmail.com
+                    Sociallynp@gmail.com
                   </Text>
                 </VStack>
               </HStack>
 
               {/* Address */}
-              <HStack gap={4} p={4} bg="white" borderRadius="lg" boxShadow="sm" align="start">
-                <Box
-                  p={3}
-                  bg="purple.100"
-                  borderRadius="lg"
-                  color="purple.600"
-                >
+              <HStack
+                gap={4}
+                p={4}
+                bg="white"
+                borderRadius="lg"
+                boxShadow="sm"
+                align="start"
+              >
+                <Box p={3} bg="purple.100" borderRadius="lg" color="purple.600">
                   <Icon as={FiMapPin} boxSize={6} />
                 </Box>
                 <VStack align="start" gap={1} flex={1}>
@@ -355,13 +367,15 @@ const Contactus = () => {
               </HStack>
 
               {/* Business Hours */}
-              <HStack gap={4} p={4} bg="white" borderRadius="lg" boxShadow="sm" align="start">
-                <Box
-                  p={3}
-                  bg="orange.100"
-                  borderRadius="lg"
-                  color="orange.600"
-                >
+              <HStack
+                gap={4}
+                p={4}
+                bg="white"
+                borderRadius="lg"
+                boxShadow="sm"
+                align="start"
+              >
+                <Box p={3} bg="orange.100" borderRadius="lg" color="orange.600">
                   <Icon as={FiClock} boxSize={6} />
                 </Box>
                 <VStack align="start" gap={1} flex={1}>

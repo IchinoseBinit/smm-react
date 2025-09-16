@@ -55,12 +55,15 @@ export function Sidebar() {
       direction="column"
       bg="sidebarBg"
       color="fg"
-      h="full"
+      h="100vh"
       backgroundColor={"#fafafa"}
       px={2}
-      mt={4}
+      pt={4}
       zIndex={100}
       borderRight={"1px solid #e5e5e8"}
+      position="fixed"
+      width="240px"
+      overflow="hidden"
     >
       <Flex align="center" mb={4}>
         <HamburgerBar />

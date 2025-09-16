@@ -7,6 +7,7 @@ import { useSelectedStore } from "@/features/post/lib/store/selectedAcc"
 import { useClearSelectedAccStore } from "@/features/post/lib/store/selectedAcc"
 import { useEffect } from "react"
 import { BsCheckCircleFill, BsCircle } from "react-icons/bs"
+import { useLocation } from "react-router"
 
 type AccountType = string
 
@@ -68,6 +69,8 @@ export const AccountSection = ({
 }: AccountSectionProps & { pagesPath?: string }) => {
   const { selectedIds, toggleId, forceReset } = useSelectedStore()
   const { clearSelectedAcc } = useClearSelectedAccStore()
+  const { pathname } = useLocation()
+  const isAccountPage = pathname === "/account"
   const filtered = data.filter((d: any) => d.account_type === type)
 
   // Listen for clear events and force reset selections
@@ -126,22 +129,24 @@ export const AccountSection = ({
     >
       {label && (
         <Box mb={3} borderRadius={9} position={"relative"}>
-          <Box
-            position="absolute"
-            top="8px"
-            right="-8px"
-            bg={{ base: "white", _dark: "primary.800" }}
-            borderRadius="full"
-            zIndex="1"
-            cursor="pointer"
-            onClick={handleSectionToggle}
-          >
-            {isAllAccountsSelected ? (
-              <BsCheckCircleFill size={20} color="#005399" />
-            ) : (
-              <BsCircle size={20} color="#A0AEC0" />
-            )}
-          </Box>
+          {!isAccountPage && (
+            <Box
+              position="absolute"
+              top="8px"
+              right="-8px"
+              bg={{ base: "white", _dark: "primary.800" }}
+              borderRadius="full"
+              zIndex="1"
+              cursor="pointer"
+              onClick={handleSectionToggle}
+            >
+              {isAllAccountsSelected ? (
+                <BsCheckCircleFill size={20} color="#005399" />
+              ) : (
+                <BsCircle size={20} color="#A0AEC0" />
+              )}
+            </Box>
+          )}
           <HStack gap={4} align="center">
             {label === "FACEBOOK" && (
               <Icon

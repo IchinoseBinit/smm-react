@@ -242,13 +242,18 @@ export default function CreatePostForm() {
       return false
     }
 
+    // Require description content (minimum criteria)
+    if (!descriptionContent || descriptionContent.trim().length === 0) {
+      return false
+    }
+
     // If scheduling is enabled, require date/time to be selected
     if (isScheduled && !scheduledTime) {
       return false
     }
 
     return true
-  }, [isValid, hasSelectedAccounts, isScheduled, scheduledTime])
+  }, [isValid, hasSelectedAccounts, descriptionContent, isScheduled, scheduledTime])
 
   const resetFormDataAndReload = useCallback(() => {
     console.log("🔄 Starting simple, reliable form reset...")
@@ -461,6 +466,17 @@ export default function CreatePostForm() {
         description:
           "Please select at least one account below to upload content.",
         duration: 2000,
+        closable: true,
+      })
+      return
+    }
+
+    // Check if user has provided description content
+    if (!descriptionContent || descriptionContent.trim().length === 0) {
+      toaster.error({
+        title: "Description Required",
+        description: "Please write some content for your post before submitting.",
+        duration: 3000,
         closable: true,
       })
       return
