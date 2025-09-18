@@ -6,7 +6,7 @@ const API_URL = {
   CREATE_ORG_INVITE: (orgId: string | number) =>
     `/api/orgs/${orgId}/invites`,
 
-  SIGNUP_ORGANIZATION: () => `${api}/user/orgs/signup`,
+  SIGNUP_ORGANIZATION: () => `${api}/user/orgs/signup/`,
 };
 
 export default API_URL;

@@ -6,11 +6,11 @@ import {
   createOrgInvite,
   signupOrganization,
 } from "../api";
-import type { CreateOrgInviteRequest } from "../types";
+import type { CreateOrgInviteRequest, SignupOrganizationRequest, AcceptInviteRequest } from "../types";
 
 const useAcceptInvite = () => {
   const navigate = useNavigate();
-  return useMutation({
+  return useMutation<any, Error, AcceptInviteRequest>({
     mutationFn: acceptInvite,
     onSuccess: () => {
       handleSuccess("Invite accepted", "You can now log in");
@@ -21,7 +21,7 @@ const useAcceptInvite = () => {
 };
 
 const useCreateOrgInvite = () => {
-  return useMutation({
+  return useMutation<any, Error, { orgId: string | number; data: CreateOrgInviteRequest }>({
     mutationFn: ({ orgId, data }: { orgId: string | number; data: CreateOrgInviteRequest }) =>
       createOrgInvite(orgId, data),
     onSuccess: () => handleSuccess("Invite sent", "User has been invited"),
@@ -31,7 +31,7 @@ const useCreateOrgInvite = () => {
 
 const useSignupOrganization = () => {
   const navigate = useNavigate();
-  return useMutation({
+  return useMutation<any, Error, SignupOrganizationRequest>({
     mutationFn: signupOrganization,
     onSuccess: () => {
       handleSuccess("Organization created", "Welcome aboard!");
