@@ -255,9 +255,9 @@ export default function CreatePostForm() {
     return true
   }, [isValid, hasSelectedAccounts, descriptionContent, isScheduled, scheduledTime])
 
-  const resetFormDataAndReload = useCallback(() => {
-    console.log("🔄 Starting simple, reliable form reset...")
-    
+  const resetFormData = useCallback(() => {
+    console.log("🔄 Starting form reset...")
+
     try {
       // Clear everything immediately and synchronously
       clearSelectedAccounts()
@@ -272,16 +272,14 @@ export default function CreatePostForm() {
       setPayload({ files: [] })
       setHasVideos(false)
       setClearSelectedAcc(true)
-      
+
       // Reset form
       reset(defaultValues)
+
+      console.log("✅ Form reset completed")
     } catch (error) {
       console.error("❌ Error during clearing:", error)
     }
-    
-    // Simple, reliable page reload
-    console.log("🚀 Reloading page...")
-    window.location.reload()
   }, [
     clearSelectedAccounts,
     resetSurfaceType,
@@ -475,7 +473,8 @@ export default function CreatePostForm() {
     if (!descriptionContent || descriptionContent.trim().length === 0) {
       toaster.error({
         title: "Description Required",
-        description: "Please write some content for your post before submitting.",
+        description:
+          "Please write some content for your post before submitting.",
         duration: 3000,
         closable: true,
       })
@@ -560,15 +559,15 @@ export default function CreatePostForm() {
 
       await mutateCreatePost(latestData).then(async (res) => {
         if (res?.success) {
-          console.log("✅ Post submitted successfully, initiating production-safe reset...")
+          console.log("✅ Post submitted successfully, clearing form...")
 
           // Show success dialog first
           openDialog({
             status: isScheduled ? "scheduled" : "posted",
           })
 
-          // Simple, reliable reset with reload
-          resetFormDataAndReload()
+          // Clear all form data without page reload
+          resetFormData()
         }
       })
     } catch (error) {
@@ -578,9 +577,9 @@ export default function CreatePostForm() {
         description: "Failed to process post",
       })
 
-      // Simple reset on error
+      // Clear form data even on error, without page reload
       console.log("🧹 Clearing form due to error...")
-      resetFormDataAndReload()
+      resetFormData()
     } finally {
       setPostLoading(false)
     }
@@ -604,7 +603,6 @@ export default function CreatePostForm() {
       as="form"
       onSubmit={handleSubmit(onSubmit)}
       w="full"
-      maxHeight="100vh"
       overflowY="auto"
       css={{
         "&::-webkit-scrollbar": { display: "none" },
@@ -985,6 +983,7 @@ export default function CreatePostForm() {
                 ? "Schedule Post"
                 : "Post Now"}{" "}
             </Button>
+            {/* <Button onClick={resetFormData}>Clear</Button> */}
           </Flex>
         </Box>
       </VStack>
