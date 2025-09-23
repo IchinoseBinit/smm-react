@@ -1,3 +1,13 @@
+type Role = {
+  id: number;
+  name: string;
+  can_post: boolean;
+  can_approve: boolean;
+  can_view_analytics: boolean;
+  can_manage_billing: boolean;
+  is_default: boolean;
+};
+
 type AcceptInviteRequest = {
   token: string;
   first_name: string;
@@ -29,4 +39,4 @@ type SignupOrganizationRequest = {
   };
 };
 
-export type { AcceptInviteRequest, CreateOrgInviteRequest, SignupOrganizationRequest };
+export type { Role, AcceptInviteRequest, CreateOrgInviteRequest, SignupOrganizationRequest };

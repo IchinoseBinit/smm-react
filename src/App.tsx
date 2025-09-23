@@ -18,6 +18,7 @@ import Termsofservices from "./pages/legal/Termsofservices"
 import Aboutus from "./pages/Company/Aboutus"
 import OrganizationSignup from "./pages/organization/OrganizationSignup"
 import Contactus from "./pages/Contactus/Contactus"
+import Inviteteammates from "./pages/organization/Inviteteammates"
 function App() {
   return (
     <>
@@ -28,6 +29,10 @@ function App() {
         {flatRoute({
           path: "/organizationsignup",
           component: <OrganizationSignup />,
+        })}
+        {flatRoute({
+          path: "/invite",
+          component: <Inviteteammates />,
         })}
         {flatRoute({
           path: "/termsofservices",
