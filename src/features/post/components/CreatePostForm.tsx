@@ -341,7 +341,6 @@ export default function CreatePostForm() {
   // Don't auto-select accounts on load - let user choose manually
 
   const uploadFiles = async () => {
-    console.log("uploadFiles called with payload:", payload)
     const presignedResponse: any = await mutateAsync(payload)
     console.log("presigned_post", presignedResponse)
     console.log("presigned_post. 1", presignedResponse.presigned_posts)

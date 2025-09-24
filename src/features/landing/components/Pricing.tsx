@@ -8,9 +8,16 @@ import {
   Badge,
   List,
 } from "@chakra-ui/react";
+import { useSubscriptionPlans } from "@/features/Subscription/hooks/useSubsciption";
 import { FaCheck } from "react-icons/fa";
 
 export default function Pricing() {
+
+  const { data: subscriptionPlans } = useSubscriptionPlans();
+  console.log("Subscription Plans:", subscriptionPlans);
+
+  // Find the pro plan for the starter card
+  const proPlan: any = subscriptionPlans?.find((plan: any) => plan.name.toLowerCase() === 'pro');
   return (
     <Box as="section" id="pricing" py={20} bg="gray.50">
       <Box maxW="container.xl" mx="auto" px={4}>
@@ -39,7 +46,7 @@ export default function Pricing() {
                 color="gray.900"
                 mb={2}
               >
-                Starter
+                {proPlan ? proPlan.name.charAt(0).toUpperCase() + proPlan.name.slice(1) : 'Starter'}
               </Heading>
 
               <Box mb={6}>
@@ -49,7 +56,7 @@ export default function Pricing() {
                   fontWeight="bold"
                   color="gray.900"
                 >
-                  $15
+                  ${proPlan ? proPlan.price : '15'}
                 </Text>
                 <Text as="span" color="gray.600">
                   /month
@@ -63,7 +70,9 @@ export default function Pricing() {
                     color="green.500"
                     style={{ marginRight: "12px" }}
                   />
-                  <Text color="gray.600">Basic analytics</Text>
+                  <Text color="gray.600">
+                    {proPlan ? `Up to ${proPlan.max_users} users` : 'Basic analytics'}
+                  </Text>
                 </List.Item>
                 <List.Item display="flex" alignItems="center">
                   <FaCheck
@@ -71,7 +80,9 @@ export default function Pricing() {
                     color="green.500"
                     style={{ marginRight: "12px" }}
                   />
-                  <Text color="gray.600">5GB storage</Text>
+                  <Text color="gray.600">
+                    {proPlan ? `${proPlan.max_posts_per_month} posts/month` : '5GB storage'}
+                  </Text>
                 </List.Item>
                 <List.Item display="flex" alignItems="center">
                   <FaCheck
@@ -79,7 +90,9 @@ export default function Pricing() {
                     color="green.500"
                     style={{ marginRight: "12px" }}
                   />
-                  <Text color="gray.600">Up to 3 team members</Text>
+                  <Text color="gray.600">
+                    {proPlan ? 'Basic analytics' : 'Up to 3 team members'}
+                  </Text>
                 </List.Item>
               </List.Root>
 
