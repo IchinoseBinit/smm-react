@@ -1,8 +1,25 @@
 import { Portal, Select, Span, createListCollection } from "@chakra-ui/react"
+import useGetYoutubeCategories from "../hooks/query/useYoutube"
+import { useMemo } from "react"
 
 const SelectChannelDropdown = () => {
+  const { data: youtubeCategories } = useGetYoutubeCategories()
+
+  const categoriesCollection = useMemo(() => {
+    if (!youtubeCategories?.items) {
+      return createListCollection<{ label: string; value: string }>({ items: [] })
+    }
+
+    const items = youtubeCategories.items.map((category) => ({
+      label: category.title,
+      value: category.id,
+    }))
+
+    return createListCollection<{ label: string; value: string }>({ items })
+  }, [youtubeCategories])
+
   return (
-    <Select.Root collection={frameworks} size="md" width="100%">
+    <Select.Root collection={categoriesCollection} size="md" width="100%">
       <Select.HiddenSelect />
       <Select.Label fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
         Category
@@ -27,9 +44,9 @@ const SelectChannelDropdown = () => {
       <Portal>
         <Select.Positioner>
           <Select.Content>
-            {frameworks.items.map((framework) => (
-              <Select.Item item={framework} key={framework.value}>
-                {framework.label}
+            {categoriesCollection.items.map((category) => (
+              <Select.Item item={category} key={category.value}>
+                {category.label}
                 <Select.ItemIndicator />
               </Select.Item>
             ))}
@@ -39,14 +56,5 @@ const SelectChannelDropdown = () => {
     </Select.Root>
   )
 }
-
-const frameworks = createListCollection({
-  items: [
-    { label: "Technology", value: "Technology" },
-    { label: "Education", value: "Education" },
-    { label: "Environment", value: "Environment" },
-    { label: "Music", value: "Music" },
-  ],
-})
 
 export default SelectChannelDropdown

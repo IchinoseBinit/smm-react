@@ -55,3 +55,13 @@ export type { FileMeta, FilesPayload, AccountSectionProps, ToolbarButtonProps, T
 
 
 export type AccountType = "FACEBOOK" | "TIKTOK" | "YOUTUBE" | "INSTAGRAM";
+
+
+interface YoutubeCategory {
+  region: string;
+  count: number;
+  items: { id: string; title: string }[];
+}
+
+
+export type { YoutubeCategory };

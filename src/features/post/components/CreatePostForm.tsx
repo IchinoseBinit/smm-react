@@ -28,12 +28,13 @@ import DateTime from "./DateTime"
 import { useAuthUtils } from "@/hooks/useAuthUtils"
 import { useAllConnAccounts } from "@/hooks/useConnectedAccounts"
 import { CircularLoading } from "@/lib/loadings"
-import { useCreatePost } from "../hooks/query/usePost"
+import { createPost } from "../api"
+import { useMutation } from "@tanstack/react-query"
 import useFileUpload from "../hooks/query/useFileUpload"
 import { useUploadStore } from "../lib/store/file"
 import axios from "axios"
 import { useInitialTimeStore, useScheduleStore } from "../lib/store/dateTime"
-import { useSuccessDialogStore } from "../lib/store/successDialog"
+// import { useSuccessDialogStore } from "../lib/store/successDialog"
 import { SuccessDialog } from "./SuccessCreatePost"
 import {
   FacebookPostSchema,
@@ -57,6 +58,7 @@ import FacebookAccount from "../../../components/SocialAcc/facebook/FacebookAcco
 import TiktokAccount from "../../../components/SocialAcc/tiktok/TiktokAccount"
 import YoutubeAccount from "../../../components/SocialAcc/youtube/YoutubeAccount"
 import InstagramAccount from "@/components/SocialAcc/instagram/InstagramAccount"
+import useGetYoutubeCategories from "../hooks/query/useYoutube"
 
 export default function CreatePostForm() {
   const { userId } = useAuthUtils()
@@ -66,8 +68,12 @@ export default function CreatePostForm() {
   const [itemArr, setItemArr] = useState<any[]>([])
   const [clearFiles, setClearFiles] = useState(false)
   const [postLoading, setPostLoading] = useState(false)
-  const { mutateAsync: mutateCreatePost } = useCreatePost()
-  const { openDialog } = useSuccessDialogStore()
+  // Create a custom mutation without auto-toasters to prevent duplicates
+  const { mutateAsync: mutateCreatePost } = useMutation({
+    mutationFn: createPost,
+    // No onSuccess/onError handlers to prevent duplicate toasters
+  })
+  // const { openDialog } = useSuccessDialogStore()
 
   const { isCreatePostEdit, postData } = useEditPostStore()
   const deleteScheduledPostMutation = useDeleteScheduledPost()
@@ -100,6 +106,9 @@ export default function CreatePostForm() {
     return time.split("T")[1].split("+")[0] // "22:19:00"
   }
 
+  const { data: youtubeCategories } = useGetYoutubeCategories()
+  console.log("Youtube Categories:", youtubeCategories)
+
   // Add effect to populate form when editing
 
   // Add the missing ref declaration
@@ -118,6 +127,7 @@ export default function CreatePostForm() {
   const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>(
     []
   )
+
 
   const selectedPlatforms = useMemo(
     () => itemArr.map((item) => item.social_account_id),
@@ -194,7 +204,7 @@ export default function CreatePostForm() {
     return z.any()
   }, [itemArr, selectedIds])
 
-  const defaultValues = {
+  const defaultValues = useMemo(() => ({
     title: "",
     description: "",
     status: "",
@@ -208,7 +218,7 @@ export default function CreatePostForm() {
         social_account_id: null,
       },
     ],
-  }
+  }), [])
 
   const {
     handleSubmit,
@@ -255,32 +265,81 @@ export default function CreatePostForm() {
     return true
   }, [isValid, hasSelectedAccounts, descriptionContent, isScheduled, scheduledTime])
 
-  const resetFormData = useCallback(() => {
+  const resetFormData = useCallback(async () => {
     console.log("🔄 Starting form reset...")
+    console.log("Current state before reset:", {
+      descriptionContent,
+      titleContent,
+      itemArr: itemArr.length,
+      selectedPlatformsType,
+      isScheduled,
+      payload: payload.files?.length || 0
+    })
 
     try {
-      // Clear everything immediately and synchronously
-      clearSelectedAccounts()
-      resetSurfaceType()
-      setIsScheduled(false)
-      setInitialTime(null)
+      // First, clear all React state immediately
       setDescriptionContent("")
       setTitleContent("")
       setItemArr([])
       setSelectedPlatformsType([])
-      setClearFiles(true)
+      setIsScheduled(false)
+      setInitialTime(null)
+
+      // Clear file-related state
       setPayload({ files: [] })
       setHasVideos(false)
+      setClearFiles(true)
       setClearSelectedAcc(true)
 
-      // Reset form
+      // Clear stores
+      clearSelectedAccounts()
+      resetSurfaceType()
+
+      // Reset react-hook-form
+      reset(defaultValues)
+
+      // Force update form values explicitly
+      setValue("title", "")
+      setValue("description", "")
+      setValue("status", "")
+      setValue("scheduled_time", null)
+      setValue("is_photo", false)
+      setValue("medias", [])
+      setValue("platform_statuses", [])
+
+      // Allow state updates to propagate
+      await new Promise(resolve => setTimeout(resolve, 200))
+
+      // Final form reset to ensure everything is clean
       reset(defaultValues)
 
       console.log("✅ Form reset completed")
+      console.log("State after reset:", {
+        descriptionContent: "",
+        titleContent: "",
+        itemArr: [],
+        formValues: getValues()
+      })
     } catch (error) {
       console.error("❌ Error during clearing:", error)
+      // Fallback reset
+      try {
+        reset(defaultValues)
+        setDescriptionContent("")
+        setTitleContent("")
+      } catch (fallbackError) {
+        console.error("❌ Fallback reset also failed:", fallbackError)
+      }
     }
   }, [
+    reset,
+    defaultValues,
+    descriptionContent,
+    titleContent,
+    itemArr,
+    selectedPlatformsType,
+    isScheduled,
+    payload,
     clearSelectedAccounts,
     resetSurfaceType,
     setIsScheduled,
@@ -288,8 +347,8 @@ export default function CreatePostForm() {
     setPayload,
     setHasVideos,
     setClearSelectedAcc,
-    reset,
-    defaultValues,
+    setValue,
+    getValues,
   ])
   // Updated addTag function to work with the editor
   const addTag = useCallback(
@@ -456,6 +515,13 @@ export default function CreatePostForm() {
 
   const onSubmit = async () => {
     console.log("onSubmit called")
+
+    // Prevent double submission
+    if (postLoading) {
+      console.log("Already submitting, ignoring duplicate call")
+      return
+    }
+
     // Check if user has selected accounts before submitting
     if (!hasSelectedAccounts) {
       toaster.error({
@@ -556,29 +622,55 @@ export default function CreatePostForm() {
         ).toISOString()
       }
 
-      await mutateCreatePost(latestData).then(async (res) => {
-        if (res?.success) {
-          console.log("✅ Post submitted successfully, clearing form...")
+      const result = await mutateCreatePost(latestData)
+      console.log("📊 API Response:", result)
 
-          // Show success dialog first
-          openDialog({
-            status: isScheduled ? "scheduled" : "posted",
-          })
+      // If we reach here, the mutation was successful (no error was thrown)
+      console.log("✅ Post submitted successfully, clearing form...")
 
-          // Clear all form data without page reload
-          resetFormData()
-        }
+      // Show success toast instead of dialog
+      toaster.success({
+        title: isScheduled ? "Post Scheduled!" : "Post Published!",
+        description: isScheduled
+          ? "Your post has been scheduled successfully"
+          : "Your post has been published successfully",
+        duration: 2000,
+        closable: true,
       })
+
+      // Small delay to let toast render
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      // Clear all form data without page reload
+      console.log("🧹 About to call resetFormData after successful post...")
+      await resetFormData()
+      console.log("🧹 resetFormData completed after successful post")
     } catch (error) {
       console.error("❌ Error in onSubmit:", error)
-      toaster.error({
-        title: "Error",
-        description: "Failed to process post",
-      })
+
+      // Only show error toaster if it's not a validation error
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      if (!errorMessage?.includes("validation") && !errorMessage?.includes("required")) {
+        toaster.error({
+          title: "Submission Failed",
+          description: "There was an error submitting your post. Please try again.",
+          duration: 2000,
+          closable: true,
+        })
+      }
 
       // Clear form data even on error, without page reload
-      console.log("🧹 Clearing form due to error...")
-      resetFormData()
+      console.log("🧹 About to call resetFormData after error...")
+      try {
+        await resetFormData()
+        console.log("🧹 resetFormData completed after error")
+      } catch (resetError) {
+        console.error("❌ Error during form reset:", resetError)
+        // Force a basic reset if the full reset fails
+        reset(defaultValues)
+        setDescriptionContent("")
+        setTitleContent("")
+      }
     } finally {
       setPostLoading(false)
     }
@@ -982,7 +1074,16 @@ export default function CreatePostForm() {
                 ? "Schedule Post"
                 : "Post Now"}{" "}
             </Button>
-            {/* <Button onClick={resetFormData}>Clear</Button> */}
+            {/* <Button
+              variant="outline"
+              onClick={async () => {
+                console.log("Manual clear button clicked")
+                await resetFormData()
+              }}
+              size="sm"
+            >
+              Clear Form
+            </Button> */}
           </Flex>
         </Box>
       </VStack>
