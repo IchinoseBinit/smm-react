@@ -19,6 +19,7 @@ import Aboutus from "./pages/Company/Aboutus"
 import OrganizationSignup from "./pages/organization/OrganizationSignup"
 import Contactus from "./pages/Contactus/Contactus"
 import Inviteteammates from "./pages/organization/Inviteteammates"
+import Profile from "./pages/Profile/Profile";
 function App() {
   return (
     <>
@@ -54,6 +55,10 @@ function App() {
           {layoutRoute({
             path: "/posts",
             component: <Manager />,
+          })}
+          {layoutRoute({
+            path: "/profile",
+            component: <Profile />,
           })}
           {layoutRoute({
             path: "/account",

@@ -32,7 +32,7 @@ const navItems = [
 ]
 
 const bottomNavItems = [
-  { label: "Setting", icon: setting, href: "/setting" },
+  { label: "Setting", icon: setting, href: "/profile" },
   // { label: "Help", icon: help, href: "/help" },
   { label: "Contact", icon: help, href: "/contactus" },
   { label: "Logout", icon: Logout, href: "/logout" },
