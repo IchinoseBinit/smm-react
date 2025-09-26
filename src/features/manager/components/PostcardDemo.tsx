@@ -130,7 +130,7 @@ const SocialPostCard = ({ post }: { post: Post }) => {
     >
       <HStack>
         <Image
-          src={womenimg}
+          src={post.medias[0].s3_url || womenimg}
           alt="Post preview"
           width="75px"
           height="90px"
