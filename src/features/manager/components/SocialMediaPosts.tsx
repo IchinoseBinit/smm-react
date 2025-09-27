@@ -28,7 +28,7 @@ export default function SocialMediaPosts() {
   }
 
   const postedData = getFilteredData("posted")
-  const scheduledData = getFilteredData("scheduled")
+  const scheduledData = getFilteredData("pending")
   const failedData = getFilteredData("failed")
 
   if (isLoading) return <CircularLoading />
