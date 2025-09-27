@@ -22,7 +22,7 @@ const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  phone: z.string().min(10, "Phone number must be at least 10 digits").regex(/^\d+$/, "Phone number must contain only numbers"),
 });
 
 type ProfileFormInputs = z.infer<typeof profileSchema>;
@@ -164,6 +164,14 @@ const Profile = () => {
             </Field.Label>
             <Input
               {...register("phone")}
+              type="tel"
+              pattern="[0-9]*"
+              inputMode="numeric"
+              onKeyPress={(e) => {
+                if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                  e.preventDefault();
+                }
+              }}
               bg="#f5f5f5"
               border="1px"
               borderColor="gray.200"
