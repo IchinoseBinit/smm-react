@@ -1,7 +1,7 @@
 import { safeApiCall } from "@/lib/helper/apiHelper";
 import axiosInstance from "@/services/axios";
 import API_URL from "./lib/apiUrl";
-import type { UserProfile } from "./types";
+import type { UserProfile , TUpdateProfile} from "./types";
 
 
 const getUserProfile = (): Promise<UserProfile> =>
@@ -13,4 +13,17 @@ const getUserProfile = (): Promise<UserProfile> =>
       .then((res) => res.data),
   );
 
-export { getUserProfile};
+
+const updateProfile = (data: TUpdateProfile) =>
+  safeApiCall(() =>
+    axiosInstance
+      .patch(
+        `${API_URL.UPDATE_PROFILE()}`, {
+          data
+        }
+      )
+      .then((res) => res.data),
+  );
+
+
+export { getUserProfile, updateProfile };

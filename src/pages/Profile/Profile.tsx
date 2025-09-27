@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import {  useEffect } from "react";
 import {
   Box,
   Button,
@@ -16,7 +16,7 @@ import Lock from "@/assets/lock.svg"
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useProfile } from "@/features/Profile/hooks/useProfile";
+import { useProfile, useUpdateProfile } from "@/features/Profile/hooks/useProfile";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -28,9 +28,8 @@ const profileSchema = z.object({
 type ProfileFormInputs = z.infer<typeof profileSchema>;
 
 const Profile = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    
     const data = useProfile()
+    const updateProfileMutation = useUpdateProfile()
 
   const {
     register,
@@ -58,22 +57,21 @@ const Profile = () => {
     }
   }, [data.data?.user, reset]);
 
-  const onSubmit: SubmitHandler<ProfileFormInputs> = async (data) => {
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Form data:", data);
-      setIsLoading(false);
-    }, 1000);
+  const onSubmit: SubmitHandler<ProfileFormInputs> = async (formData) => {
+    const updateData = {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      phone: formData.phone,
+      profile_url: data.data?.user?.profile_url || ""
+    };
+
+    updateProfileMutation.mutate(updateData);
   };
 
   return (
     <Box maxW="4xl" mx="auto" bg="white" minH="100vh">
       {/* Header Section */}
-      <Flex justify="space-between" align="center" mb={8}>
-        <Text fontSize="2xl" fontWeight="bold" color="#003a6b">
-          Tech solution
-        </Text>
+      <Flex justify="flex-end" align="center" mb={8}>
         <Button
           variant="outline"
           borderColor="gray.300"
@@ -120,9 +118,6 @@ const Profile = () => {
                 border="1px"
                 borderColor="gray.200"
                 size="lg"
-                readOnly
-                cursor="default"
-                _focus={{}}
               />
               <Field.ErrorText>{errors.firstName?.message}</Field.ErrorText>
             </Field.Root>
@@ -138,9 +133,6 @@ const Profile = () => {
                 border="1px"
                 borderColor="gray.200"
                 size="lg"
-                readOnly
-                cursor="default"
-                _focus={{}}
               />
               <Field.ErrorText>{errors.lastName?.message}</Field.ErrorText>
             </Field.Root>
@@ -176,9 +168,6 @@ const Profile = () => {
               border="1px"
               borderColor="gray.200"
               size="lg"
-              readOnly
-              cursor="default"
-              _focus={{}}
             />
             <Field.ErrorText>{errors.phone?.message}</Field.ErrorText>
           </Field.Root>
@@ -192,7 +181,7 @@ const Profile = () => {
           borderRadius={10}
           size="lg"
           px={8}
-          loading={isLoading}
+          loading={updateProfileMutation.isPending}
           loadingText="Saving..."
           _hover={{ bg: "green.600" }}
         >

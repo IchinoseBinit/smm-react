@@ -16,4 +16,13 @@ interface UserProfile {
 }
 
 
-export  type { UserProfile}
+
+interface TUpdateProfile { 
+
+  first_name: string;
+  last_name: string;
+  phone: string;
+  profile_url: string;
+}
+
+export  type { UserProfile,TUpdateProfile}
