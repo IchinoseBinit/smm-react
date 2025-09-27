@@ -16,7 +16,7 @@ const getPostsBydate = (from?: string, to?: string, userId?: string) =>
   safeApiCall(() =>
     axiosInstance
       .get(
-        `${API_URL.POSTS_BY_DATE(userId!)}?from=${from}&to=${to}&sort_by=id&order_by=desc&status=scheduled
+        `${API_URL.POSTS_BY_DATE(userId!)}?from=${from}&to=${to}&sort_by=id&order_by=desc&status=pending
         `,
       )
       .then((res) => res.data),
