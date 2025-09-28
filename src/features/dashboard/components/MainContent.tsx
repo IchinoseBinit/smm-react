@@ -782,8 +782,8 @@ export function MainContent() {
           <Box>
             <OverviewItem label="Post this month" value="24" badge="" />
             <OverviewItem label="Scheduled Post" value="7" badge="" />
-            <OverviewItem label="Best Performing hour" value="12 PM" badge="" />
-            <OverviewItem label="Response Rate" value="89%" badge="" />
+            {/* <OverviewItem label="Best Performing hour" value="12 PM" badge="" />
+            <OverviewItem label="Response Rate" value="89%" badge="" /> */}
           </Box>
         </Box>
 

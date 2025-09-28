@@ -4,7 +4,7 @@ import FeatureSection from "@/features/landing/components/FeatureSection"
 import Footer from "@/features/landing/components/Footer"
 import Header from "@/features/landing/components/Header"
 import HeroSection from "@/features/landing/components/HeroSection"
-import Pricing from "@/features/landing/components/Pricing"
+// import Pricing from "@/features/landing/components/Pricing"
 import Testimonials from "@/features/landing/components/Testimonials"
 import Value from "@/features/landing/components/Value"
 import { Box } from "@chakra-ui/react"
@@ -25,7 +25,7 @@ export default function LandingPage() {
       <DemoSection />
       <Testimonials />
       <Value />
-      <Pricing />
+      {/* <Pricing /> */}
       <CTASection />
       <Footer />
     </Box>

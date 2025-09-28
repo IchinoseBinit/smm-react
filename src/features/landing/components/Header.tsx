@@ -45,9 +45,9 @@ export default function Header() {
           >
             Features
           </Link>
-          <Link href="#pricing" color="gray.600" _hover={{ color: "gray.900" }}>
+          {/* <Link href="#pricing" color="gray.600" _hover={{ color: "gray.900" }}>
             Pricing
-          </Link>
+          </Link> */}
           <Link href="/aboutus" color="gray.600" _hover={{ color: "gray.900" }}>
             About us
           </Link>

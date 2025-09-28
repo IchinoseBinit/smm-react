@@ -47,11 +47,11 @@ export default function Footer() {
                   Features
                 </Link>
               </List.Item>
-              <List.Item>
+              {/* <List.Item>
                 <Link href="#" color="gray.400" _hover={{ color: "white" }}>
                   Pricing
                 </Link>
-              </List.Item>
+              </List.Item> */}
               <List.Item>
                 <Link href="#" color="gray.400" _hover={{ color: "white" }}>
                   Security

@@ -8,11 +8,13 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { system } from "./lib/theme.ts";
 import { AuthProvider } from "./lib/providers/authProvider.tsx";
 import { HelmetProvider } from "react-helmet-async";
+
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
+    
       <ChakraProvider value={system}>
         <BrowserRouter>
           <AuthProvider>
@@ -21,6 +23,7 @@ createRoot(document.getElementById("root")!).render(
           <Toaster />
         </BrowserRouter>
       </ChakraProvider>
+  
     </QueryClientProvider>
   </HelmetProvider>,
 );

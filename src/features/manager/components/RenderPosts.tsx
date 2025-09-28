@@ -18,7 +18,6 @@ export default function RenderPosts({ posts }: { posts: Post[] }) {
         return "gray"
     }
   }
-
   return (
     <>
       {posts?.map((post) => {

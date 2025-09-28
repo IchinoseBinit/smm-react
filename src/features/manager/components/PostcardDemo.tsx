@@ -40,10 +40,11 @@ const FailedCardDemo = ({ data }: { data: Post }) => {
     >
       <HStack>
         <Image
-          src={womenimg}
+          src={data.medias[0].s3_url||womenimg}
           alt="Post preview"
           objectFit="cover"
           borderRadius="md"
+          width={"75px" }
         />
         <VStack alignItems="flex-start">
           <Text fontWeight="semibold">{data?.title}</Text>
@@ -111,7 +112,6 @@ const SocialPostCard = ({ post }: { post: Post }) => {
         }
     }
   }
-
   const statusConfig = getStatusConfig(post.status)
 
   const platformIcons = post.platform_statuses

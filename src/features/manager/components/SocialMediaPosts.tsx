@@ -14,19 +14,18 @@ export default function SocialMediaPosts() {
     new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
   )
   const [to, setTo] = useState(new Date().toISOString().split("T")[0])
-
+const[status,setStatus]=useState("posted")
   const { data, isLoading } = useGetPostsByDate({
     from: from,
     to: to,
     userId,
+    status:status
   })
-
   const getFilteredData = (status: string) => {
     return (
       data?.filter((p: Post) => p.platform_statuses[0].status === status) || []
     )
   }
-
   const postedData = getFilteredData("posted")
   const scheduledData = getFilteredData("pending")
   const failedData = getFilteredData("failed")
@@ -45,7 +44,7 @@ export default function SocialMediaPosts() {
       >
         {/* Tabs Section */}
         <Box flex={1} minW="300px">
-          <Tabs.Root defaultValue="posted" variant="plain">
+          <Tabs.Root value={status} variant="plain" onValueChange={(details) => setStatus(details.value)}>
             <Tabs.List
               bg="gray.100"
               rounded="lg"
@@ -54,6 +53,7 @@ export default function SocialMediaPosts() {
               _dark={{ bg: "gray.700" }}
             >
               <Tabs.Trigger
+           
                 value="posted"
                 display="flex"
                 alignItems="center"
@@ -72,7 +72,8 @@ export default function SocialMediaPosts() {
               </Tabs.Trigger>
 
               <Tabs.Trigger
-                value="scheduled"
+             
+                value="pending"
                 display="flex"
                 alignItems="center"
                 gap={2}
@@ -90,6 +91,7 @@ export default function SocialMediaPosts() {
               </Tabs.Trigger>
 
               <Tabs.Trigger
+           
                 value="failed"
                 display="flex"
                 alignItems="center"
@@ -124,7 +126,7 @@ export default function SocialMediaPosts() {
                 </VStack>
               </Tabs.Content>
 
-              <Tabs.Content value="scheduled">
+              <Tabs.Content value="pending">
                 <VStack gap={4} align="stretch">
                   {scheduledData.length === 0 ? (
                     <Text textAlign="center" color="gray.500" py={8}>
