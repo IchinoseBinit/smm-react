@@ -3,29 +3,35 @@ import {
   Flex,
   Grid,
   Text,
-  // Progress,
+  Icon,
   Badge,
   Button,
-} from "@chakra-ui/react"
-import { useEffect, useState, useMemo } from "react"
-import { useNavigate } from "react-router-dom"
-import { CircularLoading } from "@/lib/loadings"
-import { useAuthUtils } from "@/hooks/useAuthUtils"
-import useGetPostsByDate from "@/features/manager/hooks/query/useGetPosts"
-import { format, subDays } from "date-fns"
-import { useAllConnAccounts } from "@/hooks/useConnectedAccounts"
-import useTotalPost from "../hooks/useTotalPost"
-
+  Image,
+  
+} from "@chakra-ui/react";
+import { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { CircularLoading } from "@/lib/loadings";
+import { useAuthUtils } from "@/hooks/useAuthUtils";
+import useGetPostsByDate from "@/features/manager/hooks/query/useGetPosts";
+import { format, subDays } from "date-fns";
+import { useAllConnAccounts } from "@/hooks/useConnectedAccounts";
+import useTotalPost from "../hooks/useTotalPost";
+import useMediaSummary from "../hooks/useMediaSummary";
+import WarningIcon from "@/assets/WarningIcon.svg"
+import ScheduleIcon from "@/assets/ScheduleIcon.svg"
+import SuccessIcon from "@/assets/Sucess.svg"
 const MetricCard = ({
   title,
   value,
-  // percentage,
-}: {
-  title: string
-  value: string | number
-  percentage?: number
-  }) => 
-  (
+  icon,
+}: // percentage,
+{
+  title: string;
+  value: string | number;
+  percentage?: number;
+  icon?: React.ElementType | string;
+}) => (
   <Box
     bg="white"
     _dark={{ bg: "gray.800" }}
@@ -44,6 +50,35 @@ const MetricCard = ({
       >
         {value}
       </Text>
+      {/* Reusable Icon Logic  */}
+      {icon && (
+        <Flex
+          w={10}
+          h={10}
+          align="center"
+          justify="center"
+          bg="none"
+
+          flexShrink={0}
+        >
+          {typeof icon === "string" ? (
+            <Image
+              src={icon}
+              alt={`${title} logo`}
+              boxSize={7}
+              objectFit="contain"
+            />
+          ) : (
+            <Icon
+              as={icon}
+              boxSize={6}
+              color="gray.600"
+              _dark={{ color: "gray.300" }}
+            />
+          )}
+        </Flex>
+      )}
+
       {/* <Text fontSize="sm" color="gray.500" _dark={{ color: "gray.400" }}>
         {percentage}%
       </Text> */}
@@ -57,85 +92,85 @@ const MetricCard = ({
       </Progress.Track>
     </Progress.Root> */}
   </Box>
-)
+);
 
 const PlatformChart = ({
   connectedAccountsData,
 }: {
-  connectedAccountsData?: any[]
+  connectedAccountsData?: any[];
 }) => {
   // Define platform config function first
   const getPlatformConfig = (platform: string) => {
     switch (platform) {
       case "FACEBOOK":
-        return { color: "#2762ea", displayName: "Facebook" }
+        return { color: "#2762ea", displayName: "Facebook" };
       case "YOUTUBE":
-        return { color: "#dc2627", displayName: "YouTube" }
+        return { color: "#dc2627", displayName: "YouTube" };
       case "INSTAGRAM":
-        return { color: "url(#instagramGradient)", displayName: "Instagram" }
+        return { color: "url(#instagramGradient)", displayName: "Instagram" };
       case "TIKTOK":
-        return { color: "#000000", displayName: "TikTok" }
+        return { color: "#000000", displayName: "TikTok" };
       default:
-        return { color: "#718096", displayName: platform }
+        return { color: "#718096", displayName: platform };
     }
-  }
+  };
 
   // Calculate platform distribution
   const platformStats = useMemo(() => {
-    console.log("Input data for platform stats:", connectedAccountsData)
+    console.log("Input data for platform stats:", connectedAccountsData);
 
     if (!connectedAccountsData || connectedAccountsData.length === 0) {
-      console.log("No connected accounts data, returning empty stats")
-      return { platforms: [], totalAccounts: 0 }
+      console.log("No connected accounts data, returning empty stats");
+      return { platforms: [], totalAccounts: 0 };
     }
 
     const platformCounts = connectedAccountsData.reduce(
       (acc: any, account: any) => {
-        const platform = account.account_type
-        acc[platform] = (acc[platform] || 0) + 1
-        return acc
+        const platform = account.account_type;
+        acc[platform] = (acc[platform] || 0) + 1;
+        return acc;
       },
       {}
-    )
+    );
 
-    console.log("Platform counts:", platformCounts)
+    console.log("Platform counts:", platformCounts);
 
-    const totalAccounts = connectedAccountsData.length
+    const totalAccounts = connectedAccountsData.length;
 
     const platforms = Object.entries(platformCounts).map(
       ([platform, count]: [string, any]) => {
-        const percentage = Math.round((count / totalAccounts) * 100)
-        const config = getPlatformConfig(platform)
+        const percentage = Math.round((count / totalAccounts) * 100);
+        const config = getPlatformConfig(platform);
         const result = {
           name: platform,
           count,
           percentage,
           ...config,
-        }
-        console.log("Platform processed:", result)
-        return result
+        };
+        console.log("Platform processed:", result);
+        return result;
       }
-    )
+    );
 
-    console.log("Final platform stats:", { platforms, totalAccounts })
-    return { platforms, totalAccounts }
-  }, [connectedAccountsData])
+    console.log("Final platform stats:", { platforms, totalAccounts });
+    return { platforms, totalAccounts };
+  }, [connectedAccountsData]);
 
   // Create SVG-based circular chart
   const createCircularChart = () => {
     if (platformStats.platforms.length === 0) {
-      console.log("No platforms to display in chart")
-      return null
+      console.log("No platforms to display in chart");
+      return null;
     }
 
-    const size = 200
-    const center = size / 2
-    const outerRadius = 85
-    const innerRadius = 50
+    const size = 200;
+    const center = size / 2;
+    const outerRadius = 85;
+    const innerRadius = 50;
 
-    console.log("Creating chart with platforms:", platformStats.platforms)
+    console.log("Creating chart with platforms:", platformStats.platforms);
 
-    let cumulativeAngle = -90 // Start from top
+    let cumulativeAngle = -90; // Start from top
 
     const createPath = (
       startAngle: number,
@@ -143,20 +178,20 @@ const PlatformChart = ({
       outerR: number,
       innerR: number
     ) => {
-      const startAngleRad = (startAngle * Math.PI) / 180
-      const endAngleRad = (endAngle * Math.PI) / 180
+      const startAngleRad = (startAngle * Math.PI) / 180;
+      const endAngleRad = (endAngle * Math.PI) / 180;
 
-      const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1"
+      const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
 
-      const x1 = center + outerR * Math.cos(startAngleRad)
-      const y1 = center + outerR * Math.sin(startAngleRad)
-      const x2 = center + outerR * Math.cos(endAngleRad)
-      const y2 = center + outerR * Math.sin(endAngleRad)
+      const x1 = center + outerR * Math.cos(startAngleRad);
+      const y1 = center + outerR * Math.sin(startAngleRad);
+      const x2 = center + outerR * Math.cos(endAngleRad);
+      const y2 = center + outerR * Math.sin(endAngleRad);
 
-      const x3 = center + innerR * Math.cos(endAngleRad)
-      const y3 = center + innerR * Math.sin(endAngleRad)
-      const x4 = center + innerR * Math.cos(startAngleRad)
-      const y4 = center + innerR * Math.sin(startAngleRad)
+      const x3 = center + innerR * Math.cos(endAngleRad);
+      const y3 = center + innerR * Math.sin(endAngleRad);
+      const x4 = center + innerR * Math.cos(startAngleRad);
+      const y4 = center + innerR * Math.sin(startAngleRad);
 
       return [
         "M",
@@ -182,8 +217,8 @@ const PlatformChart = ({
         x4,
         y4,
         "Z",
-      ].join(" ")
-    }
+      ].join(" ");
+    };
 
     return (
       <svg width={size} height={size} className="circular-chart">
@@ -214,21 +249,21 @@ const PlatformChart = ({
 
         {/* Platform segments */}
         {platformStats.platforms.map((platform) => {
-          const angle = (platform.percentage / 100) * 360
-          const endAngle = cumulativeAngle + angle
+          const angle = (platform.percentage / 100) * 360;
+          const endAngle = cumulativeAngle + angle;
 
           console.log(
             `Platform ${platform.name}: ${platform.percentage}%, angle: ${angle}, start: ${cumulativeAngle}, end: ${endAngle}`
-          )
+          );
 
           const path = createPath(
             cumulativeAngle,
             endAngle,
             outerRadius,
             innerRadius
-          )
+          );
 
-          cumulativeAngle = endAngle
+          cumulativeAngle = endAngle;
 
           return (
             <path
@@ -238,11 +273,11 @@ const PlatformChart = ({
               stroke="white"
               strokeWidth="2"
             />
-          )
+          );
         })}
       </svg>
-    )
-  }
+    );
+  };
 
   return (
     <Box
@@ -381,8 +416,8 @@ const PlatformChart = ({
         </Flex>
       )}
     </Box>
-  )
-}
+  );
+};
 
 const PostItem = ({
   title,
@@ -391,42 +426,42 @@ const PostItem = ({
   postedTime,
   status,
 }: {
-  title?: string
-  description: string
-  platform: string
-  postedTime: string
-  status: string
+  title?: string;
+  description: string;
+  platform: string;
+  postedTime: string;
+  status: string;
 }) => {
   const getPlatformConfig = (platform: string) => {
     switch (platform.toLowerCase()) {
       case "facebook":
-        return { color: "blue.500", bg: "blue.50", name: "Facebook" }
+        return { color: "blue.500", bg: "blue.50", name: "Facebook" };
       case "instagram":
-        return { color: "pink.500", bg: "pink.50", name: "Instagram" }
+        return { color: "pink.500", bg: "pink.50", name: "Instagram" };
       case "youtube":
-        return { color: "red.500", bg: "red.50", name: "YouTube" }
+        return { color: "red.500", bg: "red.50", name: "YouTube" };
       case "tiktok":
-        return { color: "gray.800", bg: "gray.100", name: "TikTok" }
+        return { color: "gray.800", bg: "gray.100", name: "TikTok" };
       default:
-        return { color: "gray.500", bg: "gray.100", name: "Social" }
+        return { color: "gray.500", bg: "gray.100", name: "Social" };
     }
-  }
+  };
 
   const getStatusConfig = (status: string) => {
     switch (status.toLowerCase()) {
       case "posted":
-        return { color: "green", bg: "green.50", textColor: "green.700" }
+        return { color: "green", bg: "green.50", textColor: "green.700" };
       case "scheduled":
-        return { color: "blue", bg: "blue.50", textColor: "blue.700" }
+        return { color: "blue", bg: "blue.50", textColor: "blue.700" };
       case "failed":
-        return { color: "red", bg: "red.50", textColor: "red.700" }
+        return { color: "red", bg: "red.50", textColor: "red.700" };
       default:
-        return { color: "gray", bg: "gray.50", textColor: "gray.700" }
+        return { color: "gray", bg: "gray.50", textColor: "gray.700" };
     }
-  }
+  };
 
-  const platformConfig = getPlatformConfig(platform)
-  const statusConfig = getStatusConfig(status)
+  const platformConfig = getPlatformConfig(platform);
+  const statusConfig = getStatusConfig(status);
 
   return (
     <Box
@@ -512,17 +547,17 @@ const PostItem = ({
         </Flex>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
 const OverviewItem = ({
   label,
   value,
   badge,
 }: {
-  label: string
-  value: string | number
-  badge?: string
+  label: string;
+  value: string | number;
+  badge?: string;
 }) => (
   <Flex justify="space-between" align="center" py={2}>
     <Text fontSize="sm" color="gray.600" _dark={{ color: "gray.400" }}>
@@ -544,16 +579,16 @@ const OverviewItem = ({
       )}
     </Flex>
   </Flex>
-)
+);
 
 const UpcomingPost = ({
   title,
   platform,
   date,
 }: {
-  title: string
-  platform: string
-  date: string
+  title: string;
+  platform: string;
+  date: string;
 }) => (
   <Box
     p={4}
@@ -587,16 +622,23 @@ const UpcomingPost = ({
       </Text>
     </Flex>
   </Box>
-)
+);
+
 export function MainContent() {
-  const [loading, setLoading] = useState(true)
-  const navigate = useNavigate()
-  const { userId } = useAuthUtils()
-  const { data: connectedAccountsData } = useAllConnAccounts(userId)
+  const SHOW_UPCOMING = false
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { userId } = useAuthUtils();
+  const { data: connectedAccountsData } = useAllConnAccounts(userId);
 
+  const data = useTotalPost();
+  const { data: summary } = useMediaSummary();
 
-  const data = useTotalPost()
-  console.log("tota post",data)
+  console.log("summary", summary);
+  console.log("summary.recent_scheduled", summary?.recent_scheduled);
+  console.log("summary.recent_posts", summary?.recent_posts);
+
+  console.log("tota post", data);
 
   // Sample data for demonstration - 8 accounts total
   // Instagram: 2 accounts (25%), Facebook: 4 accounts (50%), TikTok: 1 account (12.5%), YouTube: 1 account (12.5%)
@@ -609,17 +651,31 @@ export function MainContent() {
     { account_type: "FACEBOOK" },
     { account_type: "TIKTOK" },
     { account_type: "YOUTUBE" },
-  ]
+  ];
 
   // Use real data if available, otherwise use sample data for demonstration
+  // const displayData =
+  //   connectedAccountsData && connectedAccountsData.length > 0
+  //     ? connectedAccountsData
+  //     : sampleConnectedAccounts
+  const connectedFromSummary = summary?.connected_accounts
+    ? Object.entries(
+        summary.connected_accounts as Record<string, number>
+      ).flatMap(([platform, count]) =>
+        Array(count).fill({ account_type: platform.toUpperCase() })
+      )
+    : [];
+
   const displayData =
-    connectedAccountsData && connectedAccountsData.length > 0
+    connectedFromSummary.length > 0
+      ? connectedFromSummary
+      : connectedAccountsData && connectedAccountsData.length > 0
       ? connectedAccountsData
-      : sampleConnectedAccounts
+      : sampleConnectedAccounts;
 
   // Get posts from a wide date range to ensure we get data
-  const today = new Date()
-  const oneYearAgo = subDays(today, 365) // Get posts from last year
+  const today = new Date();
+  const oneYearAgo = subDays(today, 365); // Get posts from last year
 
   const {
     data: postsData,
@@ -629,95 +685,115 @@ export function MainContent() {
     from: format(oneYearAgo, "yyyy-MM-dd"),
     to: format(today, "yyyy-MM-dd"),
     userId: userId || undefined,
-  })
+  });
 
   // Debug logs
-  console.log("Dashboard - Posts Data:", postsData)
-  console.log("Dashboard - User ID:", userId)
+  console.log("Dashboard - Posts Data:", postsData);
+  console.log("Dashboard - User ID:", userId);
   console.log(
     "Dashboard - Date range:",
     format(oneYearAgo, "yyyy-MM-dd"),
     "to",
     format(today, "yyyy-MM-dd")
-  )
-  console.log("Dashboard - Loading:", postsLoading)
-  console.log("Dashboard - Error:", error)
+  );
+  console.log("Dashboard - Loading:", postsLoading);
+  console.log("Dashboard - Error:", error);
 
   // Try different ways to access the data and filter for posted status only
-  let allPosts = []
+  let allPosts = [];
   if (postsData) {
     // Try direct access
     if (Array.isArray(postsData)) {
-      allPosts = postsData
+      allPosts = postsData;
     }
     // Try data property
     else if (postsData.data && Array.isArray(postsData.data)) {
-      allPosts = postsData.data
+      allPosts = postsData.data;
     }
     // Try posts property
     else if (postsData.posts && Array.isArray(postsData.posts)) {
-      allPosts = postsData.posts
+      allPosts = postsData.posts;
     }
   }
 
   // Filter for only "posted" status and get latest 4
   const latestPosts = allPosts
     .filter((post: any) => post.status?.toLowerCase() === "posted")
-    .slice(0, 4)
+    .slice(0, 4);
+  // Build recent posts from summary API (fallback to existing latestPosts)
+  const recentFromSummary =
+    summary?.recent_posts?.map((p) => ({
+      id: p.id,
+      title: p.title,
+      description: "No description",
+      status: "posted",
+      // mimic existing structure so mapper keeps working
+      platform_statuses: [
+        { accountType: "SOCIAL", posted_time: p.posted_time || null },
+      ],
+      scheduled_time: null,
+    })) ?? [];
+
+  // Prefer API recent_posts if present, else existing latestPosts
+  const displayRecent = (
+    recentFromSummary.length > 0 ? recentFromSummary : latestPosts
+  ).slice(0, 4);
+  console.log("displayRecent", displayRecent); 
 
   // Fallback sample data for testing if no real posted data is available
   if (latestPosts.length === 0 && !postsLoading) {
-    console.log("Dashboard - Using fallback sample data (posted only)")
-    const samplePostedPosts = [
-      {
-        id: "sample1",
-        title: "Sample YouTube Video",
-        description:
-          "This is a sample post to demonstrate the dashboard functionality",
-        status: "posted",
-        platform_statuses: [
-          { accountType: "YOUTUBE", posted_time: new Date().toISOString() },
-        ],
-      },
-      {
-        id: "sample2",
-        title: "Facebook Update",
-        description: "Another sample post for testing the Recent Posts section",
-        status: "posted",
-        scheduled_time: new Date().toISOString(),
-        platform_statuses: [
-          { accountType: "FACEBOOK", posted_time: new Date().toISOString() },
-        ],
-      },
-      {
-        id: "sample3",
-        description: "Instagram story update without title",
-        status: "posted",
-        platform_statuses: [
-          { accountType: "INSTAGRAM", posted_time: new Date().toISOString() },
-        ],
-      },
-      {
-        id: "sample4",
-        title: "TikTok Video",
-        description: "Latest TikTok video posted",
-        status: "posted",
-        platform_statuses: [
-          { accountType: "TIKTOK", posted_time: new Date().toISOString() },
-        ],
-      },
-    ]
-    latestPosts.push(...samplePostedPosts.slice(0, 4))
+    console.log("Dashboard - Using fallback sample data (posted only)");
+
+    // const samplePostedPosts = [
+    //   {
+    //     id: "sample1",
+    //     title: "Sample YouTube Video",
+    //     description:
+    //       "This is a sample post to demonstrate the dashboard functionality",
+    //     status: "posted",
+    //     platform_statuses: [
+    //       { accountType: "YOUTUBE", posted_time: new Date().toISOString() },
+    //     ],
+    //   },
+    //   {
+    //     id: "sample2",
+    //     title: "Facebook Update",
+    //     description: "Another sample post for testing the Recent Posts section",
+    //     status: "posted",
+    //     scheduled_time: new Date().toISOString(),
+    //     platform_statuses: [
+    //       { accountType: "FACEBOOK", posted_time: new Date().toISOString() },
+    //     ],
+    //   },
+    //   {
+    //     id: "sample3",
+    //     description: "Instagram story update without title",
+    //     status: "posted",
+    //     platform_statuses: [
+    //       { accountType: "INSTAGRAM", posted_time: new Date().toISOString() },
+    //     ],
+    //   },
+    //   {
+    //     id: "sample4",
+    //     title: "TikTok Video",
+    //     description: "Latest TikTok video posted",
+    //     status: "posted",
+    //     platform_statuses: [
+    //       { accountType: "TIKTOK", posted_time: new Date().toISOString() },
+    //     ],
+    //   },
+    // ];
+    // latestPosts.push(...samplePostedPosts.slice(0, 4));
   }
 
-  console.log("Dashboard - Latest Posts:", latestPosts)
+  // console.log("Dashboard - Latest Posts:", latestPosts);
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 800)
-    return () => clearTimeout(t)
-  }, [])
+    const t = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(t);
+  }, []);
 
-  if (loading || postsLoading) return <CircularLoading />
+  if (loading || postsLoading) return <CircularLoading />;
 
   return (
     <Box _dark={{ bg: "gray.900" }} minH="100vh">
@@ -736,9 +812,25 @@ export function MainContent() {
         gap={6}
         mb={8}
       >
-        <MetricCard title="Total Posts" value={data.data?.totalItems || 0} percentage={0} />
-        <MetricCard title="Scheduled Post" value={7} percentage={0} />
-        <MetricCard title="Failed Post" value={15} percentage={0} />
+        {/* <MetricCard
+          title="Total Posts"
+          value={summary?.total_posts ?? 0}
+          percentage={0}
+        />
+        <MetricCard
+          title="Scheduled Post"
+          value={summary?.scheduled_posts ?? 0}
+          percentage={0}
+        />
+        <MetricCard
+          title="Failed Post"
+          value={summary?.failed_posts ?? 0}
+          percentage={0}
+        /> */}
+
+        <MetricCard title="Total Posts" value={summary?.total_posts ??0} percentage={0} icon={SuccessIcon} />
+        <MetricCard title="Scheduled Post" value={summary?.scheduled_posts ?? 0} percentage={0} icon={ScheduleIcon} />
+        <MetricCard title="Failed Post" value={summary?.failed_posts ?? 0} percentage={0} icon={WarningIcon} />
       </Grid>
       {/* 
       <Grid
@@ -781,9 +873,13 @@ export function MainContent() {
           </Text>
           <Box>
             <OverviewItem label="Post this month" value="24" badge="" />
-            <OverviewItem label="Scheduled Post" value="7" badge="" />
-            {/* <OverviewItem label="Best Performing hour" value="12 PM" badge="" />
-            <OverviewItem label="Response Rate" value="89%" badge="" /> */}
+            <OverviewItem
+              label="Scheduled Post"
+              value={summary?.scheduled_posts ?? 0}
+              badge=""
+            />
+
+            {/* <OverviewItem label="Response Rate" value="89%" badge="" /> */}
           </Box>
         </Box>
 
@@ -791,7 +887,7 @@ export function MainContent() {
       </Grid>
 
       <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={6}>
-        <Box
+        {/* <Box
           bg="white"
           _dark={{ bg: "gray.800" }}
           p={6}
@@ -829,10 +925,10 @@ export function MainContent() {
             </Button>
           </Flex>
           <Box>
-            {latestPosts.length > 0 ? (
-              latestPosts.map((post: any) => {
+            {displayRecent.length > 0 ? (
+              displayRecent.map((post: any,idx:number) => {
                 const platformType =
-                  post.platform_statuses?.[0]?.accountType || "Unknown"
+                  post.platform_statuses?.[0]?.accountType || "Unknown";
                 const postedTime = post.platform_statuses?.[0]?.posted_time
                   ? format(
                       new Date(post.platform_statuses[0].posted_time),
@@ -840,18 +936,18 @@ export function MainContent() {
                     )
                   : post.scheduled_time
                   ? format(new Date(post.scheduled_time), "MMM dd, HH:mm")
-                  : "No date"
+                  : "No date";
 
                 return (
                   <PostItem
-                    key={post.id}
+                  key={`${post.id}-${idx}`}
                     title={post.title}
                     description={post.description || "No description"}
                     platform={platformType}
                     postedTime={postedTime}
                     status={post.status}
                   />
-                )
+                );
               })
             ) : (
               <Flex align="center" justify="center" py={8}>
@@ -865,57 +961,40 @@ export function MainContent() {
               </Flex>
             )}
           </Box>
-        </Box>
+        </Box> */}
 
-        <Box
-          bg="white"
-          _dark={{ bg: "gray.800" }}
-          p={6}
-          borderRadius="lg"
-          shadow="sm"
-          border="1px"
-          borderColor="gray.100"
-        >
-          <Text
-            fontSize="lg"
-            fontWeight="semibold"
-            mb={2}
-            color="gray.900"
-            _dark={{ color: "white" }}
-          >
-            Upcoming Post
-          </Text>
-          <Text
-            fontSize="sm"
-            color="gray.500"
-            _dark={{ color: "gray.400" }}
-            mb={4}
-          >
-            4 post for your next schedule
-          </Text>
-          <Box>
+{SHOW_UPCOMING && (
+  <Box
+    bg="white"
+    _dark={{ bg: "gray.800" }}
+    p={6}
+    borderRadius="lg"
+    shadow="sm"
+    border="1px"
+    borderColor="gray.100"
+  >
+    <Box>
+      {summary?.recent_scheduled && summary.recent_scheduled.length > 0 ? (
+        summary.recent_scheduled.slice(0, 3).map((item, idx) => (
+          <Box key={`${item.id}-${idx}`} mt={idx ? 3 : 0}>
             <UpcomingPost
-              title="Summer Sale"
-              platform="facebook"
-              date="10 Apl"
+              title={item.title ?? ""}
+              platform="social"
+              date={item.scheduled_time ? format(new Date(item.scheduled_time), "MMM dd") : "No date"}
             />
-            <Box mt={3}>
-              <UpcomingPost
-                title="Summer Sale"
-                platform="facebook"
-                date="10 Apl"
-              />
-            </Box>
-            <Box mt={3}>
-              <UpcomingPost
-                title="Summer Sale"
-                platform="facebook"
-                date="10 Apl"
-              />
-            </Box>
           </Box>
-        </Box>
+        ))
+      ) : (
+        <Flex align="center" justify="center" py={4}>
+          <Text fontSize="sm" color="gray.500" _dark={{ color: "gray.400" }}>
+            No upcoming scheduled posts
+          </Text>
+        </Flex>
+      )}
+    </Box>
+  </Box>
+)}
       </Grid>
     </Box>
-  )
+  );
 }

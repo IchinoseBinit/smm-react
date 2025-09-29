@@ -41,10 +41,12 @@ const FailedCardDemo = ({ data }: { data: Post }) => {
       <HStack>
         <Image
           src={data.medias[0].s3_url||womenimg}
+          // src={womenimg}
           alt="Post preview"
           objectFit="cover"
           borderRadius="md"
-          width={"75px" }
+          width={"100px" }
+          height={"100px"}
         />
         <VStack alignItems="flex-start">
           <Text fontWeight="semibold">{data?.title}</Text>
@@ -131,9 +133,10 @@ const SocialPostCard = ({ post }: { post: Post }) => {
       <HStack>
         <Image
           src={post.medias[0].s3_url || womenimg}
+          // src={womenimg}
           alt="Post preview"
-          width="75px"
-          height="90px"
+          width="100px"
+          height="100px"
           objectFit="cover"
           borderRadius="md"
         />

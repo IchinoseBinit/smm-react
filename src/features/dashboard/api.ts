@@ -11,10 +11,13 @@ const getTotalPost = (userId: string) =>
 	);
 
 
-
+const getMediaSummary=()=>
+	safeApiCall(()=>
+		axiosInstance.get(API_URL.MEDIA_SUMMARY()).then((res)=>res.data))
 
 
 export {
 	
-	getTotalPost
+	getTotalPost,
+	getMediaSummary
 };
