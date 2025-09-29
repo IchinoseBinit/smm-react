@@ -10,7 +10,7 @@ import {
   
 } from "@chakra-ui/react";
 import { useEffect, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { CircularLoading } from "@/lib/loadings";
 import { useAuthUtils } from "@/hooks/useAuthUtils";
 import useGetPostsByDate from "@/features/manager/hooks/query/useGetPosts";
@@ -418,7 +418,7 @@ const PlatformChart = ({
     </Box>
   );
 };
-
+/*
 const PostItem = ({
   title,
   description,
@@ -447,7 +447,7 @@ const PostItem = ({
     }
   };
 
-  const getStatusConfig = (status: string) => {
+   const getStatusConfig = (status: string) => {
     switch (status.toLowerCase()) {
       case "posted":
         return { color: "green", bg: "green.50", textColor: "green.700" };
@@ -549,7 +549,7 @@ const PostItem = ({
     </Box>
   );
 };
-
+*/
 const OverviewItem = ({
   label,
   value,
@@ -627,7 +627,7 @@ const UpcomingPost = ({
 export function MainContent() {
   const SHOW_UPCOMING = false
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+
   const { userId } = useAuthUtils();
   const { data: connectedAccountsData } = useAllConnAccounts(userId);
 
