@@ -53,8 +53,8 @@ const MetricCard = ({
       {/* Reusable Icon Logic  */}
       {icon && (
         <Flex
-          w={10}
-          h={10}
+          w={8}
+          h={8}
           align="center"
           justify="center"
           bg="none"
