@@ -17,6 +17,7 @@ export default function ResetPswForm() {
   const [timeLeft, setTimeLeft] = useState(120) // 2 minutes in seconds
   const [canResend, setCanResend] = useState(false)
   const [otpVerified, setOtpVerified] = useState(false)
+  const [verifiedOtp, setVerifiedOtp] = useState("")
   const { email } = useEmailStore()
   const navigate = useNavigate()
   const { mutateAsync, isPending } = useChangePassword()
@@ -92,8 +93,8 @@ export default function ResetPswForm() {
 
   const onSubmitOtp = async (data: ResetOtpFormData) => {
     console.log("data",data)
-    // Here you would verify the OTP with the backend
-    // For now, we'll just move to the next step
+    // Store the OTP for later use
+    setVerifiedOtp(data.otp)
     setOtpVerified(true)
     setStep('password')
   }
@@ -106,7 +107,7 @@ export default function ResetPswForm() {
 
     await mutateAsync({
       email: email,
-      otp: "123456", // Use the verified OTP from previous step
+      otp: verifiedOtp,
       new_password: data.password,
     })
     navigate("/login")

@@ -21,14 +21,6 @@ const[status,setStatus]=useState("posted")
     userId,
     status:status
   })
-  const getFilteredData = (status: string) => {
-    return (
-      data?.filter((p: Post) => p.platform_statuses[0].status === status) || []
-    )
-  }
-  const postedData = getFilteredData("posted")
-  const scheduledData = getFilteredData("pending")
-  const failedData = getFilteredData("failed")
 
   if (isLoading) return <CircularLoading />
 
@@ -44,7 +36,11 @@ const[status,setStatus]=useState("posted")
       >
         {/* Tabs Section */}
         <Box flex={1} minW="300px">
-          <Tabs.Root value={status} variant="plain" onValueChange={(details) => setStatus(details.value)}>
+          <Tabs.Root
+            value={status}
+            variant="plain"
+            onValueChange={(details) => setStatus(details.value)}
+          >
             <Tabs.List
               bg="gray.100"
               rounded="lg"
@@ -53,7 +49,6 @@ const[status,setStatus]=useState("posted")
               _dark={{ bg: "gray.700" }}
             >
               <Tabs.Trigger
-           
                 value="posted"
                 display="flex"
                 alignItems="center"
@@ -62,7 +57,7 @@ const[status,setStatus]=useState("posted")
                 py={2}
                 rounded="md"
                 _selected={{
-                  bg: "white",
+                  bg: "green.200",
                   shadow: "sm",
                   _dark: { bg: "gray.600" },
                 }}
@@ -72,7 +67,6 @@ const[status,setStatus]=useState("posted")
               </Tabs.Trigger>
 
               <Tabs.Trigger
-             
                 value="pending"
                 display="flex"
                 alignItems="center"
@@ -81,7 +75,7 @@ const[status,setStatus]=useState("posted")
                 py={2}
                 rounded="md"
                 _selected={{
-                  bg: "white",
+                  bg: "yellow.200",
                   shadow: "sm",
                   _dark: { bg: "gray.600" },
                 }}
@@ -91,7 +85,6 @@ const[status,setStatus]=useState("posted")
               </Tabs.Trigger>
 
               <Tabs.Trigger
-           
                 value="failed"
                 display="flex"
                 alignItems="center"
@@ -100,7 +93,7 @@ const[status,setStatus]=useState("posted")
                 py={2}
                 rounded="md"
                 _selected={{
-                  bg: "white",
+                  bg: "red.200",
                   shadow: "sm",
                   _dark: { bg: "gray.600" },
                 }}
@@ -114,12 +107,12 @@ const[status,setStatus]=useState("posted")
             <Box mt={6}>
               <Tabs.Content value="posted">
                 <VStack gap={4} align="stretch">
-                  {postedData.length === 0 ? (
+                  {(!data || data.length === 0) ? (
                     <Text textAlign="center" color="gray.500" py={8}>
                       No posted data found.
                     </Text>
                   ) : (
-                    postedData.map((post: Post, index: number) => (
+                    data.map((post: Post, index: number) => (
                       <SocialPostCard key={post.id || index} post={post} />
                     ))
                   )}
@@ -128,12 +121,12 @@ const[status,setStatus]=useState("posted")
 
               <Tabs.Content value="pending">
                 <VStack gap={4} align="stretch">
-                  {scheduledData.length === 0 ? (
+                  {(!data || data.length === 0) ? (
                     <Text textAlign="center" color="gray.500" py={8}>
                       No scheduled posts found.
                     </Text>
                   ) : (
-                    scheduledData.map((post: Post, index: number) => (
+                    data.map((post: Post, index: number) => (
                       <SocialPostCard key={post.id || index} post={post} />
                     ))
                   )}
@@ -142,12 +135,12 @@ const[status,setStatus]=useState("posted")
 
               <Tabs.Content value="failed">
                 <VStack gap={4} align="stretch">
-                  {failedData.length === 0 ? (
+                  {(!data || data.length === 0) ? (
                     <Text textAlign="center" color="gray.500" py={8}>
                       No failed posts found.
                     </Text>
                   ) : (
-                    failedData.map((post: Post, index: number) => (
+                    data.map((post: Post, index: number) => (
                       <FailedCardDemo key={post.id || index} data={post} />
                     ))
                   )}
