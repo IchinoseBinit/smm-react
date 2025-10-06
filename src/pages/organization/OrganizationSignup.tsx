@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import {
   Box,
   Button,
@@ -12,10 +12,14 @@ import {
   Icon,
   Field,
   Image,
+  Select,
+  Portal,
+  createListCollection,
 } from "@chakra-ui/react"
 import { FiUser, FiBriefcase, FiEye, FiEyeOff } from "react-icons/fi"
 import LightLogo from "@/assets/app/Header Logo White.png"
 import { useSignupOrganization } from "@/features/Organization/hooks/useOrganization"
+import countryData from "@/data/country.json"
 
 interface FormData {
   firstName: string
@@ -37,7 +41,7 @@ type AccountType = "individual" | "organization"
 
 const OrganizationSignup: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"signin" | "create">("create")
-  const [accountType, setAccountType] = useState<AccountType>("organization")
+  const [accountType, setAccountType] = useState<AccountType>("individual")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const signupOrganization = useSignupOrganization()
@@ -52,15 +56,30 @@ const OrganizationSignup: React.FC = () => {
   const [orgFormData, setOrgFormData] = useState<OrganizationFormData>({
     organizationName: "",
     billingEmail: "",
-    countryCode: "+977 (Nepal)",
+    countryCode: "+977",
     brandingLogoUrl: "",
   })
+
+  const countries = useMemo(
+    () =>
+      createListCollection({
+        items: Object.entries(countryData).map(([country, code]) => ({
+          label: `${country} (${code})`,
+          value: code,
+        })),
+      }),
+    []
+  )
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }))
+    // Clear error for this field when user starts typing
+    if (submitted && errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }))
+    }
   }
 
   const handleOrgInputChange = (
@@ -71,10 +90,15 @@ const OrganizationSignup: React.FC = () => {
       ...prev,
       [field]: value,
     }))
+    // Clear error for this field when user starts typing
+    if (submitted && orgErrors[field]) {
+      setOrgErrors((prev) => ({ ...prev, [field]: undefined }))
+    }
   }
 
   const [errors, setErrors] = useState<Partial<FormData>>({})
   const [orgErrors, setOrgErrors] = useState<Partial<OrganizationFormData>>({})
+  const [submitted, setSubmitted] = useState(false)
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {}
@@ -127,6 +151,7 @@ const OrganizationSignup: React.FC = () => {
   const handleSubmit = () => {
     if (activeTab === "create") {
       if (accountType === "organization") {
+        setSubmitted(true)
         if (validateOrgForm() && validateForm()) {
           // Map form data to API structure
           const signupRequest = {
@@ -149,9 +174,11 @@ const OrganizationSignup: React.FC = () => {
           signupOrganization.mutate(signupRequest)
         }
       } else {
-        // Individual account selected - this should redirect to individual signup or show a message
+        // Individual account - validate and move to organization
+        setSubmitted(true)
         if (validateForm()) {
-          alert("Individual signup is not implemented yet. Please select Organization to continue.")
+          setAccountType("organization")
+          setSubmitted(false) // Reset submitted state for organization form
         }
       }
     }
@@ -216,6 +243,7 @@ const OrganizationSignup: React.FC = () => {
           <Box
             bg="white"
             p={12}
+            pt={4}
             borderRadius="lg"
             w="full"
             maxW="3xl"
@@ -226,12 +254,12 @@ const OrganizationSignup: React.FC = () => {
                 <VStack gap={1} textAlign="center">
                   <Heading size="xl" color="gray.900" fontWeight="bold">
                     {accountType === "organization"
-                      ? "Organization Sign In"
+                      ? "Organization Sign Up"
                       : "Create Account"}
                   </Heading>
                   <Text color="gray.500" fontSize="md" fontWeight="medium">
                     {accountType === "organization"
-                      ? "Welcome back! Please sign in to your organization account"
+                      ? "Create your organization account to get started"
                       : "Choose your account type to get started"}
                   </Text>
                 </VStack>
@@ -242,15 +270,14 @@ const OrganizationSignup: React.FC = () => {
                     flex={1}
                     as="button"
                     onClick={() => setAccountType("individual")}
-                    bg={accountType === "individual" ? "gray.700" : "white"}
+                    bg={accountType === "individual" ? "#3b83f6" : "white"}
                     color={accountType === "individual" ? "white" : "gray.700"}
                     border={accountType === "individual" ? "none" : "1px solid"}
                     borderColor={
                       accountType === "individual" ? "transparent" : "gray.300"
                     }
                     _hover={{
-                      bg:
-                        accountType === "individual" ? "gray.800" : "gray.100",
+                      bg: accountType === "individual" ? "#3b83f6" : "gray.100",
                     }}
                     py={6}
                     px={4}
@@ -274,7 +301,7 @@ const OrganizationSignup: React.FC = () => {
                     flex={1}
                     as="button"
                     onClick={() => setAccountType("organization")}
-                    bg={accountType === "organization" ? "gray.700" : "white"}
+                    bg={accountType === "organization" ? "#3b83f6" : "white"}
                     color={
                       accountType === "organization" ? "white" : "gray.700"
                     }
@@ -288,9 +315,7 @@ const OrganizationSignup: React.FC = () => {
                     }
                     _hover={{
                       bg:
-                        accountType === "organization"
-                          ? "gray.800"
-                          : "gray.100",
+                        accountType === "organization" ? "#3b83f6" : "gray.100",
                     }}
                     py={6}
                     px={4}
@@ -341,7 +366,7 @@ const OrganizationSignup: React.FC = () => {
                             bg: "gray.100",
                           }}
                         />
-                        {orgErrors.organizationName && (
+                        {submitted && orgErrors.organizationName && (
                           <Text color="red.500" fontSize="sm" mt={1}>
                             {orgErrors.organizationName}
                           </Text>
@@ -370,7 +395,7 @@ const OrganizationSignup: React.FC = () => {
                             bg: "gray.100",
                           }}
                         />
-                        {orgErrors.billingEmail && (
+                        {submitted && orgErrors.billingEmail && (
                           <Text color="red.500" fontSize="sm" mt={1}>
                             {orgErrors.billingEmail}
                           </Text>
@@ -381,23 +406,50 @@ const OrganizationSignup: React.FC = () => {
                         <Field.Label color="gray.700" fontWeight="medium">
                           Country Code
                         </Field.Label>
-                        <Input
-                          placeholder="+977 (Nepal)"
-                          value={orgFormData.countryCode}
-                          onChange={(e) =>
-                            handleOrgInputChange("countryCode", e.target.value)
+                        <Select.Root
+                          collection={countries}
+                          value={[orgFormData.countryCode]}
+                          onValueChange={(e) =>
+                            handleOrgInputChange("countryCode", e.value[0])
                           }
-                          border="none"
-                          bg="gray.50"
-                          _focus={{
-                            bg: "gray.100",
-                            boxShadow: "none",
-                            outline: "none",
-                          }}
-                          _hover={{
-                            bg: "gray.100",
-                          }}
-                        />
+                          positioning={{ sameWidth: true }}
+                        >
+                          <Select.HiddenSelect />
+                          <Select.Control>
+                            <Select.Trigger
+                              border="none"
+                              bg="gray.50"
+                              _focus={{
+                                bg: "gray.100",
+                                boxShadow: "none",
+                                outline: "none",
+                              }}
+                              _hover={{
+                                bg: "gray.100",
+                              }}
+                            >
+                              <Select.ValueText placeholder="Select country code" />
+                            </Select.Trigger>
+                            <Select.IndicatorGroup>
+                              <Select.Indicator />
+                            </Select.IndicatorGroup>
+                          </Select.Control>
+                          <Portal>
+                            <Select.Positioner>
+                              <Select.Content maxH="250px">
+                                {countries.items.map((country) => (
+                                  <Select.Item
+                                    item={country}
+                                    key={country.value}
+                                  >
+                                    {country.label}
+                                    <Select.ItemIndicator />
+                                  </Select.Item>
+                                ))}
+                              </Select.Content>
+                            </Select.Positioner>
+                          </Portal>
+                        </Select.Root>
                       </Field.Root>
 
                       <Field.Root w="full">
@@ -451,7 +503,7 @@ const OrganizationSignup: React.FC = () => {
                               bg: "gray.100",
                             }}
                           />
-                          {errors.firstName && (
+                          {submitted && errors.firstName && (
                             <Text color="red.500" fontSize="sm" mt={1}>
                               {errors.firstName}
                             </Text>
@@ -478,7 +530,7 @@ const OrganizationSignup: React.FC = () => {
                               bg: "gray.100",
                             }}
                           />
-                          {errors.lastName && (
+                          {submitted && errors.lastName && (
                             <Text color="red.500" fontSize="sm" mt={1}>
                               {errors.lastName}
                             </Text>
@@ -508,7 +560,7 @@ const OrganizationSignup: React.FC = () => {
                             bg: "gray.100",
                           }}
                         />
-                        {errors.email && (
+                        {submitted && errors.email && (
                           <Text color="red.500" fontSize="sm" mt={1}>
                             {errors.email}
                           </Text>
@@ -536,7 +588,7 @@ const OrganizationSignup: React.FC = () => {
                             bg: "gray.100",
                           }}
                         />
-                        {errors.phoneNumber && (
+                        {submitted && errors.phoneNumber && (
                           <Text color="red.500" fontSize="sm" mt={1}>
                             {errors.phoneNumber}
                           </Text>
@@ -586,7 +638,7 @@ const OrganizationSignup: React.FC = () => {
                             </Button>
                           </Box>
                         </Box>
-                        {errors.password && (
+                        {submitted && errors.password && (
                           <Text color="red.500" fontSize="sm" mt={1}>
                             {errors.password}
                           </Text>
@@ -643,7 +695,7 @@ const OrganizationSignup: React.FC = () => {
                             </Button>
                           </Box>
                         </Box>
-                        {errors.confirmPassword && (
+                        {submitted && errors.confirmPassword && (
                           <Text color="red.500" fontSize="sm" mt={1}>
                             {errors.confirmPassword}
                           </Text>
@@ -653,7 +705,7 @@ const OrganizationSignup: React.FC = () => {
                   )}
                 </VStack>
 
-                {/* Continue Button */}
+                {/* Submit Button */}
                 <Button
                   w="full"
                   bg="blue.500"
@@ -663,7 +715,7 @@ const OrganizationSignup: React.FC = () => {
                   onClick={handleSubmit}
                   py={6}
                 >
-                  Continue
+                  {accountType === "organization" ? "Sign Up" : "Continue"}
                 </Button>
               </VStack>
             )}

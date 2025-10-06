@@ -1,7 +1,8 @@
-import { Box, Flex, Image, Link, Button, Icon } from "@chakra-ui/react";
+import { Box, Flex, Image, Link, Button, Icon, Menu, Portal } from "@chakra-ui/react";
 import { getStartedLinks } from "../lib/Links";
 import logo from "@/assets/app/Header Logo White.png";
 import { BsRocketTakeoffFill } from "react-icons/bs";
+import { FiChevronDown } from "react-icons/fi";
 
 export default function Header() {
   return (
@@ -67,6 +68,41 @@ export default function Header() {
               Sign In
             </Button>
           </Link>
+
+          <Menu.Root>
+            <Menu.Trigger asChild>
+              <Button
+                variant="ghost"
+                color="gray.600"
+                _hover={{ cursor: "pointer" }}
+                fontWeight={600}
+              >
+                Sign Up
+                <Icon ml={1}>
+                  <FiChevronDown />
+                </Icon>
+              </Button>
+            </Menu.Trigger>
+            <Portal>
+              <Menu.Positioner>
+                <Menu.Content>
+                  <Menu.Item
+                    value="individual"
+                    onClick={() => window.location.href = "/register"}
+                  >
+                    Individual
+                  </Menu.Item>
+                  <Menu.Item
+                    value="organization"
+                    onClick={() => window.location.href = "/organizationsignup"}
+                  >
+                    Organization
+                  </Menu.Item>
+                </Menu.Content>
+              </Menu.Positioner>
+            </Portal>
+          </Menu.Root>
+
           <Link href={getStartedLinks} _hover={{ textDecoration: "none" }}>
             <Button
               bg="blue.500"
