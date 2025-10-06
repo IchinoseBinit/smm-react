@@ -96,7 +96,7 @@ const FailedCardDemo = ({ data }: { data: Post }) => {
           Failed
         </Button>
         <HStack fontSize="sm" color="gray.500">
-          <LuCalendar />
+          {data.scheduled_time && <LuCalendar />}
           <Text>{formatToLocalTime(data?.scheduled_time)}</Text>
         </HStack>
         <Button
