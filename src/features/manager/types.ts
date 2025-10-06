@@ -1,6 +1,7 @@
 type PlatformStatus = {
   accountType: string;
   social_account_id: number;
+  account_name?:string;
   id: number;
   posted_time: string | null;
   scheduled_time: string | null;

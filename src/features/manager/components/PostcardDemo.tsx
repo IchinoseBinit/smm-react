@@ -8,6 +8,7 @@ import { formatToLocalTime } from "@/lib/helper/formateDateTime"
 import React from "react"
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa"
 
+
 const getPlatformIcon = (accountType: string): React.ReactNode | null => {
   switch (accountType.toUpperCase()) {
     case "FACEBOOK":
@@ -23,13 +24,9 @@ const getPlatformIcon = (accountType: string): React.ReactNode | null => {
   }
 }
 
-const FailedCardDemo = ({ data }: { data: Post }) => {
-  const platformIcons = data.platform_statuses
-    .map((platform) => platform.accountType)
-    .filter((accountType, index, array) => array.indexOf(accountType) === index) // Remove duplicates
-    .map((accountType) => getPlatformIcon(accountType))
-    .filter((icon) => icon !== null)
 
+const FailedCardDemo = ({ data }: { data: Post }) => {
+  
   return (
     <HStack
       border="1px solid"
@@ -53,11 +50,35 @@ const FailedCardDemo = ({ data }: { data: Post }) => {
           <Text fontSize="sm" color="gray.600">
             {data.description}
           </Text>
-          <HStack gap={2}>
+          {/* <HStack gap={2}>
             {platformIcons.map((icon, index) => (
               <React.Fragment key={index}>{icon}</React.Fragment>
             ))}
-          </HStack>
+
+          </HStack> */}
+          <HStack gap={2}>
+  {data.platform_statuses
+    .filter((platform, index, array) => 
+      array.findIndex(p => p.social_account_id === platform.social_account_id && p.accountType === platform.accountType) === index
+    )
+    .map((platform, idx) => (
+      <HStack 
+        key={idx} 
+        bg="gray.100" 
+        px={2} 
+        py={1} 
+        borderRadius="md" 
+        gap={1}
+        _dark={{ bg: "gray.700" }}
+      >
+        {getPlatformIcon(platform.accountType)}
+        <Text fontSize="xs" color="gray.700" _dark={{ color: "gray.300" }} fontWeight="medium">
+          {platform.account_name}
+        </Text>
+      </HStack>
+    ))
+  }
+</HStack>
         </VStack>
       </HStack>
       <VStack
@@ -116,12 +137,7 @@ const SocialPostCard = ({ post }: { post: Post }) => {
   }
   const statusConfig = getStatusConfig(post.status)
 
-  const platformIcons = post.platform_statuses
-    .map((platform) => platform.accountType)
-    .filter((accountType, index, array) => array.indexOf(accountType) === index) // Remove duplicates
-    .map((accountType) => getPlatformIcon(accountType))
-    .filter((icon) => icon !== null) //
-
+  
   return (
     <HStack
       border="1px solid"
@@ -145,12 +161,47 @@ const SocialPostCard = ({ post }: { post: Post }) => {
           <Text fontWeight="semibold">{post.title}</Text>
           <Text fontSize="sm" color="gray.600">
             {post.description}
+            
           </Text>
-          <HStack gap={2}>
+          {/* <HStack gap={2}>
             {platformIcons.map((icon, index) => (
               <React.Fragment key={index}>{icon}</React.Fragment>
             ))}
-          </HStack>
+            {post.platform_statuses
+  .filter((platform, index, array) => 
+    array.findIndex(p => p.social_account_id === platform.social_account_id && p.accountType === platform.accountType) === index
+  )
+  .map((platform, idx) => 
+    <Text key={idx} fontSize="xs" color="gray.600">
+      { platform.accountType}
+    </Text>
+  )
+}
+          </HStack> */}
+<HStack gap={2}>
+  {post.platform_statuses
+    .filter((platform, index, array) => 
+      array.findIndex(p => p.social_account_id === platform.social_account_id && p.accountType === platform.accountType) === index
+    )
+    .map((platform, idx) => (
+      <HStack 
+        key={idx} 
+        bg="gray.100" 
+        px={2} 
+        py={1} 
+        borderRadius="md" 
+        gap={1}
+        _dark={{ bg: "gray.700" }}
+      >
+        {getPlatformIcon(platform.accountType)}
+        <Text fontSize="xs" color="gray.700" _dark={{ color: "gray.300" }} fontWeight="medium">
+          {platform.account_name}
+        </Text>
+      </HStack>
+    ))
+  }
+</HStack>
+          
         </VStack>
       </HStack>
 
@@ -168,10 +219,12 @@ const SocialPostCard = ({ post }: { post: Post }) => {
         >
           {statusConfig.text}
         </Button>
-        <HStack fontSize="sm" color="gray.500">
-          <LuCalendar />
-          <Text>{formatToLocalTime(post.scheduled_time)}</Text>
-        </HStack>
+        {post.scheduled_time && (
+  <HStack fontSize="sm" color="gray.500">
+    <LuCalendar />
+    <Text>{formatToLocalTime(post.scheduled_time)}</Text>
+  </HStack>
+)}
       </VStack>
     </HStack>
   )

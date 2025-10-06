@@ -57,7 +57,7 @@ const[status,setStatus]=useState("posted")
                 py={2}
                 rounded="md"
                 _selected={{
-                  bg: "green.200",
+                  bg: "white.100",
                   shadow: "sm",
                   _dark: { bg: "gray.600" },
                 }}
@@ -75,7 +75,7 @@ const[status,setStatus]=useState("posted")
                 py={2}
                 rounded="md"
                 _selected={{
-                  bg: "yellow.200",
+                  bg: "white.100",
                   shadow: "sm",
                   _dark: { bg: "gray.600" },
                 }}
@@ -93,7 +93,7 @@ const[status,setStatus]=useState("posted")
                 py={2}
                 rounded="md"
                 _selected={{
-                  bg: "red.200",
+                  bg: "white.100",
                   shadow: "sm",
                   _dark: { bg: "gray.600" },
                 }}

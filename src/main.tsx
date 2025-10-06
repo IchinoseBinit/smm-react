@@ -8,22 +8,23 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { system } from "./lib/theme.ts";
 import { AuthProvider } from "./lib/providers/authProvider.tsx";
 import { HelmetProvider } from "react-helmet-async";
+import { ColorModeProvider } from "./components/ui/color-mode.tsx";
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
-    
       <ChakraProvider value={system}>
+    <ColorModeProvider>
         <BrowserRouter>
           <AuthProvider>
             <App />
           </AuthProvider>
           <Toaster />
         </BrowserRouter>
+    </ColorModeProvider>
       </ChakraProvider>
-  
     </QueryClientProvider>
   </HelmetProvider>,
 );
