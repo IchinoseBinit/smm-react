@@ -60,7 +60,12 @@ const LoginForm = () => {
     <Box w="full" bg="white" className="light">
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Box mb={8}>
-          <Text fontSize="3xl" fontWeight="bold" color="gray.900">
+          <Text
+            fontSize="3xl"
+            textAlign={"center"}
+            fontWeight="bold"
+            color="gray.900"
+          >
             Log in
           </Text>
           <Text color="gray.600" mt={2}>
