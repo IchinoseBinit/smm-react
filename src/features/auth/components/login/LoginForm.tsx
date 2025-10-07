@@ -75,7 +75,11 @@ const LoginForm = () => {
           >
             Log in
           </Text>
-          <Text color="gray.600" mt={2}>
+          <Text
+            color="gray.600"
+            textAlign={isOrganizationSignup ? "center" : ""}
+            mt={2}
+          >
             Welcome back! Please enter your details.
           </Text>
         </Box>
