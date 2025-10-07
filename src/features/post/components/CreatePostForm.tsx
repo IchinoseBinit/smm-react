@@ -260,8 +260,14 @@ export default function CreatePostForm() {
       return false
     }
 
-    // Require description content (minimum criteria)
-    if (!descriptionContent || descriptionContent.trim().length === 0) {
+    // For stories, description is optional. For other content types, require description
+    const isStory = surfaceType[0] === "STORY"
+    if (!isStory && (!descriptionContent || descriptionContent.trim().length === 0)) {
+      return false
+    }
+
+    // For stories, require at least one media file (image or video)
+    if (isStory && (!payload.files || payload.files.length === 0)) {
       return false
     }
 
@@ -271,7 +277,7 @@ export default function CreatePostForm() {
     }
 
     return true
-  }, [isValid, hasSelectedAccounts, descriptionContent, isScheduled, scheduledTime])
+  }, [isValid, hasSelectedAccounts, descriptionContent, isScheduled, scheduledTime, surfaceType, payload.files])
 
   const resetFormData = useCallback(async () => {
     console.log("🔄 Starting form reset...")
@@ -542,12 +548,25 @@ export default function CreatePostForm() {
       return
     }
 
-    // Check if user has provided description content
-    if (!descriptionContent || descriptionContent.trim().length === 0) {
+    // Check if user has provided description content (not required for stories)
+    const isStory = surfaceType[0] === "STORY"
+    if (!isStory && (!descriptionContent || descriptionContent.trim().length === 0)) {
       toaster.error({
         title: "Description Required",
         description:
           "Please write some content for your post before submitting.",
+        duration: 3000,
+        closable: true,
+      })
+      return
+    }
+
+    // For stories, require at least one media file
+    if (isStory && (!payload.files || payload.files.length === 0)) {
+      toaster.error({
+        title: "Media Required for Story",
+        description:
+          "Please upload at least one image or video for your story.",
         duration: 3000,
         closable: true,
       })
