@@ -19,6 +19,8 @@ import { LuEye, LuEyeOff } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { useLoginUser } from "../../hooks/useAuth";
+import { useLocation } from "react-router";
+
 // Define the validation schema with Zod
 const loginSchema = z.object({
   email: z
@@ -39,6 +41,11 @@ const LoginForm = () => {
   const { mutateAsync, isPending } = useLoginUser();
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuthContext();
+    const location = useLocation()
+
+
+    const isOrganizationSignup = location.pathname === "/organizationsignup"
+
 
   // Initialize React Hook Form with Zod validation
   const {
@@ -62,9 +69,9 @@ const LoginForm = () => {
         <Box mb={8}>
           <Text
             fontSize="3xl"
-            textAlign={"center"}
             fontWeight="bold"
             color="gray.900"
+            textAlign={isOrganizationSignup ? "center" : ""}
           >
             Log in
           </Text>
