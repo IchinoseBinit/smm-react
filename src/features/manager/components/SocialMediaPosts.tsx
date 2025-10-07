@@ -15,14 +15,40 @@ export default function SocialMediaPosts() {
   )
   const [to, setTo] = useState(new Date().toISOString().split("T")[0])
 const[status,setStatus]=useState("posted")
-  const { data, isLoading } = useGetPostsByDate({
-    from: from,
-    to: to,
-    userId,
-    status:status
-  })
+//   const { data, isLoading } = useGetPostsByDate({
+//     from: from,
+//     to: to,
+//     userId,
+//     status:status
+//   })
 
-  if (isLoading) return <CircularLoading />
+//   if (isLoading) return <CircularLoading />
+const { data: postedPosts, isLoading: isLoadingPosted } = useGetPostsByDate({
+  from, to, userId, status: "posted"
+})
+
+const { data: pendingPosts, isLoading: isLoadingPending } = useGetPostsByDate({
+  from, to, userId, status: "pending"
+})
+
+const { data: failedPosts, isLoading: isLoadingFailed } = useGetPostsByDate({
+  from, to, userId, status: "failed"
+})
+
+const isLoading = isLoadingPosted || isLoadingPending || isLoadingFailed
+
+// Get current posts based on selected status
+const getCurrentPosts = () => {
+  switch (status) {
+    case "posted": return postedPosts || []
+    case "pending": return pendingPosts || []
+    case "failed": return failedPosts || []
+    default: return []
+  }
+}
+const currentPosts = getCurrentPosts()
+
+if (isLoading) return <CircularLoading />
 
   return (
     <VStack align="stretch" gap={6} w="full">
@@ -57,7 +83,7 @@ const[status,setStatus]=useState("posted")
                 py={2}
                 rounded="md"
                 _selected={{
-                  bg: "white.100",
+                  bg: "#ffffff",
                   shadow: "sm",
                   _dark: { bg: "gray.600" },
                 }}
@@ -75,7 +101,7 @@ const[status,setStatus]=useState("posted")
                 py={2}
                 rounded="md"
                 _selected={{
-                  bg: "white.100",
+                  bg: "#ffffff",
                   shadow: "sm",
                   _dark: { bg: "gray.600" },
                 }}
@@ -93,7 +119,7 @@ const[status,setStatus]=useState("posted")
                 py={2}
                 rounded="md"
                 _selected={{
-                  bg: "white.100",
+                  bg: "#ffffff",
                   shadow: "sm",
                   _dark: { bg: "gray.600" },
                 }}
@@ -107,12 +133,12 @@ const[status,setStatus]=useState("posted")
             <Box mt={6}>
               <Tabs.Content value="posted">
                 <VStack gap={4} align="stretch">
-                  {(!data || data.length === 0) ? (
+                  {(!currentPosts || currentPosts.length === 0) ? (
                     <Text textAlign="center" color="gray.500" py={8}>
                       No posted data found.
                     </Text>
                   ) : (
-                    data.map((post: Post, index: number) => (
+                    currentPosts.map((post: Post, index: number) => (
                       <SocialPostCard key={post.id || index} post={post} />
                     ))
                   )}
@@ -121,12 +147,12 @@ const[status,setStatus]=useState("posted")
 
               <Tabs.Content value="pending">
                 <VStack gap={4} align="stretch">
-                  {(!data || data.length === 0) ? (
+                  {(!pendingPosts || pendingPosts.length === 0) ? (
                     <Text textAlign="center" color="gray.500" py={8}>
                       No scheduled posts found.
                     </Text>
                   ) : (
-                    data.map((post: Post, index: number) => (
+                    pendingPosts.map((post: Post, index: number) => (
                       <SocialPostCard key={post.id || index} post={post} />
                     ))
                   )}
@@ -135,12 +161,12 @@ const[status,setStatus]=useState("posted")
 
               <Tabs.Content value="failed">
                 <VStack gap={4} align="stretch">
-                  {(!data || data.length === 0) ? (
+                  {(!failedPosts|| failedPosts.length === 0) ? (
                     <Text textAlign="center" color="gray.500" py={8}>
                       No failed posts found.
                     </Text>
                   ) : (
-                    data.map((post: Post, index: number) => (
+                    failedPosts.map((post: Post, index: number) => (
                       <FailedCardDemo key={post.id || index} data={post} />
                     ))
                   )}
@@ -205,16 +231,18 @@ const[status,setStatus]=useState("posted")
       </Flex>
 
       {/* Empty State for No Data */}
-      {(!data || data.length === 0) && (
+    
+      {(!currentPosts || currentPosts.length === 0) && (
         <Box textAlign="center" py={12}>
           {/* <Text color="gray.500" fontSize="lg" mb={2}>
             No posts found
-          </Text>
-          <Text color="gray.400" fontSize="sm">
+            </Text>
+            <Text color="gray.400" fontSize="sm">
             Try adjusting your date range to see posts.
-          </Text> */}
+            </Text> */}
         </Box>
       )}
+    
     </VStack>
   )
 }
