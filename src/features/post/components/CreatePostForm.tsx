@@ -134,11 +134,8 @@ export default function CreatePostForm() {
   // Determine if description should be hidden
   const shouldHideDescription = useMemo(() => {
     const isStory = surfaceType[0] === "STORY"
-    const hasStoryPlatforms = selectedPlatformsType.some(platform =>
-      ["FACEBOOK", "INSTAGRAM", "TIKTOK"].includes(platform)
-    )
-    return isStory && hasStoryPlatforms
-  }, [surfaceType, selectedPlatformsType])
+    return isStory
+  }, [surfaceType])
 
   const selectedPlatforms = useMemo(
     () => itemArr.map((item) => item.social_account_id),

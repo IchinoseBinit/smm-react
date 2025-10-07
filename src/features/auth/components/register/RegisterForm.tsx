@@ -87,7 +87,7 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <Box bg="white" w="100%" maxW="md" mx="auto" transition="all 0.3s ease">
+    <Box bg="white" w="100%" maxW="lg" mx="auto" transition="all 0.3s ease">
       <Flex align="center" mb={7}>
         <Heading size="2xl">Create Account</Heading>
       </Flex>
@@ -123,6 +123,16 @@ const RegisterForm: React.FC = () => {
                 <Input
                   {...register("first_name")}
                   placeholder="Enter first name"
+                  border="none"
+                  bg="gray.50"
+                  _focus={{
+                    bg: "gray.100",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  _hover={{
+                    bg: "gray.100",
+                  }}
                   borderRadius="md"
                 />
                 <Field.ErrorText>{errors.first_name?.message}</Field.ErrorText>
@@ -136,6 +146,16 @@ const RegisterForm: React.FC = () => {
                 <Input
                   {...register("last_name")}
                   placeholder="Enter last name"
+                  border="none"
+                  bg="gray.50"
+                  _focus={{
+                    bg: "gray.100",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  _hover={{
+                    bg: "gray.100",
+                  }}
                   borderRadius="md"
                 />
                 <Field.ErrorText>{errors.last_name?.message}</Field.ErrorText>
@@ -151,6 +171,16 @@ const RegisterForm: React.FC = () => {
                 {...register("email")}
                 type="email"
                 placeholder="Enter your email"
+                border="none"
+                bg="gray.50"
+                _focus={{
+                  bg: "gray.100",
+                  boxShadow: "none",
+                  outline: "none",
+                }}
+                _hover={{
+                  bg: "gray.100",
+                }}
                 borderRadius="md"
               />
               <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
@@ -184,6 +214,16 @@ const RegisterForm: React.FC = () => {
                     {...register("mobile")}
                     type="tel"
                     placeholder="Enter mobile number"
+                    border="none"
+                    bg="gray.50"
+                    _focus={{
+                      bg: "gray.100",
+                      boxShadow: "none",
+                      outline: "none",
+                    }}
+                    _hover={{
+                      bg: "gray.100",
+                    }}
                     borderRadius="md"
                   />
                   <Field.ErrorText>{errors.mobile?.message}</Field.ErrorText>
@@ -202,6 +242,16 @@ const RegisterForm: React.FC = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="Create a password"
                   pr="2.5rem"
+                  border="none"
+                  bg="gray.50"
+                  _focus={{
+                    bg: "gray.100",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  _hover={{
+                    bg: "gray.100",
+                  }}
                   borderRadius="md"
                 />
                 <Button
@@ -247,6 +297,16 @@ const RegisterForm: React.FC = () => {
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Re-enter password"
                   pr="2.5rem"
+                  border="none"
+                  bg="gray.50"
+                  _focus={{
+                    bg: "gray.100",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  _hover={{
+                    bg: "gray.100",
+                  }}
                   borderRadius="md"
                 />
                 <Button
@@ -302,13 +362,14 @@ const RegisterForm: React.FC = () => {
           </Fieldset.Root>
           <Button
             type="submit"
-            colorScheme="brand"
+            bg="blue.500"
+            color="white"
             size="lg"
             w="100%"
             mt={4}
             loading={isPending}
             loadingText="Creating Account"
-            _hover={{ transform: "translateY(-2px)", boxShadow: "md" }}
+            _hover={{ bg: "blue.600" }}
             transition="all 0.2s"
           >
             Continue
@@ -320,7 +381,8 @@ const RegisterForm: React.FC = () => {
         <Text fontSize="sm" color="gray.600">
           Already have an account?{" "}
           <Link
-            color="green.600"
+            color="blue.500"
+            
             textDecoration="underline"
             fontWeight="bold"
             href="/login"

@@ -90,13 +90,16 @@ const LoginForm = () => {
               <Input
                 type="email"
                 {...register("email")}
-                size="lg"
-                borderColor={errors.email ? "red.500" : "gray.300"}
+                placeholder="Enter your email"
+                border="none"
+                bg="gray.50"
                 _focus={{
-                  borderColor: errors.email ? "red.500" : "blue.500",
-                  boxShadow: `0 0 0 1px ${
-                    errors.email ? "red.500" : "blue.500"
-                  }`,
+                  bg: "gray.100",
+                  boxShadow: "none",
+                  outline: "none",
+                }}
+                _hover={{
+                  bg: "gray.100",
                 }}
               />
               <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
@@ -111,13 +114,17 @@ const LoginForm = () => {
                 <Input
                   type={showPassword ? "text" : "password"}
                   {...register("password")}
+                  placeholder="Enter your password"
                   pr="2.5rem"
-                  borderColor={errors.password ? "red.500" : "gray.300"}
+                  border="none"
+                  bg="gray.50"
                   _focus={{
-                    borderColor: errors.password ? "red.500" : "gray.500",
-                    boxShadow: `0 0 0 1px ${
-                      errors.password ? "red.500" : "gray.500"
-                    }`,
+                    bg: "gray.100",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  _hover={{
+                    bg: "gray.100",
                   }}
                 />
                 <IconButton

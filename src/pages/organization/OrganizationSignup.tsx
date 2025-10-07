@@ -250,13 +250,23 @@ const OrganizationSignup: React.FC = () => {
           </HStack>
 
           {/* Show Login Form when Sign In tab is active */}
-          {activeTab === "signin" && <LoginFormSection />}
+          {activeTab === "signin" && (
+            <Box
+              bg="white"
+              p={6}
+              borderRadius="lg"
+              w="full"
+              maxW="3xl"
+              mx="auto"
+            >
+              <LoginFormSection />
+            </Box>
+          )}
 
           {/* Form Container */}
           <Box
             bg="white"
-            p={12}
-            pt={4}
+            p={6}
             borderRadius="lg"
             w="full"
             maxW="3xl"
