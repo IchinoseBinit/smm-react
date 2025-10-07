@@ -20,6 +20,7 @@ type Post = {
   description: string;
   status: "scheduled" | "posted" | "failed";
   scheduled_time: string;
+  uploaded_at:string;
   medias: Media[];
   platform_statuses: PlatformStatus[];
 };

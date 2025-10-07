@@ -9,6 +9,7 @@ import React from "react"
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa"
 
 
+
 const getPlatformIcon = (accountType: string): React.ReactNode | null => {
   switch (accountType.toUpperCase()) {
     case "FACEBOOK":
@@ -96,8 +97,9 @@ const FailedCardDemo = ({ data }: { data: Post }) => {
           Failed
         </Button>
         <HStack fontSize="sm" color="gray.500">
-          {data.scheduled_time && <LuCalendar />}
-          <Text>{formatToLocalTime(data?.scheduled_time)}</Text>
+          
+          {data.uploaded_at && <LuCalendar />}
+          <Text>{formatToLocalTime(data?.uploaded_at)}</Text>
         </HStack>
         <Button
           size="sm"
@@ -219,10 +221,10 @@ const SocialPostCard = ({ post }: { post: Post }) => {
         >
           {statusConfig.text}
         </Button>
-        {post.scheduled_time && (
+        {post.uploaded_at && (
   <HStack fontSize="sm" color="gray.500">
     <LuCalendar />
-    <Text>{formatToLocalTime(post.scheduled_time)}</Text>
+    <Text>{formatToLocalTime(post.uploaded_at)}</Text>
   </HStack>
 )}
       </VStack>

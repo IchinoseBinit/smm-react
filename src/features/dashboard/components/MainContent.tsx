@@ -53,8 +53,8 @@ const MetricCard = ({
       {/* Reusable Icon Logic  */}
       {icon && (
         <Flex
-          w={8}
-          h={8}
+          w={6}
+          h={6}
           align="center"
           justify="center"
           bg="none"
@@ -65,7 +65,7 @@ const MetricCard = ({
             <Image
               src={icon}
               alt={`${title} logo`}
-              boxSize={7}
+              boxSize={6}
               objectFit="contain"
             />
           ) : (
@@ -367,7 +367,7 @@ const PlatformChart = ({
                   color="gray.600"
                   _dark={{ color: "gray.400" }}
                 >
-                  {platform.displayName} ({platform.percentage}%)
+                  {platform.displayName} ({platform.count})
                 </Text>
               </Flex>
             ))}
