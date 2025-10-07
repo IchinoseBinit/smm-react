@@ -128,6 +128,17 @@ export default function CreatePostForm() {
     []
   )
 
+  // Get current surface type from store
+  const { surfaceType } = useContentTypeStore()
+
+  // Determine if description should be hidden
+  const shouldHideDescription = useMemo(() => {
+    const isStory = surfaceType[0] === "STORY"
+    const hasStoryPlatforms = selectedPlatformsType.some(platform =>
+      ["FACEBOOK", "INSTAGRAM", "TIKTOK"].includes(platform)
+    )
+    return isStory && hasStoryPlatforms
+  }, [surfaceType, selectedPlatformsType])
 
   const selectedPlatforms = useMemo(
     () => itemArr.map((item) => item.social_account_id),
@@ -821,56 +832,61 @@ export default function CreatePostForm() {
         </HStack>
 
         {/* Description Section with Tiptap Editor */}
-        <TiptapDescriptionEditor
-          fixedHeight={false}
-          value={descriptionContent}
-          onChange={(text: string) => {
-            setDescriptionContent(text)
-            setValue("description", text, { shouldValidate: true })
-          }}
-          onEmojiClick={handleEmojiClick}
-          onHashtagClick={handleHashtagClick}
-          placeholder="Write something awesome"
-        />
+        {/* Hide description when surface type is STORY and platform is Facebook, Instagram, or TikTok */}
+        {!shouldHideDescription && (
+          <TiptapDescriptionEditor
+            fixedHeight={false}
+            value={descriptionContent}
+            onChange={(text: string) => {
+              setDescriptionContent(text)
+              setValue("description", text, { shouldValidate: true })
+            }}
+            onEmojiClick={handleEmojiClick}
+            onHashtagClick={handleHashtagClick}
+            placeholder="Write something awesome"
+          />
+        )}
 
-        {/* Hashtag suggestions section */}
-        <Box>
-          <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
-            Hashtag Suggestions
-          </Text>
-          <Flex wrap="wrap" gap={2}>
-            {suggestions.map((tag) => (
-              <Box
-                key={tag}
-                as="button"
-                px={3}
-                py={2}
-                borderRadius="md"
-                cursor="pointer"
-                onClick={(e) => {
-                  e.preventDefault()
-                  addTag(tag)
-                }}
-                backgroundColor="gray.100"
-                color="gray.700"
-                fontSize="sm"
-                fontWeight="medium"
-                border="1px solid"
-                borderColor="gray.200"
-                _hover={{
-                  backgroundColor: "gray.200",
-                  borderColor: "gray.300",
-                }}
-                _active={{
-                  backgroundColor: "gray.300",
-                }}
-                transition="all 0.2s"
-              >
-                #{tag}
-              </Box>
-            ))}
-          </Flex>
-        </Box>
+        {/* Hashtag suggestions section - hide when description is hidden */}
+        {!shouldHideDescription && (
+          <Box>
+            <Text fontSize="lg" fontWeight="semibold" mb={3} color="#00325c">
+              Hashtag Suggestions
+            </Text>
+            <Flex wrap="wrap" gap={2}>
+              {suggestions.map((tag) => (
+                <Box
+                  key={tag}
+                  as="button"
+                  px={3}
+                  py={2}
+                  borderRadius="md"
+                  cursor="pointer"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    addTag(tag)
+                  }}
+                  backgroundColor="gray.100"
+                  color="gray.700"
+                  fontSize="sm"
+                  fontWeight="medium"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  _hover={{
+                    backgroundColor: "gray.200",
+                    borderColor: "gray.300",
+                  }}
+                  _active={{
+                    backgroundColor: "gray.300",
+                  }}
+                  transition="all 0.2s"
+                >
+                  #{tag}
+                </Box>
+              ))}
+            </Flex>
+          </Box>
+        )}
         <Box p={2} spaceY={6}>
           <Heading color={"#00325c"} fontSize="fontSizes.4xl">
             Media

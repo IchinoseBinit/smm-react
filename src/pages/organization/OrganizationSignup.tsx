@@ -20,6 +20,8 @@ import { FiUser, FiBriefcase, FiEye, FiEyeOff } from "react-icons/fi"
 import LightLogo from "@/assets/app/Header Logo White.png"
 import { useSignupOrganization } from "@/features/Organization/hooks/useOrganization"
 import countryData from "@/data/country.json"
+import { LoginFormSection } from "@/features/auth/components/login/LoginFormSection"
+import { useNavigate } from "react-router-dom"
 
 interface FormData {
   firstName: string
@@ -40,6 +42,7 @@ interface OrganizationFormData {
 type AccountType = "individual" | "organization"
 
 const OrganizationSignup: React.FC = () => {
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<"signin" | "create">("create")
   const [accountType, setAccountType] = useState<AccountType>("individual")
   const [showPassword, setShowPassword] = useState(false)
@@ -197,7 +200,14 @@ const OrganizationSignup: React.FC = () => {
         <VStack gap={6} w="full">
           {/* Logo */}
           <VStack gap={4} textAlign="center">
-            <Image src={LightLogo} height={8} width="auto" maxW="100%" />
+            <Image
+              src={LightLogo}
+              height={8}
+              width="auto"
+              maxW="100%"
+              cursor="pointer"
+              onClick={() => navigate("/")}
+            />
           </VStack>
 
           {/* Tab Navigation */}
@@ -239,6 +249,9 @@ const OrganizationSignup: React.FC = () => {
             </Button>
           </HStack>
 
+          {/* Show Login Form when Sign In tab is active */}
+          {activeTab === "signin" && <LoginFormSection />}
+
           {/* Form Container */}
           <Box
             bg="white"
@@ -250,7 +263,13 @@ const OrganizationSignup: React.FC = () => {
             mx="auto"
           >
             {activeTab === "create" && (
-              <VStack gap={6}>
+              <VStack
+                gap={6}
+                border="1px solid"
+                borderColor="gray.200"
+                p={6}
+                borderRadius="lg"
+              >
                 <VStack gap={1} textAlign="center">
                   <Heading size="xl" color="gray.900" fontWeight="bold">
                     {accountType === "organization"

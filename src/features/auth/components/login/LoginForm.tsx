@@ -82,7 +82,9 @@ const LoginForm = () => {
                 borderColor={errors.email ? "red.500" : "gray.300"}
                 _focus={{
                   borderColor: errors.email ? "red.500" : "blue.500",
-                  boxShadow: `0 0 0 1px ${errors.email ? "red.500" : "blue.500"}`,
+                  boxShadow: `0 0 0 1px ${
+                    errors.email ? "red.500" : "blue.500"
+                  }`,
                 }}
               />
               <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
@@ -101,7 +103,9 @@ const LoginForm = () => {
                   borderColor={errors.password ? "red.500" : "gray.300"}
                   _focus={{
                     borderColor: errors.password ? "red.500" : "gray.500",
-                    boxShadow: `0 0 0 1px ${errors.password ? "red.500" : "gray.500"}`,
+                    boxShadow: `0 0 0 1px ${
+                      errors.password ? "red.500" : "gray.500"
+                    }`,
                   }}
                 />
                 <IconButton
@@ -129,7 +133,7 @@ const LoginForm = () => {
               </Checkbox.Root>
               <Link
                 href="/reset-password/send-opt"
-                color="green.600"
+                color="blue.600"
                 fontSize="sm"
                 fontWeight="medium"
               >
@@ -144,20 +148,23 @@ const LoginForm = () => {
             loading={isPending}
             loadingText="Signing in"
             w="full"
+            bg="blue.500"
+            color="white"
+            _hover={{ bg: "blue.600" }}
           >
             Sign in
           </Button>
 
           <Text textAlign="center" mt={6} color="gray.600">
             Don't have an account?{" "}
-            <Link href="/register" color="green.600" fontWeight="medium">
+            <Link href="/register" color="blue.600" fontWeight="medium">
               Sign up
             </Link>
           </Text>
         </Stack>
       </form>
     </Box>
-  );
+  )
 };
 
 export default LoginForm;
