@@ -79,6 +79,9 @@ export default function CreatePostForm() {
   const deleteScheduledPostMutation = useDeleteScheduledPost()
   const { setInitialTime } = useInitialTimeStore()
 
+  // Get current surface type from store (needed for filtering configs)
+  const { surfaceType } = useContentTypeStore()
+
   // Create sorted social media configs based on connected accounts count
   const SocialMediaConfigs = useMemo(() => {
     const configs = [
@@ -94,13 +97,19 @@ export default function CreatePostForm() {
 
     if (!data) return configs
 
+    // Filter out YouTube when surface type is STORY (YouTube doesn't support stories)
+    const isStory = surfaceType[0] === "STORY"
+    const filteredConfigs = isStory
+      ? configs.filter(config => config.type !== "YOUTUBE")
+      : configs
+
     // Sort configs by number of connected accounts (highest first)
-    return configs.sort((a, b) => {
+    return filteredConfigs.sort((a, b) => {
       const aCount = data.filter((d: any) => d.account_type === a.type).length
       const bCount = data.filter((d: any) => d.account_type === b.type).length
       return bCount - aCount // Descending order (highest first)
     })
-  }, [data])
+  }, [data, surfaceType])
 
   const extractTime = (time: string) => {
     return time.split("T")[1].split("+")[0] // "22:19:00"
@@ -127,9 +136,6 @@ export default function CreatePostForm() {
   const [selectedPlatformsType, setSelectedPlatformsType] = useState<string[]>(
     []
   )
-
-  // Get current surface type from store
-  const { surfaceType } = useContentTypeStore()
 
   // Determine if description should be hidden
   const shouldHideDescription = useMemo(() => {
