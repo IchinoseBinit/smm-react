@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import "./Auth.css";
 import { RegisterFormSection } from "@/features/auth/components/register/RegisterFormSection";
-import { RegisterAuthBanner } from "@/features/auth/components/register/RegisterAuthBanner";
+// import { RegisterAuthBanner } from "@/features/auth/components/register/RegisterAuthBanner";
 
 function Register() {
   return (
@@ -20,7 +20,7 @@ function Register() {
         >
           <RegisterFormSection />
           {/* Image Section - Only shown on larger screens */}
-          <RegisterAuthBanner />
+          {/* <RegisterAuthBanner /> */}
         </Box>
       </Flex>
     </Box>

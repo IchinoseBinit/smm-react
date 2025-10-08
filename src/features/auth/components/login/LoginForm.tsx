@@ -180,7 +180,7 @@ const LoginForm = () => {
 
           <Text textAlign="center" mt={6} color="gray.600">
             Don't have an account?{" "}
-            <Link href="/auth" color="blue.600" fontWeight="medium">
+            <Link href="/register" color="blue.600" fontWeight="medium">
               Sign up
             </Link>
           </Text>

@@ -15,8 +15,8 @@ export const RegisterFormSection = () => {
         className="hide-scrollbar"
       >
         <Box w="full" maxW="lg">
-          <Flex mb={5} mt={10} ml={{ base: 0, md: 3 }}>
-            <Box>
+          <Flex mb={5} mt={10} justifyContent="center">
+            <Box className="">
               <Image src={logo} alt="logo" h={8} w="full" />
             </Box>
           </Flex>

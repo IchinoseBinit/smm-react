@@ -88,7 +88,7 @@ export default function Header() {
                 <Menu.Content>
                   <Menu.Item
                     value="individual"
-                    onClick={() => window.location.href = "/auth"}
+                    onClick={() => window.location.href = "/register"}
                   >
                     Individual
                   </Menu.Item>

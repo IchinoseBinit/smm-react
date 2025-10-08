@@ -7,9 +7,10 @@ import ResetPsw from "@/pages/auth/ResetPsw";
 import EmailVerification from "@/pages/auth/EmailVerification";
 import { InitialAppLoading } from "../loadings";
 import OrganizationSignup from "@/pages/organization/OrganizationSignup";
+import Register from "@/pages/auth/Register";
 
 const authRoutes = [
-  // { path: "/register", element: <Register /> },
+  { path: "/register", element: <Register /> },
   { path: "/login", element: <OrganizationSignup /> },
   { path: "/reset-password/send-opt", element: <SendOtp /> },
   { path: "/reset-password", element: <ResetPsw /> },
