@@ -44,7 +44,7 @@ const LoginForm = () => {
     const location = useLocation()
 
 
-    const isOrganizationSignup = location.pathname === "/organizationsignup"
+    const isOrganizationSignup = location.pathname === "/organizationsignup" || location.pathname === "/auth" || location.pathname === "/login";
 
 
   // Initialize React Hook Form with Zod validation
@@ -180,7 +180,7 @@ const LoginForm = () => {
 
           <Text textAlign="center" mt={6} color="gray.600">
             Don't have an account?{" "}
-            <Link href="/register" color="blue.600" fontWeight="medium">
+            <Link href="/auth" color="blue.600" fontWeight="medium">
               Sign up
             </Link>
           </Text>

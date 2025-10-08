@@ -1,15 +1,16 @@
 import { Route, Navigate, Routes } from "react-router";
 import { useAuthContext } from "@/hooks/useAuthContext";
-import Register from "@/pages/auth/Register";
-import Login from "@/pages/auth/Login";
+// import Register from "@/pages/auth/Register";
+// import Login from "@/pages/auth/Login";
 import SendOtp from "@/pages/auth/SendOtp";
 import ResetPsw from "@/pages/auth/ResetPsw";
 import EmailVerification from "@/pages/auth/EmailVerification";
 import { InitialAppLoading } from "../loadings";
+import OrganizationSignup from "@/pages/organization/OrganizationSignup";
 
 const authRoutes = [
-  { path: "/register", element: <Register /> },
-  { path: "/login", element: <Login /> },
+  // { path: "/register", element: <Register /> },
+  { path: "/login", element: <OrganizationSignup /> },
   { path: "/reset-password/send-opt", element: <SendOtp /> },
   { path: "/reset-password", element: <ResetPsw /> },
   { path: "/verify-otp", element: <EmailVerification /> },

@@ -43,7 +43,7 @@ const EmailVerification: React.FC = () => {
 
   useEffect(() => {
     if (!email) {
-      navigate("/register")
+      navigate("/auth")
     }
     sendOtpFunc(email)
   }, [email, navigate, sendOtpFunc])
@@ -230,7 +230,7 @@ const EmailVerification: React.FC = () => {
 
           <Text fontSize="sm" textAlign="center" color="gray.600">
             Didn't receive the email? Check your spam folder or{" "}
-            <Link color="brand.500" href="/register">
+            <Link color="brand.500" href="/auth">
               try using a different email address
             </Link>
           </Text>

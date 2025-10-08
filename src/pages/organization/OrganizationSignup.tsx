@@ -21,7 +21,7 @@ import LightLogo from "@/assets/app/Header Logo White.png"
 import { useSignupOrganization } from "@/features/Organization/hooks/useOrganization"
 import countryData from "@/data/country.json"
 import { LoginFormSection } from "@/features/auth/components/login/LoginFormSection"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 
 interface FormData {
   firstName: string
@@ -43,7 +43,10 @@ type AccountType = "individual" | "organization"
 
 const OrganizationSignup: React.FC = () => {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState<"signin" | "create">("create")
+  const location = useLocation()
+  const [activeTab, setActiveTab] = useState<"signin" | "create">(
+    location.pathname === "/login" ? "signin" : "create"
+  )
   const [accountType, setAccountType] = useState<AccountType>("individual")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)

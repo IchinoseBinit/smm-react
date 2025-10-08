@@ -5,8 +5,8 @@ import { useLocation } from "react-router-dom";
 
 export const LoginFormSection = () => {
   const location = useLocation();
-  const shouldHideLogo = location.pathname === "/organizationsignup";
-  const isOrganizationSignup = location.pathname === "/organizationsignup";
+  const shouldHideLogo = location.pathname === "/auth" || location.pathname === "/login";
+  const isOrganizationSignup = location.pathname === "/auth" || location.pathname === "/login";
 
   return (
     <>

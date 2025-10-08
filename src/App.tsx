@@ -28,7 +28,11 @@ function App() {
         {flatRoute({ path: "/privacypolicy", component: <Privacypolicy /> })}
         {flatRoute({ path: "/aboutus", component: <Aboutus /> })}
         {flatRoute({
-          path: "/organizationsignup",
+          path: "/auth",
+          component: <OrganizationSignup />,
+        })}
+        {flatRoute({
+          path: "/login",
           component: <OrganizationSignup />,
         })}
         {flatRoute({
