@@ -15,38 +15,29 @@ export default function SocialMediaPosts() {
   )
   const [to, setTo] = useState(new Date().toISOString().split("T")[0])
 const[status,setStatus]=useState("posted")
-//   const { data, isLoading } = useGetPostsByDate({
-//     from: from,
-//     to: to,
-//     userId,
-//     status:status
-//   })
 
-//   if (isLoading) return <CircularLoading />
-const { data: postedPosts, isLoading: isLoadingPosted } = useGetPostsByDate({
-  from, to, userId, status: "posted"
-})
+  // Single API call to fetch all posts
+  const { data: allPosts, isLoading } = useGetPostsByDate({
+    from,
+    to,
+    userId,
+  })
 
-const { data: pendingPosts, isLoading: isLoadingPending } = useGetPostsByDate({
-  from, to, userId, status: "pending"
-})
+  // Filter posts by status on the client side
+  const postedPosts = allPosts?.filter((post: Post) => post.status === "posted") || []
+  const pendingPosts = allPosts?.filter((post: Post) => post.status === "scheduled") || []
+  const failedPosts = allPosts?.filter((post: Post) => post.status === "failed") || []
 
-const { data: failedPosts, isLoading: isLoadingFailed } = useGetPostsByDate({
-  from, to, userId, status: "failed"
-})
-
-const isLoading = isLoadingPosted || isLoadingPending || isLoadingFailed
-
-// Get current posts based on selected status
-const getCurrentPosts = () => {
-  switch (status) {
-    case "posted": return postedPosts || []
-    case "pending": return pendingPosts || []
-    case "failed": return failedPosts || []
-    default: return []
+  // Get current posts based on selected status
+  const getCurrentPosts = () => {
+    switch (status) {
+      case "posted": return postedPosts
+      case "pending": return pendingPosts
+      case "failed": return failedPosts
+      default: return []
+    }
   }
-}
-const currentPosts = getCurrentPosts()
+  const currentPosts = getCurrentPosts()
 
 if (isLoading) return <CircularLoading />
 
