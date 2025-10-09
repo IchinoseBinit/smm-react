@@ -22,6 +22,7 @@ import { useSignupOrganization } from "@/features/Organization/hooks/useOrganiza
 import countryData from "@/data/country.json"
 import { LoginFormSection } from "@/features/auth/components/login/LoginFormSection"
 import { useNavigate, useLocation } from "react-router-dom"
+import { z } from "zod"
 
 interface FormData {
   firstName: string
@@ -40,6 +41,60 @@ interface OrganizationFormData {
 }
 
 type AccountType = "individual" | "organization"
+
+// Validation schemas
+const formSchema = z.object({
+  firstName: z
+    .string()
+    .nonempty("First name is required")
+    .min(2, "First name must be at least 2 characters")
+    .regex(/^[a-zA-Z\s'-]+$/, "First name can only contain letters"),
+  lastName: z
+    .string()
+    .nonempty("Last name is required")
+    .min(2, "Last name must be at least 2 characters")
+    .regex(/^[a-zA-Z\s'-]+$/, "Last name can only contain letters"),
+  email: z
+    .string()
+    .nonempty("Email is required")
+    .email("Please enter a valid email address"),
+  phoneNumber: z
+    .string()
+    .nonempty("Phone number is required")
+    .regex(/^\+?[\d\s()-]{10,}$/, "Please enter a valid phone number (min 10 digits)"),
+  password: z
+    .string()
+    .nonempty("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .regex(/(?=.*[a-z])/, "Password must contain at least one lowercase letter")
+    .regex(/(?=.*[A-Z])/, "Password must contain at least one uppercase letter")
+    .regex(/(?=.*\d)/, "Password must contain at least one number")
+    .regex(/(?=.*[@$!%*?&#])/, "Password must contain at least one special character (@$!%*?&#)"),
+  confirmPassword: z
+    .string()
+    .nonempty("Please confirm your password"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+})
+
+const orgFormSchema = z.object({
+  organizationName: z
+    .string()
+    .nonempty("Organization name is required")
+    .min(2, "Organization name must be at least 2 characters"),
+  billingEmail: z
+    .string()
+    .nonempty("Billing email is required")
+    .email("Please enter a valid email address"),
+  countryCode: z.string(),
+  brandingLogoUrl: z
+    .string()
+    .refine(
+      (val) => !val || /^https?:\/\/.+\..+/.test(val),
+      "Please enter a valid URL (e.g., https://example.com/logo.png)"
+    ),
+})
 
 const OrganizationSignup: React.FC = () => {
   const navigate = useNavigate()
@@ -107,51 +162,43 @@ const OrganizationSignup: React.FC = () => {
   const [submitted, setSubmitted] = useState(false)
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<FormData> = {}
-
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required"
+    try {
+      formSchema.parse(formData)
+      setErrors({})
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Partial<FormData> = {}
+        error.errors.forEach((err) => {
+          const field = err.path[0] as keyof FormData
+          if (field) {
+            newErrors[field] = err.message
+          }
+        })
+        setErrors(newErrors)
+      }
+      return false
     }
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required"
-    }
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required"
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid"
-    }
-    if (!formData.phoneNumber.trim()) {
-      newErrors.phoneNumber = "Phone number is required"
-    }
-    if (!formData.password) {
-      newErrors.password = "Password is required"
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters"
-    }
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password"
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match"
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
   }
 
   const validateOrgForm = (): boolean => {
-    const newErrors: Partial<OrganizationFormData> = {}
-
-    if (!orgFormData.organizationName.trim()) {
-      newErrors.organizationName = "Organization name is required"
+    try {
+      orgFormSchema.parse(orgFormData)
+      setOrgErrors({})
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Partial<OrganizationFormData> = {}
+        error.errors.forEach((err) => {
+          const field = err.path[0] as keyof OrganizationFormData
+          if (field) {
+            newErrors[field] = err.message
+          }
+        })
+        setOrgErrors(newErrors)
+      }
+      return false
     }
-    if (!orgFormData.billingEmail.trim()) {
-      newErrors.billingEmail = "Billing email is required"
-    } else if (!/\S+@\S+\.\S+/.test(orgFormData.billingEmail)) {
-      newErrors.billingEmail = "Email is invalid"
-    }
-
-    setOrgErrors(newErrors)
-    return Object.keys(newErrors).length === 0
   }
 
   const handleSubmit = () => {
@@ -387,7 +434,8 @@ const OrganizationSignup: React.FC = () => {
                               e.target.value
                             )
                           }
-                          border="none"
+                          border={submitted && orgErrors.organizationName ? "2px solid" : "none"}
+                          borderColor={submitted && orgErrors.organizationName ? "red.500" : "transparent"}
                           bg="gray.50"
                           _focus={{
                             bg: "gray.100",
@@ -416,7 +464,8 @@ const OrganizationSignup: React.FC = () => {
                           onChange={(e) =>
                             handleOrgInputChange("billingEmail", e.target.value)
                           }
-                          border="none"
+                          border={submitted && orgErrors.billingEmail ? "2px solid" : "none"}
+                          borderColor={submitted && orgErrors.billingEmail ? "red.500" : "transparent"}
                           bg="gray.50"
                           _focus={{
                             bg: "gray.100",
@@ -486,7 +535,7 @@ const OrganizationSignup: React.FC = () => {
 
                       <Field.Root w="full">
                         <Field.Label color="gray.700" fontWeight="medium">
-                          Branding Logo URL
+                          Branding Logo URL (Optional)
                         </Field.Label>
                         <Input
                           placeholder="https://example.com/logo.png"
@@ -497,7 +546,8 @@ const OrganizationSignup: React.FC = () => {
                               e.target.value
                             )
                           }
-                          border="none"
+                          border={submitted && orgErrors.brandingLogoUrl ? "2px solid" : "none"}
+                          borderColor={submitted && orgErrors.brandingLogoUrl ? "red.500" : "transparent"}
                           bg="gray.50"
                           _focus={{
                             bg: "gray.100",
@@ -508,6 +558,11 @@ const OrganizationSignup: React.FC = () => {
                             bg: "gray.100",
                           }}
                         />
+                        {submitted && orgErrors.brandingLogoUrl && (
+                          <Text color="red.500" fontSize="sm" mt={1}>
+                            {orgErrors.brandingLogoUrl}
+                          </Text>
+                        )}
                       </Field.Root>
                     </>
                   ) : (
@@ -524,7 +579,8 @@ const OrganizationSignup: React.FC = () => {
                             onChange={(e) =>
                               handleInputChange("firstName", e.target.value)
                             }
-                            border="none"
+                            border={submitted && errors.firstName ? "2px solid" : "none"}
+                            borderColor={submitted && errors.firstName ? "red.500" : "transparent"}
                             bg="gray.50"
                             _focus={{
                               bg: "gray.100",
@@ -551,7 +607,8 @@ const OrganizationSignup: React.FC = () => {
                             onChange={(e) =>
                               handleInputChange("lastName", e.target.value)
                             }
-                            border="none"
+                            border={submitted && errors.lastName ? "2px solid" : "none"}
+                            borderColor={submitted && errors.lastName ? "red.500" : "transparent"}
                             bg="gray.50"
                             _focus={{
                               bg: "gray.100",
@@ -581,7 +638,8 @@ const OrganizationSignup: React.FC = () => {
                           onChange={(e) =>
                             handleInputChange("email", e.target.value)
                           }
-                          border="none"
+                          border={submitted && errors.email ? "2px solid" : "none"}
+                          borderColor={submitted && errors.email ? "red.500" : "transparent"}
                           bg="gray.50"
                           _focus={{
                             bg: "gray.100",
@@ -609,7 +667,8 @@ const OrganizationSignup: React.FC = () => {
                           onChange={(e) =>
                             handleInputChange("phoneNumber", e.target.value)
                           }
-                          border="none"
+                          border={submitted && errors.phoneNumber ? "2px solid" : "none"}
+                          borderColor={submitted && errors.phoneNumber ? "red.500" : "transparent"}
                           bg="gray.50"
                           _focus={{
                             bg: "gray.100",
@@ -640,7 +699,8 @@ const OrganizationSignup: React.FC = () => {
                             onChange={(e) =>
                               handleInputChange("password", e.target.value)
                             }
-                            border="none"
+                            border={submitted && errors.password ? "2px solid" : "none"}
+                            borderColor={submitted && errors.password ? "red.500" : "transparent"}
                             bg="gray.50"
                             _focus={{
                               bg: "gray.100",
@@ -693,7 +753,8 @@ const OrganizationSignup: React.FC = () => {
                                 e.target.value
                               )
                             }
-                            border="none"
+                            border={submitted && errors.confirmPassword ? "2px solid" : "none"}
+                            borderColor={submitted && errors.confirmPassword ? "red.500" : "transparent"}
                             bg="gray.50"
                             _focus={{
                               bg: "gray.100",
