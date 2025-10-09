@@ -20,11 +20,13 @@ import OrganizationSignup from "./pages/organization/OrganizationSignup"
 import Contactus from "./pages/Contactus/Contactus"
 import Inviteteammates from "./pages/organization/Inviteteammates"
 import Profile from "./pages/Profile/Profile";
+import PricingPage from "./pages/Pricing/Pricing";
 function App() {
   return (
     <>
       <Routes>
         {flatRoute({ path: "/", component: <LandingPage /> })}
+        {flatRoute({ path: "/pricing", component: <PricingPage /> })}
         {flatRoute({ path: "/privacypolicy", component: <Privacypolicy /> })}
         {flatRoute({ path: "/aboutus", component: <Aboutus /> })}
         {flatRoute({
@@ -46,6 +48,7 @@ function App() {
         <Route path="/*" element={<AuthRoutes />} />
 
         <Route element={<ProtectedRoutesWithAuth />}>
+
           {layoutRoute({ path: "/dashboard", component: <Dashboard /> })}
           {layoutRoute({ path: "/create", component: <Create /> })}
           {layoutRoute({

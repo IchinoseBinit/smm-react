@@ -52,8 +52,8 @@ export default function Header() {
           <Link href="/aboutus" color="gray.600" _hover={{ color: "gray.900" }}>
             About us
           </Link>
-          <Link href="#contact" color="gray.600" _hover={{ color: "gray.900" }}>
-            Contact
+          <Link href="/pricing" color="gray.600" _hover={{ color: "gray.900" }}>
+            Pricing
           </Link>
         </Box>
         <Flex align="center" gap={4}>
