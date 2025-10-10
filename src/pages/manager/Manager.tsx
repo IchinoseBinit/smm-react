@@ -1,8 +1,10 @@
 import { Box } from "@chakra-ui/react"
 import SocialMediaPosts from "@/features/manager/components/SocialMediaPosts"
 import { Helmet } from "react-helmet-async"
+import useRetryPost from "@/features/manager/hooks/useRetryPost"
 
 export default function Manager() {
+  const retryMutation = useRetryPost()
   // const [from, setFrom] = useState(
   //   new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
   // )
@@ -53,7 +55,7 @@ export default function Manager() {
         </Flex> */}
 
         {/* <SocialMediaPosts from={from} to={to} /> */}
-        <SocialMediaPosts />
+        <SocialMediaPosts retryMutation={retryMutation} />
       </Box>
     </>
   )

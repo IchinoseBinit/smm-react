@@ -7,6 +7,7 @@ import type { Post, StatusConfig } from "../types"
 import { formatToLocalTime } from "@/lib/helper/formateDateTime"
 import React from "react"
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa"
+import type { UseMutationResult } from "@tanstack/react-query"
 
 
 
@@ -26,7 +27,21 @@ const getPlatformIcon = (accountType: string): React.ReactNode | null => {
 }
 
 
-const FailedCardDemo = ({ data }: { data: Post }) => {
+const FailedCardDemo = ({
+  data,
+  retryMutation
+}: {
+  data: Post;
+  retryMutation: UseMutationResult<any, any, number, unknown>
+}) => {
+  const handleRetry = () => {
+    if (data.id) {
+      retryMutation.mutate(data.id);
+    }
+  };
+
+  // Check if this specific post is being retried
+  const isRetrying = retryMutation.isPending && retryMutation.variables === data.id;
   
   return (
     <HStack
@@ -106,6 +121,9 @@ const FailedCardDemo = ({ data }: { data: Post }) => {
           _hover={{ opacity: 0.8 }}
           color="white"
           backgroundColor="red.700"
+          onClick={handleRetry}
+          loading={isRetrying}
+          disabled={isRetrying}
         >
           Retry
         </Button>

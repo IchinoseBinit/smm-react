@@ -6,21 +6,27 @@ import { useAuthUtils } from "@/hooks/useAuthUtils"
 import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu"
 import { useState } from "react"
 import { FailedCardDemo, SocialPostCard } from "./PostcardDemo"
+import type { UseMutationResult } from "@tanstack/react-query"
 
-export default function SocialMediaPosts() {
+export default function SocialMediaPosts({
+  retryMutation
+}: {
+  retryMutation: UseMutationResult<any, any, number, unknown>
+}) {
   const { userId } = useAuthUtils()
 
   const [from, setFrom] = useState(
     new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
   )
   const [to, setTo] = useState(new Date().toISOString().split("T")[0])
-const[status,setStatus]=useState("posted")
+  const [status, setStatus] = useState("posted")
 
   // Single API call to fetch all posts
   const { data: allPosts, isLoading } = useGetPostsByDate({
     from,
     to,
     userId,
+    status
   })
 
   // Filter posts by status on the client side
@@ -32,7 +38,7 @@ const[status,setStatus]=useState("posted")
   const getCurrentPosts = () => {
     switch (status) {
       case "posted": return postedPosts
-      case "pending": return pendingPosts
+      case "scheduled": return pendingPosts
       case "failed": return failedPosts
       default: return []
     }
@@ -84,7 +90,7 @@ if (isLoading) return <CircularLoading />
               </Tabs.Trigger>
 
               <Tabs.Trigger
-                value="pending"
+                value="scheduled"
                 display="flex"
                 alignItems="center"
                 gap={2}
@@ -136,7 +142,7 @@ if (isLoading) return <CircularLoading />
                 </VStack>
               </Tabs.Content>
 
-              <Tabs.Content value="pending">
+              <Tabs.Content value="scheduled">
                 <VStack gap={4} align="stretch">
                   {(!pendingPosts || pendingPosts.length === 0) ? (
                     <Text textAlign="center" color="gray.500" py={8}>
@@ -158,7 +164,7 @@ if (isLoading) return <CircularLoading />
                     </Text>
                   ) : (
                     failedPosts.map((post: Post, index: number) => (
-                      <FailedCardDemo key={post.id || index} data={post} />
+                      <FailedCardDemo key={post.id || index} data={post} retryMutation={retryMutation} />
                     ))
                   )}
                 </VStack>

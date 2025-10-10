@@ -12,4 +12,21 @@ const getPostsBydate = (from?: string, to?: string, userId?: string, status?: st
       .then((res) => res.data),
   );
 };
-export { getPostsBydate };
+
+
+
+
+
+
+const retryPost = (postId: number) => {
+  return safeApiCall(() =>
+    axiosInstance
+      .post(
+        `${API_URL.RETRY_POST()}`,
+        { ids: [postId] }
+      )
+      .then((res) => res.data),
+  );
+}
+
+export { getPostsBydate, retryPost };
