@@ -68,8 +68,16 @@ const Profile = () => {
     updateProfileMutation.mutate(updateData);
   };
 
+  // Hardcoded organization data
+  const organizationData = {
+    name: "Bini Inc",
+    mobile_country_code: "+977",
+    billing_email: "ledev92115@iotrama.com",
+    branding_logo: "https://socially.work/admin/",
+  };
+
   return (
-    <Box maxW="4xl" mx="auto" bg="white" minH="100vh">
+    <Box maxW="4xl" mx="auto" bg="white" minH="100vh" p={6}>
       {/* Header Section */}
       <Flex justify="flex-end" align="center" mb={8}>
         <Button
@@ -88,6 +96,79 @@ const Profile = () => {
           Change Password
         </Button>
       </Flex>
+
+      {/* Organization Info Section */}
+      <Box mb={12} pb={8} borderBottom="1px solid" borderColor="gray.200">
+        <Text fontSize="lg" fontWeight="semibold" color="gray.800" mb={6}>
+          Organization Info
+        </Text>
+
+        <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+          {/* Organization Name */}
+          <Field.Root>
+            <Field.Label color="gray.700" fontWeight="medium">
+              Organization Name
+            </Field.Label>
+            <Input
+              value={organizationData.name}
+              bg="#f5f5f5"
+              border="1px"
+              borderColor="gray.200"
+              size="lg"
+              readOnly
+              cursor="default"
+            />
+          </Field.Root>
+
+          {/* Billing Email */}
+          <Field.Root>
+            <Field.Label color="gray.700" fontWeight="medium">
+              Billing Email
+            </Field.Label>
+            <Input
+              value={organizationData.billing_email}
+              bg="#f5f5f5"
+              border="1px"
+              borderColor="gray.200"
+              size="lg"
+              readOnly
+              cursor="default"
+            />
+          </Field.Root>
+
+          {/* Country Code */}
+          <Field.Root>
+            <Field.Label color="gray.700" fontWeight="medium">
+              Country Code
+            </Field.Label>
+            <Input
+              value={organizationData.mobile_country_code}
+              bg="#f5f5f5"
+              border="1px"
+              borderColor="gray.200"
+              size="lg"
+              readOnly
+              cursor="default"
+            />
+          </Field.Root>
+
+          {/* Branding Logo URL */}
+          <Field.Root>
+            <Field.Label color="gray.700" fontWeight="medium">
+              Branding Logo
+            </Field.Label>
+            <Input
+              value={organizationData.branding_logo}
+              bg="#f5f5f5"
+              border="1px"
+              borderColor="gray.200"
+              size="lg"
+              readOnly
+              cursor="default"
+            />
+          </Field.Root>
+        </Grid>
+      </Box>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* User Info Section */}
