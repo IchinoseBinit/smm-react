@@ -211,7 +211,11 @@ const RegisterForm: React.FC = () => {
                 <Field.Root invalid={Boolean(errors.mobile)}>
                   <Field.Label>Mobile Number</Field.Label>
                   <Input
-                    {...register("mobile")}
+                    {...register("mobile", {
+                      onChange: (e) => {
+                        e.target.value = e.target.value.replace(/[^0-9+\-\s()]/g, "")
+                      }
+                    })}
                     type="tel"
                     placeholder="Enter mobile number"
                     border="none"

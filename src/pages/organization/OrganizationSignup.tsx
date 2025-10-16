@@ -669,11 +669,13 @@ const OrganizationSignup: React.FC = () => {
                           Phone Number
                         </Field.Label>
                         <Input
+                          type="tel"
                           placeholder="Enter your number"
                           value={formData.phoneNumber}
-                          onChange={(e) =>
-                            handleInputChange("phoneNumber", e.target.value)
-                          }
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/[^0-9+\-\s()]/g, "")
+                            handleInputChange("phoneNumber", value)
+                          }}
                           border={submitted && errors.phoneNumber ? "2px solid" : "none"}
                           borderColor={submitted && errors.phoneNumber ? "red.500" : "transparent"}
                           bg="gray.50"
