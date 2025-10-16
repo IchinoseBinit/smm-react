@@ -210,8 +210,8 @@ const OrganizationSignup: React.FC = () => {
         setSubmitted(true)
 
         if (validateOrgForm() && validateForm()) {
-          // Store billing email in store for OTP verification
-          setEmail(orgFormData.billingEmail)
+          // Store user email in store for OTP verification
+          setEmail(formData.email)
 
           // Map form data to API structure
           const signupRequest = {
