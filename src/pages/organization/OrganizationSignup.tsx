@@ -23,6 +23,7 @@ import countryData from "@/data/country.json"
 import { LoginFormSection } from "@/features/auth/components/login/LoginFormSection"
 import { useNavigate, useLocation } from "react-router-dom"
 import { z } from "zod"
+import useEmailStore from "@/lib/store/useEmailStore"
 
 interface FormData {
   firstName: string
@@ -99,6 +100,7 @@ const orgFormSchema = z.object({
 const OrganizationSignup: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const { setEmail } = useEmailStore()
   const [activeTab, setActiveTab] = useState<"signin" | "create">(
     location.pathname === "/login" ? "signin" : "create"
   )
@@ -106,6 +108,7 @@ const OrganizationSignup: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const signupOrganization = useSignupOrganization()
+
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -205,7 +208,11 @@ const OrganizationSignup: React.FC = () => {
     if (activeTab === "create") {
       if (accountType === "organization") {
         setSubmitted(true)
+
         if (validateOrgForm() && validateForm()) {
+          // Store billing email in store for OTP verification
+          setEmail(orgFormData.billingEmail)
+
           // Map form data to API structure
           const signupRequest = {
             organization: {
