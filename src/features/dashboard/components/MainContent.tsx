@@ -13,10 +13,7 @@ import { useEffect, useState, useMemo } from "react";
 
 import { CircularLoading } from "@/lib/loadings";
 import { useAuthUtils } from "@/hooks/useAuthUtils";
-import useGetPostsByDate from "@/features/manager/hooks/query/useGetPosts";
-import { format, subDays } from "date-fns";
-import { useAllConnAccounts } from "@/hooks/useConnectedAccounts";
-import useTotalPost from "../hooks/useTotalPost";
+import { format } from "date-fns";
 import useMediaSummary from "../hooks/useMediaSummary";
 import WarningIcon from "@/assets/WarningIcon.svg"
 import ScheduleIcon from "@/assets/ScheduleIcon.svg"
@@ -628,17 +625,12 @@ export function MainContent() {
   const SHOW_UPCOMING = false
   const [loading, setLoading] = useState(true);
 
-  const { userId } = useAuthUtils();
-  const { data: connectedAccountsData } = useAllConnAccounts(userId);
-
-  const data = useTotalPost();
-  const { data: summary } = useMediaSummary();
+  // const { userId } = useAuthUtils();
+  const { data: summary, isLoading: summaryLoading } = useMediaSummary();
 
   console.log("summary", summary);
   console.log("summary.recent_scheduled", summary?.recent_scheduled);
   console.log("summary.recent_posts", summary?.recent_posts);
-
-  console.log("tota post", data);
 
   // Sample data for demonstration - 8 accounts total
   // Instagram: 2 accounts (25%), Facebook: 4 accounts (50%), TikTok: 1 account (12.5%), YouTube: 1 account (12.5%)
@@ -669,131 +661,29 @@ export function MainContent() {
   const displayData =
     connectedFromSummary.length > 0
       ? connectedFromSummary
-      : connectedAccountsData && connectedAccountsData.length > 0
-      ? connectedAccountsData
       : sampleConnectedAccounts;
 
-  // Get posts from a wide date range to ensure we get data
-  const today = new Date();
-  const oneYearAgo = subDays(today, 365); // Get posts from last year
-
-  const {
-    data: postsData,
-    isLoading: postsLoading,
-    error,
-  } = useGetPostsByDate({
-    from: format(oneYearAgo, "yyyy-MM-dd"),
-    to: format(today, "yyyy-MM-dd"),
-    userId: userId || undefined,
-  });
-
-  // Debug logs
-  console.log("Dashboard - Posts Data:", postsData);
-  console.log("Dashboard - User ID:", userId);
-  console.log(
-    "Dashboard - Date range:",
-    format(oneYearAgo, "yyyy-MM-dd"),
-    "to",
-    format(today, "yyyy-MM-dd")
-  );
-  console.log("Dashboard - Loading:", postsLoading);
-  console.log("Dashboard - Error:", error);
-
-  // Try different ways to access the data and filter for posted status only
-  let allPosts = [];
-  if (postsData) {
-    // Try direct access
-    if (Array.isArray(postsData)) {
-      allPosts = postsData;
-    }
-    // Try data property
-    else if (postsData.data && Array.isArray(postsData.data)) {
-      allPosts = postsData.data;
-    }
-    // Try posts property
-    else if (postsData.posts && Array.isArray(postsData.posts)) {
-      allPosts = postsData.posts;
-    }
-  }
-
-  // Filter for only "posted" status and get latest 4
-  const latestPosts = allPosts
-    .filter((post: any) => post.status?.toLowerCase() === "posted")
-    .slice(0, 4);
-  // Build recent posts from summary API (fallback to existing latestPosts)
-  const recentFromSummary =
+  // Build recent posts from summary API
+  const displayRecent =
     summary?.recent_posts?.map((p) => ({
       id: p.id,
       title: p.title,
       description: "No description",
       status: "posted",
-      // mimic existing structure so mapper keeps working
       platform_statuses: [
         { accountType: "SOCIAL", posted_time: p.posted_time || null },
       ],
       scheduled_time: null,
     })) ?? [];
 
-  // Prefer API recent_posts if present, else existing latestPosts
-  const displayRecent = (
-    recentFromSummary.length > 0 ? recentFromSummary : latestPosts
-  ).slice(0, 4);
-  console.log("displayRecent", displayRecent); 
-
-  // Fallback sample data for testing if no real posted data is available
-  if (latestPosts.length === 0 && !postsLoading) {
-    console.log("Dashboard - Using fallback sample data (posted only)");
-
-    // const samplePostedPosts = [
-    //   {
-    //     id: "sample1",
-    //     title: "Sample YouTube Video",
-    //     description:
-    //       "This is a sample post to demonstrate the dashboard functionality",
-    //     status: "posted",
-    //     platform_statuses: [
-    //       { accountType: "YOUTUBE", posted_time: new Date().toISOString() },
-    //     ],
-    //   },
-    //   {
-    //     id: "sample2",
-    //     title: "Facebook Update",
-    //     description: "Another sample post for testing the Recent Posts section",
-    //     status: "posted",
-    //     scheduled_time: new Date().toISOString(),
-    //     platform_statuses: [
-    //       { accountType: "FACEBOOK", posted_time: new Date().toISOString() },
-    //     ],
-    //   },
-    //   {
-    //     id: "sample3",
-    //     description: "Instagram story update without title",
-    //     status: "posted",
-    //     platform_statuses: [
-    //       { accountType: "INSTAGRAM", posted_time: new Date().toISOString() },
-    //     ],
-    //   },
-    //   {
-    //     id: "sample4",
-    //     title: "TikTok Video",
-    //     description: "Latest TikTok video posted",
-    //     status: "posted",
-    //     platform_statuses: [
-    //       { accountType: "TIKTOK", posted_time: new Date().toISOString() },
-    //     ],
-    //   },
-    // ];
-    // latestPosts.push(...samplePostedPosts.slice(0, 4));
-  }
-
-  // console.log("Dashboard - Latest Posts:", latestPosts);
+  console.log("displayRecent", displayRecent);
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 800);
     return () => clearTimeout(t);
   }, []);
 
-  if (loading || postsLoading) return <CircularLoading />;
+  if (loading || summaryLoading) return <CircularLoading />;
 
   return (
     <Box _dark={{ bg: "gray.900" }} minH="100vh">
