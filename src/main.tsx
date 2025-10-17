@@ -10,7 +10,18 @@ import { AuthProvider } from "./lib/providers/authProvider.tsx";
 import { HelmetProvider } from "react-helmet-async";
 import { ColorModeProvider } from "./components/ui/color-mode.tsx";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      retry: 1,
+    },
+  },
+});
 
 createRoot(document.getElementById("root")!).render(
   <HelmetProvider>
