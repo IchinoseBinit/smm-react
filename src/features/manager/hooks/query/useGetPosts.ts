@@ -19,10 +19,10 @@ const useGetPostsByDate = ({
       return getPostsBydate(from, to, userId, status);
     },
     enabled: !!userId,
-    staleTime: 5*60*1000,
+    staleTime: 0,
     gcTime: 10*60*1000,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchInterval: false,
   });
 };
