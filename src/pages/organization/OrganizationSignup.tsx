@@ -29,16 +29,16 @@ interface FormData {
   firstName: string
   lastName: string
   email: string
-  phoneNumber: string
+  phoneNumber?: string
   password: string
   confirmPassword: string
 }
 
 interface OrganizationFormData {
   organizationName: string
-  billingEmail: string
+  billingEmail?: string
   countryCode: string
-  brandingLogoUrl: string
+  brandingLogoUrl?: string
 }
 
 type AccountType = "individual" | "organization"
@@ -59,10 +59,10 @@ const formSchema = z.object({
     .string()
     .nonempty("Email is required")
     .email("Please enter a valid email address"),
-  phoneNumber: z
-    .string()
-    .nonempty("Phone number is required")
-    .regex(/^\+?[\d\s()-]{10,}$/, "Please enter a valid phone number (min 10 digits)"),
+  phoneNumber: z.union([
+    z.literal(""),
+    z.string().regex(/^\+?[\d\s()-]{10,}$/, "Please enter a valid phone number (min 10 digits)")
+  ]).optional(),
   password: z
     .string()
     .nonempty("Password is required")
@@ -84,10 +84,10 @@ const orgFormSchema = z.object({
     .string()
     .nonempty("Organization name is required")
     .min(2, "Organization name must be at least 2 characters"),
-  billingEmail: z
-    .string()
-    .nonempty("Billing email is required")
-    .email("Please enter a valid email address"),
+  billingEmail: z.union([
+    z.literal(""),
+    z.string().email("Please enter a valid email address")
+  ]).optional(),
   countryCode: z.string(),
   brandingLogoUrl: z
     .string()
@@ -462,7 +462,7 @@ const OrganizationSignup: React.FC = () => {
 
                       <Field.Root w="full">
                         <Field.Label color="gray.700" fontWeight="medium">
-                          Billing Email
+                          Billing Email (Optional)
                         </Field.Label>
                         <Input
                           type="email"
@@ -666,7 +666,7 @@ const OrganizationSignup: React.FC = () => {
 
                       <Field.Root w="full">
                         <Field.Label color="gray.700" fontWeight="medium">
-                          Phone Number
+                          Phone Number (Optional)
                         </Field.Label>
                         <Input
                           type="tel"

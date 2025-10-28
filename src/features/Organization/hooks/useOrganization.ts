@@ -39,10 +39,10 @@ const useSignupOrganization = () => {
 	return useMutation<any, Error, SignupOrganizationRequest>({
 		mutationFn: signupOrganization,
 		onSuccess: async () => {
-			// Send OTP to billing email
+			// Send OTP to user's email address
 			try {
 				await sendOtp(email);
-				handleSuccess("Organization created", "Please verify your billing email");
+				handleSuccess("Organization created", "Please verify your email");
 				navigate("/verify-otp");
 			} catch (error) {
 				console.error("Failed to send OTP:", error);

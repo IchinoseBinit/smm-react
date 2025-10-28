@@ -7,11 +7,10 @@ const signupSchema = z
     first_name: z.string().min(1, "First name is required"),
     last_name: z.string().min(1, "Last name is required"),
 
-    mobile: z
-      .string()
-      .regex(/^\d{10}$/, "Mobile number must be exactly 10 digits")
-      .optional()
-      .or(z.literal("")),
+    mobile: z.union([
+      z.literal(""),
+      z.string().regex(/^\d{10,15}$/, "Mobile number must be 10-15 digits")
+    ]).optional(),
 
     // countryCode: z.string().min(1, "Select country code"),
     password: z
