@@ -87,7 +87,16 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <Box bg="white" w="100%" maxW="lg" mx="auto" transition="all 0.3s ease" border="1px solid" borderColor="gray.200" borderRadius="lg" p={8}>
+    <Box
+      bg="white"
+      w="100%"
+      maxW="lg"
+      mx="auto"
+      transition="all 0.3s ease"
+      // border="1px solid"
+      // borderColor="gray.200"
+      // borderRadius="lg"
+    >
       <Flex align="center" justify="center" mb={7}>
         <Heading size="2xl">Create Account</Heading>
       </Flex>
@@ -213,8 +222,11 @@ const RegisterForm: React.FC = () => {
                   <Input
                     {...register("mobile", {
                       onChange: (e) => {
-                        e.target.value = e.target.value.replace(/[^0-9+\-\s()]/g, "")
-                      }
+                        e.target.value = e.target.value.replace(
+                          /[^0-9+\-\s()]/g,
+                          ""
+                        )
+                      },
                     })}
                     type="tel"
                     placeholder="Enter mobile number"
@@ -386,7 +398,6 @@ const RegisterForm: React.FC = () => {
           Already have an account?{" "}
           <Link
             color="blue.500"
-            
             textDecoration="underline"
             fontWeight="bold"
             href="/login"
@@ -396,9 +407,9 @@ const RegisterForm: React.FC = () => {
         </Text>
       </Flex>
 
-      <Flex justify="center">
+      {/* <Flex justify="center">
         <Link
-          color="gray.600"
+          color="blue.500"
           fontWeight="medium"
           textDecoration="underline"
           fontSize="sm"
@@ -407,9 +418,9 @@ const RegisterForm: React.FC = () => {
         >
           Privacy Policy
         </Link>
-      </Flex>
+      </Flex> */}
     </Box>
-  );
+  )
 };
 
 export default RegisterForm;
