@@ -64,7 +64,7 @@ const LoginForm = () => {
   };
 
   return (
-    <Box w="full" bg="white" className="light">
+    <Box w="full" bg="white" border="1px solid" borderColor="gray.200" borderRadius="lg" p={8} className="light">
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Box mb={8}>
           <Text
