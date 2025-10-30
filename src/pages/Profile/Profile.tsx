@@ -81,7 +81,7 @@ const Profile = () => {
 
   // Organization data from API
   const organizationData = (data.data as any)?.organization || {
-    name: "",
+    name: "Tech solution",
     mobile_country_code: "",
     billing_email: "",
     branding_logo: "",
@@ -145,7 +145,7 @@ const Profile = () => {
       px={4}
     >
       {/* Header Section */}
-      <Flex justify="space-between" align="center" mb={6}>
+      {/* <Flex justify="space-between" align="center" mb={8}>
         <Text fontSize="2xl" fontWeight="bold" color="#1a365d">
           {isPersonalMode ? "" : organizationData.name}
         </Text>
@@ -163,7 +163,7 @@ const Profile = () => {
           <Image src={Lock} alt="lock icon" width={4} height={4} />
           Change Password
         </Button>
-      </Flex>
+      </Flex> */}
 
       {/* Two Column Layout */}
       <Grid templateColumns={isPersonalMode ? "1fr" : "400px 1fr"} gap={6}>
@@ -172,10 +172,29 @@ const Profile = () => {
           w={isPersonalMode ? "100%" : "auto"}
           mx={isPersonalMode ? "0" : "0"}
         >
+          <Flex justify="space-between" align="center" mb={8}>
+            <Text fontSize="2xl" fontWeight="bold" color="#1a365d">
+              {isPersonalMode ? "" : organizationData.name}
+            </Text>
+            <Button
+              variant="outline"
+              borderColor="gray.300"
+              color="gray.700"
+              size="md"
+              gap={2}
+              _hover={{
+                bg: "white",
+                borderColor: "gray.400",
+              }}
+            >
+              <Image src={Lock} alt="lock icon" width={4} height={4} />
+              Change Password
+            </Button>
+          </Flex>
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* User Info Section */}
-            <Box p={8} bg="white" borderRadius="lg">
-              <Text fontSize="xl" fontWeight="semibold" color="gray.800" mb={8}>
+            <Box>
+              <Text fontSize="xl" fontWeight="semibold" color="gray.800" mb={6}>
                 User Info
               </Text>
 
@@ -203,7 +222,7 @@ const Profile = () => {
                     <Input
                       {...register("firstName")}
                       bg="gray.50"
-                      border="1px"
+                      border="1px solid"
                       borderColor="gray.300"
                       size="lg"
                       _hover={{ borderColor: "gray.400" }}
@@ -230,7 +249,7 @@ const Profile = () => {
                     <Input
                       {...register("lastName")}
                       bg="gray.50"
-                      border="1px"
+                      border="1px solid"
                       borderColor="gray.300"
                       size="lg"
                       _hover={{ borderColor: "gray.400" }}
@@ -259,7 +278,7 @@ const Profile = () => {
                     {...register("email")}
                     type="email"
                     bg="gray.50"
-                    border="1px"
+                    border="1px solid"
                     borderColor="gray.300"
                     size="lg"
                     readOnly
@@ -299,7 +318,7 @@ const Profile = () => {
                       }
                     }}
                     bg="gray.50"
-                    border="1px"
+                    border="1px solid"
                     borderColor="gray.300"
                     size="lg"
                     _hover={{ borderColor: "gray.400" }}
@@ -339,157 +358,150 @@ const Profile = () => {
         {/* Right Column - Team Members - Only show in organization mode */}
         {!isPersonalMode && (
           <Box>
-            <Box bg="white" borderRadius="lg" p={6}>
-              {/* Team Members Header */}
-              <Flex justify="space-between" align="center" mb={6}>
-                <Text fontSize="xl" fontWeight="semibold" color="gray.800">
-                  Team Members
-                </Text>
-                <Button
-                  bg="#1a365d"
-                  color="white"
-                  size="sm"
-                  _hover={{ bg: "#2d3748" }}
-                >
-                  + Invite members
-                </Button>
-              </Flex>
+            {/* Team Members Header */}
+            <Flex justify="space-between" align="center" mb={6}>
+              <Text fontSize="xl" fontWeight="semibold" color="gray.800">
+                Team Members
+              </Text>
+              <Button
+                bg="#1a365d"
+                color="white"
+                size="sm"
+                _hover={{ bg: "#2d3748" }}
+              >
+                + Invite members
+              </Button>
+            </Flex>
 
-              {/* Filter Tabs and Search */}
-              <Flex gap={3} mb={6} flexWrap="wrap" align="center">
-                <Button
-                  variant="outline"
-                  borderColor="green.500"
-                  color="green.700"
-                  size="sm"
-                  gap={2}
+            {/* Filter Tabs and Search */}
+            <Flex gap={3} mb={6} flexWrap="wrap" align="center">
+              <Button
+                variant="outline"
+                borderColor="green.500"
+                color="green.700"
+                size="sm"
+                gap={2}
+              >
+                <Text>✓</Text>
+                Active members
+              </Button>
+              <Button
+                variant="outline"
+                borderColor="red.500"
+                color="red.700"
+                size="sm"
+                gap={2}
+              >
+                <Text>⊘</Text>
+                Inactive members
+              </Button>
+              <Button
+                variant="outline"
+                borderColor="gray.300"
+                color="gray.700"
+                size="sm"
+                gap={2}
+              >
+                <Text>👥</Text>
+                All
+              </Button>
+
+              {/* Search Box */}
+              <Box flex="1" position="relative">
+                <Box
+                  position="absolute"
+                  left="3"
+                  top="50%"
+                  transform="translateY(-50%)"
+                  zIndex="1"
+                  pointerEvents="none"
                 >
-                  <Text>✓</Text>
-                  Active members
-                </Button>
-                <Button
-                  variant="outline"
-                  borderColor="red.500"
-                  color="red.700"
-                  size="sm"
-                  gap={2}
-                >
-                  <Text>⊘</Text>
-                  Inactive members
-                </Button>
-                <Button
-                  variant="outline"
+                  <IoIosSearch size={18} color="gray" />
+                </Box>
+                <Input
+                  placeholder="Search team member"
+                  bg="white"
+                  border="1px solid"
                   borderColor="gray.300"
-                  color="gray.700"
+                  pl="10"
                   size="sm"
-                  gap={2}
-                >
-                  <Text>👥</Text>
-                  All
-                </Button>
+                  _placeholder={{ color: "gray.400" }}
+                  _hover={{ borderColor: "gray.400" }}
+                  _focus={{
+                    borderColor: "#068e1d",
+                    boxShadow: "0 0 0 1px #068e1d",
+                  }}
+                />
+              </Box>
+            </Flex>
 
-                {/* Search Box */}
-                <Box flex="1" position="relative">
-                  <Box
-                    position="absolute"
-                    left="3"
-                    top="50%"
-                    transform="translateY(-50%)"
-                    zIndex="1"
-                    pointerEvents="none"
-                  >
-                    <IoIosSearch size={18} color="gray" />
-                  </Box>
-                  <Input
-                    placeholder="Search team member"
+            {/* Team Members List */}
+            <Box>
+              {teamMembers.length === 0 ? (
+                <Text fontSize="sm" color="gray.500" textAlign="center" py={8}>
+                  No team members to display
+                </Text>
+              ) : (
+                teamMembers.map((member) => (
+                  <Flex
+                    key={member.id}
+                    justify="space-between"
+                    align="center"
+                    p={2}
+                    mb={3}
                     bg="white"
                     border="1px solid"
-                    borderColor="gray.300"
-                    pl="10"
-                    size="sm"
-                    _placeholder={{ color: "gray.400" }}
-                    _hover={{ borderColor: "gray.400" }}
-                    _focus={{
-                      borderColor: "#068e1d",
-                      boxShadow: "0 0 0 1px #068e1d",
-                    }}
-                  />
-                </Box>
-              </Flex>
-
-              {/* Team Members List */}
-              <Box>
-                {teamMembers.length === 0 ? (
-                  <Text
-                    fontSize="sm"
-                    color="gray.500"
-                    textAlign="center"
-                    py={8}
+                    borderColor="gray.200"
+                    borderRadius="lg"
                   >
-                    No team members to display
-                  </Text>
-                ) : (
-                  teamMembers.map((member) => (
-                    <Flex
-                      key={member.id}
-                      justify="space-between"
-                      align="center"
-                      p={2}
-                      mb={3}
-                      bg="white"
-                      border="1px solid"
-                      borderColor="gray.200"
-                      borderRadius="lg"
-                    >
-                      <Flex align="center" gap={3}>
-                        <Avatar.Root size="md">
-                          <Avatar.Fallback name={member.name} />
-                          {member.profile_url && (
-                            <Avatar.Image src={member.profile_url} />
-                          )}
-                        </Avatar.Root>
-                        <Box>
-                          <Flex align="center" gap={2}>
-                            <Text fontWeight="semibold" fontSize="sm">
-                              {member.name}
-                            </Text>
-                            {member.role && (
-                              <Box
-                                bg="blue.100"
-                                color="blue.700"
-                                px={2}
-                                py={0.5}
-                                borderRadius="md"
-                                fontSize="xs"
-                              >
-                                {member.role}
-                              </Box>
-                            )}
-                          </Flex>
-                          <Text fontSize="sm" color="gray.600">
-                            {member.email}
+                    <Flex align="center" gap={3}>
+                      <Avatar.Root size="md">
+                        <Avatar.Fallback name={member.name} />
+                        {member.profile_url && (
+                          <Avatar.Image src={member.profile_url} />
+                        )}
+                      </Avatar.Root>
+                      <Box>
+                        <Flex align="center" gap={2}>
+                          <Text fontWeight="semibold" fontSize="sm">
+                            {member.name}
                           </Text>
-                          {member.joined_date && (
-                            <Text fontSize="xs" color="gray.500">
-                              Joined {member.joined_date}
-                            </Text>
+                          {member.role && (
+                            <Box
+                              bg="blue.100"
+                              color="blue.700"
+                              px={2}
+                              py={0.5}
+                              borderRadius="md"
+                              fontSize="xs"
+                            >
+                              {member.role}
+                            </Box>
                           )}
-                        </Box>
-                      </Flex>
-                      <Button
-                        variant="outline"
-                        borderColor="red.500"
-                        color="red.600"
-                        size="sm"
-                        gap={2}
-                      >
-                        <Text>⊘</Text>
-                        Add to Inactive
-                      </Button>
+                        </Flex>
+                        <Text fontSize="sm" color="gray.600">
+                          {member.email}
+                        </Text>
+                        {member.joined_date && (
+                          <Text fontSize="xs" color="gray.500">
+                            Joined {member.joined_date}
+                          </Text>
+                        )}
+                      </Box>
                     </Flex>
-                  ))
-                )}
-              </Box>
+                    <Button
+                      variant="outline"
+                      borderColor="red.500"
+                      color="red.600"
+                      size="sm"
+                      gap={2}
+                    >
+                      <Text>⊘</Text>
+                      Add to Inactive
+                    </Button>
+                  </Flex>
+                ))
+              )}
             </Box>
           </Box>
         )}
