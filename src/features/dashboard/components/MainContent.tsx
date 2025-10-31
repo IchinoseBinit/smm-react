@@ -22,27 +22,32 @@ const MetricCard = ({
   title,
   value,
   icon,
+  colorScheme,
 }: // percentage,
 {
   title: string;
   value: string | number;
   percentage?: number;
   icon?: React.ElementType | string;
-}) => (
-  <Box
-    bg="white"
-    _dark={{ bg: "gray.800" }}
-    p={6}
-    borderRadius="lg"
-    shadow="sm"
-    border="1px"
-    borderColor="gray.100"
-  >
+  colorScheme?: "default" | "red";
+}) => {
+  const isRedScheme = colorScheme === "red";
+
+  return (
+    <Box
+      bg={isRedScheme ? "red.50" : "white"}
+      _dark={{ bg: "gray.800" }}
+      p={6}
+      borderRadius="lg"
+      shadow="sm"
+      border="1px"
+      borderColor={isRedScheme ? "red.200" : "gray.100"}
+    >
     <Flex justify="space-between" align="center" mb={2}>
       <Text
         fontSize="3xl"
         fontWeight="bold"
-        color="gray.900"
+        color={isRedScheme ? "red.600" : "gray.900"}
         _dark={{ color: "white" }}
       >
         {value}
@@ -80,7 +85,7 @@ const MetricCard = ({
         {percentage}%
       </Text> */}
     </Flex>
-    <Text fontSize="sm" color="gray.600" _dark={{ color: "gray.400" }} mb={2}>
+    <Text fontSize="sm" color={isRedScheme ? "red.700" : "gray.600"} _dark={{ color: "gray.400" }} mb={2}>
       {title}
     </Text>
     {/* <Progress.Root value={percentage} size="sm">
@@ -89,7 +94,8 @@ const MetricCard = ({
       </Progress.Track>
     </Progress.Root> */}
   </Box>
-);
+  );
+};
 
 const PlatformChart = ({
   connectedAccountsData,
@@ -720,7 +726,7 @@ export function MainContent() {
 
         <MetricCard title="Total Posts" value={summary?.total_posts ??0} percentage={0} icon={SuccessIcon} />
         <MetricCard title="Scheduled Post" value={summary?.scheduled_posts ?? 0} percentage={0} icon={ScheduleIcon} />
-        <MetricCard title="Failed Post" value={summary?.failed_posts ?? 0} percentage={0} icon={WarningIcon} />
+        <MetricCard title="Failed Post" value={summary?.failed_posts ?? 0} percentage={0} icon={WarningIcon} colorScheme="red" />
       </Grid>
       {/* 
       <Grid

@@ -297,7 +297,7 @@ const Profile = () => {
                     mb={2}
                     fontSize="md"
                   >
-                    Phone Number
+                    Phone Number ( Optional)
                   </Field.Label>
                   <Input
                     {...register("phone")}
