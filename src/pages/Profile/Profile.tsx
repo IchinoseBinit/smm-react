@@ -12,7 +12,7 @@ import {
   Avatar,
   Image,
   Spinner,
-  
+
 } from "@chakra-ui/react"
 import Lock from "@/assets/lock.svg"
 import { useForm, type SubmitHandler } from "react-hook-form"
@@ -23,6 +23,7 @@ import {
   useUpdateProfile,
 } from "@/features/Profile/hooks/useProfile"
 import { IoIosSearch } from "react-icons/io"
+import { useNavigate } from "react-router-dom"
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -37,6 +38,7 @@ const profileSchema = z.object({
 type ProfileFormInputs = z.infer<typeof profileSchema>
 
 const Profile = () => {
+  const navigate = useNavigate()
   const data = useProfile()
   const updateProfileMutation = useUpdateProfile()
 
@@ -186,6 +188,7 @@ const Profile = () => {
                 bg: "white",
                 borderColor: "gray.400",
               }}
+              onClick={() => navigate("/reset-password/send-opt")}
             >
               <Image src={Lock} alt="lock icon" width={4} height={4} />
               Change Password

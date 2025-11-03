@@ -21,6 +21,8 @@ import Contactus from "./pages/Contactus/Contactus"
 import Inviteteammates from "./pages/organization/Inviteteammates"
 import Profile from "./pages/Profile/Profile";
 import PricingPage from "./pages/Pricing/Pricing";
+import SendOtp from "./pages/auth/SendOtp";
+import ResetPsw from "./pages/auth/ResetPsw";
 function App() {
   return (
     <>
@@ -90,6 +92,14 @@ function App() {
           {flatRoute({
             path: "/auth/youtube",
             component: <YoutubeSuccessPage />,
+          })}
+          {flatRoute({
+            path: "/reset-password/send-opt",
+            component: <SendOtp />,
+          })}
+          {flatRoute({
+            path: "/reset-password",
+            component: <ResetPsw />,
           })}
         </Route>
       </Routes>
