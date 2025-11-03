@@ -97,10 +97,10 @@ export default function CreatePostForm() {
 
     if (!data) return configs
 
-    // Filter out YouTube when surface type is STORY (YouTube doesn't support stories)
+    // Filter out YouTube and TikTok when surface type is STORY (only Facebook and Instagram support stories)
     const isStory = surfaceType[0] === "STORY"
     const filteredConfigs = isStory
-      ? configs.filter(config => config.type !== "YOUTUBE")
+      ? configs.filter(config => config.type !== "YOUTUBE" && config.type !== "TIKTOK")
       : configs
 
     // Sort configs by number of connected accounts (highest first)
