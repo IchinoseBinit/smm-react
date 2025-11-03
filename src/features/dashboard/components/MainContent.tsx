@@ -7,7 +7,7 @@ import {
   Badge,
   Button,
   Image,
-  
+
 } from "@chakra-ui/react";
 import { useEffect, useState, useMemo } from "react";
 
@@ -638,36 +638,15 @@ export function MainContent() {
   console.log("summary.recent_scheduled", summary?.recent_scheduled);
   console.log("summary.recent_posts", summary?.recent_posts);
 
-  // Sample data for demonstration - 8 accounts total
-  // Instagram: 2 accounts (25%), Facebook: 4 accounts (50%), TikTok: 1 account (12.5%), YouTube: 1 account (12.5%)
-  const sampleConnectedAccounts = [
-    { account_type: "INSTAGRAM" },
-    { account_type: "INSTAGRAM" },
-    { account_type: "FACEBOOK" },
-    { account_type: "FACEBOOK" },
-    { account_type: "FACEBOOK" },
-    { account_type: "FACEBOOK" },
-    { account_type: "TIKTOK" },
-    { account_type: "YOUTUBE" },
-  ];
-
-  // Use real data if available, otherwise use sample data for demonstration
-  // const displayData =
-  //   connectedAccountsData && connectedAccountsData.length > 0
-  //     ? connectedAccountsData
-  //     : sampleConnectedAccounts
+  // Transform summary API connected_accounts data to array format for chart
   const connectedFromSummary = summary?.connected_accounts
-    ? Object.entries(
-        summary.connected_accounts as Record<string, number>
-      ).flatMap(([platform, count]) =>
-        Array(count).fill({ account_type: platform.toUpperCase() })
-      )
+    ? Object.entries(summary.connected_accounts as Record<string, number>)
+        .flatMap(([platform, count]) =>
+          Array(count).fill({ account_type: platform.toUpperCase() })
+        )
     : [];
 
-  const displayData =
-    connectedFromSummary.length > 0
-      ? connectedFromSummary
-      : sampleConnectedAccounts;
+  const displayData = connectedFromSummary;
 
   // Build recent posts from summary API
   const displayRecent =
@@ -768,7 +747,7 @@ export function MainContent() {
             Key performance insights
           </Text>
           <Box>
-            <OverviewItem label="Post this month" value="24" badge="" />
+            <OverviewItem label="Total Posts" value={summary?.total_posts ?? 0} badge="" />
             <OverviewItem
               label="Scheduled Post"
               value={summary?.scheduled_posts ?? 0}
