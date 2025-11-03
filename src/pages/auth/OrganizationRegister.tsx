@@ -87,7 +87,9 @@ const orgFormSchema = z.object({
     z.literal(""),
     z.string().email("Please enter a valid email address")
   ]).optional(),
-  countryCode: z.string(),
+  countryCode: z
+    .string()
+    .nonempty("Country code is required"),
   brandingLogoUrl: z
     .string()
     .refine(
@@ -102,7 +104,7 @@ const OrganizationRegister: React.FC = () => {
   const [accountType, setAccountType] = useState<AccountType>("individual")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const signupOrganization = useSignupOrganization()
+  const { mutate: signupOrganization, isPending } = useSignupOrganization()
 
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -212,20 +214,20 @@ const OrganizationRegister: React.FC = () => {
           organization: {
             name: orgFormData.organizationName,
             mobile_country_code: orgFormData.countryCode,
-            billing_email: orgFormData.billingEmail,
+            billing_email: orgFormData.billingEmail?.trim() || null,
             request_approval: true,
-            branding_logo: orgFormData.brandingLogoUrl,
+            branding_logo: orgFormData.brandingLogoUrl?.trim() || null,
             managed_posts: true,
           },
           user: {
             email: formData.email,
             first_name: formData.firstName,
             last_name: formData.lastName,
-            mobile: formData.phoneNumber,
+            mobile: formData.phoneNumber?.trim() || null,
             password: formData.password,
           },
         }
-        signupOrganization.mutate(signupRequest)
+        signupOrganization(signupRequest)
       }
     } else {
       // Individual account - validate and move to organization
@@ -294,7 +296,11 @@ const OrganizationRegister: React.FC = () => {
                 <Box
                   flex={1}
                   as="button"
-                  onClick={() => setAccountType("individual")}
+                  onClick={() => {
+                    setAccountType("individual")
+                    setSubmitted(false) // Reset validation state
+                    setOrgErrors({}) // Clear org errors
+                  }}
                   bg={accountType === "individual" ? "#3b83f6" : "white"}
                   color={accountType === "individual" ? "white" : "gray.700"}
                   border={accountType === "individual" ? "none" : "1px solid"}
@@ -325,7 +331,11 @@ const OrganizationRegister: React.FC = () => {
                 <Box
                   flex={1}
                   as="button"
-                  onClick={() => setAccountType("organization")}
+                  onClick={() => {
+                    setAccountType("organization")
+                    setSubmitted(false) // Reset validation state
+                    setErrors({}) // Clear individual errors
+                  }}
                   bg={accountType === "organization" ? "#3b83f6" : "white"}
                   color={
                     accountType === "organization" ? "white" : "gray.700"
@@ -755,6 +765,9 @@ const OrganizationRegister: React.FC = () => {
                 _hover={{ bg: "blue.600" }}
                 onClick={handleSubmit}
                 py={6}
+                loading={isPending}
+                disabled={isPending}
+                loadingText={accountType === "organization" ? "Signing Up..." : "Continue"}
               >
                 {accountType === "organization" ? "Sign Up" : "Continue"}
               </Button>
