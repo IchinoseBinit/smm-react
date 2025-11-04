@@ -12,7 +12,7 @@ import OrganizationRegister from "@/pages/auth/OrganizationRegister";
 const authRoutes = [
   { path: "/register", element: <OrganizationRegister /> },
   { path: "/login", element: <OrganizationSignup /> },
-  { path: "/reset-password/send-opt", element: <SendOtp /> },
+  { path: "/reset-password/send-otp", element: <SendOtp /> },
   { path: "/reset-password", element: <ResetPsw /> },
   { path: "/verify-otp", element: <EmailVerification /> },
 ]
