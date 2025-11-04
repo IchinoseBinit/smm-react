@@ -64,7 +64,15 @@ const LoginForm = () => {
   };
 
   return (
-    <Box w="full" bg="white" border="1px solid" borderColor="gray.200" borderRadius="lg" p={8} className="light">
+    <Box
+      w="full"
+      bg="white"
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="lg"
+      p={8}
+      className="light"
+    >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Box mb={8}>
           <Text
@@ -155,12 +163,13 @@ const LoginForm = () => {
                 <Checkbox.Label>Remember me</Checkbox.Label>
               </Checkbox.Root>
               <Link
-                href="/reset-password/send-opt"
+                onClick={() => navigate("/reset-password/send-otp")}
                 color="blue.600"
                 fontSize="sm"
                 fontWeight="medium"
+                cursor="pointer"
               >
-                Forgot password?
+                Forgot password ?
               </Link>
             </Flex>
           </Fieldset.Root>
@@ -180,7 +189,7 @@ const LoginForm = () => {
 
           <Text textAlign="center" mt={6} color="gray.600">
             Don't have an account?{" "}
-            <Link href="/register" color="blue.600" fontWeight="medium">
+            <Link onClick={() => navigate("/register")} color="blue.600" fontWeight="medium" cursor="pointer">
               Sign up
             </Link>
           </Text>

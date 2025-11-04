@@ -13,6 +13,7 @@ import {
   Image,
   SimpleGrid,
   Checkbox,
+  Skeleton,
 } from "@chakra-ui/react"
 import { FiMail, FiUsers, FiX } from "react-icons/fi"
 import LightLogo from "@/assets/app/Header Logo White.png"
@@ -146,7 +147,7 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
       justifyContent="center"
       p={4}
     >
-      <Container maxW="2xl"  py={8}>
+      <Container maxW="2xl" py={8}>
         <VStack gap={8} w="full">
           {/* Logo */}
           <VStack gap={4} textAlign="center">
@@ -300,11 +301,36 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                           Roles
                         </Field.Label>
                         {rolesLoading && (
-                          <Box p={4} textAlign="center">
-                            <Text color="gray.600" fontSize="md">
-                              Loading roles...
-                            </Text>
-                          </Box>
+                          <SimpleGrid
+                            columns={{ base: 1, md: 1 }}
+                            gap={4}
+                            mt={2}
+                            width={"full"}
+                          >
+                            {[1].map((i) => (
+                              <Box
+                                key={i}
+                                p={5}
+                                border="2px solid"
+                                borderColor="gray.200"
+                                borderRadius="xl"
+                                bg="white"
+                                width={"full"}
+                              >
+                                <HStack gap={4} align="start">
+                                  <Skeleton
+                                    height="20px"
+                                    width="20px"
+                                    borderRadius="md"
+                                    mt={1}
+                                  />
+                                  <VStack gap={2} align="start" flex={1}>
+                                    <Skeleton height="14px" width="80%" />
+                                  </VStack>
+                                </HStack>
+                              </Box>
+                            ))}
+                          </SimpleGrid>
                         )}
                         {rolesError && (
                           <Box

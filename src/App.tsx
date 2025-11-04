@@ -32,6 +32,15 @@ function App() {
         {flatRoute({ path: "/privacypolicy", component: <Privacypolicy /> })}
         {flatRoute({ path: "/aboutus", component: <Aboutus /> })}
         {flatRoute({
+          path: "/reset-password",
+          component: <ResetPsw />,
+        })}
+        ,
+        {flatRoute({
+          path: "/reset-password/send-otp",
+          component: <SendOtp />,
+        })},
+        {flatRoute({
           path: "/auth",
           component: <OrganizationSignup />,
         })}
@@ -48,9 +57,7 @@ function App() {
           component: <Termsofservices />,
         })}
         <Route path="/*" element={<AuthRoutes />} />
-
         <Route element={<ProtectedRoutesWithAuth />}>
-
           {layoutRoute({ path: "/dashboard", component: <Dashboard /> })}
           {layoutRoute({ path: "/create", component: <Create /> })}
           {layoutRoute({
@@ -92,14 +99,6 @@ function App() {
           {flatRoute({
             path: "/auth/youtube",
             component: <YoutubeSuccessPage />,
-          })}
-          {flatRoute({
-            path: "/reset-password/send-opt",
-            component: <SendOtp />,
-          })}
-          {flatRoute({
-            path: "/reset-password",
-            component: <ResetPsw />,
           })}
         </Route>
       </Routes>

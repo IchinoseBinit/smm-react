@@ -18,9 +18,8 @@ const updateProfile = (data: TUpdateProfile) =>
   safeApiCall(() =>
     axiosInstance
       .patch(
-        `${API_URL.UPDATE_PROFILE()}`, {
-          data
-        }
+        `${API_URL.UPDATE_PROFILE()}`,
+        data
       )
       .then((res) => res.data),
   );

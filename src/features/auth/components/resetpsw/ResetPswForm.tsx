@@ -26,7 +26,7 @@ export default function ResetPswForm() {
   console.log("otp verifies",otpVerified)
   useEffect(() => {
     if (!email) {
-      navigate("/reset-password/send-opt")
+      navigate("/reset-password/send-otp")
     }
   }, [email, navigate])
 

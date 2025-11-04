@@ -1,5 +1,5 @@
 
-import {  useEffect } from "react";
+import { useEffect, useState } from "react"
 import {
   Box,
   Button,
@@ -31,8 +31,13 @@ const profileSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z
     .string()
-    .min(10, "Phone number must be at least 10 digits")
-    .regex(/^\d+$/, "Phone number must contain only numbers"),
+    .optional()
+    .refine((val) => !val || val.length >= 10, {
+      message: "Phone number must be at least 10 digits",
+    })
+    .refine((val) => !val || /^\d+$/.test(val), {
+      message: "Phone number must contain only numbers",
+    }),
 })
 
 type ProfileFormInputs = z.infer<typeof profileSchema>
@@ -41,6 +46,14 @@ const Profile = () => {
   const navigate = useNavigate()
   const data = useProfile()
   const updateProfileMutation = useUpdateProfile()
+  const [activeFilter, setActiveFilter] = useState<
+    "all" | "active" | "inactive"
+  >("all")
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const handleInviteMember = () => {
+    navigate("/invite")
+  }
 
   const {
     register,
@@ -72,7 +85,7 @@ const Profile = () => {
     const updateData = {
       first_name: formData.firstName,
       last_name: formData.lastName,
-      phone: formData.phone,
+      phone: formData.phone || "",
       profile_url: data.data?.user?.profile_url || "",
     }
 
@@ -116,7 +129,7 @@ const Profile = () => {
       profile_url: "",
       role: "Member",
       joined_date: "April 2020",
-      is_active: true,
+      is_active: false,
     },
     {
       id: 4,
@@ -128,6 +141,23 @@ const Profile = () => {
       is_active: true,
     },
   ]
+
+  // Filter team members based on active filter and search query
+  const filteredTeamMembers = teamMembers.filter((member) => {
+    // Apply status filter
+    const matchesFilter =
+      activeFilter === "all" ||
+      (activeFilter === "active" && member.is_active) ||
+      (activeFilter === "inactive" && !member.is_active)
+
+    // Apply search filter
+    const matchesSearch =
+      searchQuery === "" ||
+      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.email.toLowerCase().includes(searchQuery.toLowerCase())
+
+    return matchesFilter && matchesSearch
+  })
 
   // Show loading state while data is being fetched
   if (data.isLoading) {
@@ -188,7 +218,7 @@ const Profile = () => {
                 bg: "white",
                 borderColor: "gray.400",
               }}
-              onClick={() => navigate("/reset-password/send-opt")}
+              onClick={() => navigate("/reset-password/send-otp")}
             >
               <Image src={Lock} alt="lock icon" width={4} height={4} />
               Change Password
@@ -369,6 +399,7 @@ const Profile = () => {
               <Button
                 bg="#1a365d"
                 color="white"
+                onClick={() => handleInviteMember()}
                 size="sm"
                 _hover={{ bg: "#2d3748" }}
               >
@@ -380,30 +411,49 @@ const Profile = () => {
             <Flex gap={3} mb={6} flexWrap="wrap" align="center">
               <Button
                 variant="outline"
-                borderColor="green.500"
-                color="green.700"
+                borderColor={
+                  activeFilter === "active" ? "green.500" : "gray.300"
+                }
+                color={activeFilter === "active" ? "green.700" : "gray.700"}
+                bg={activeFilter === "active" ? "green.50" : "transparent"}
                 size="sm"
                 gap={2}
+                onClick={() => setActiveFilter("active")}
+                _hover={{
+                  bg: activeFilter === "active" ? "green.100" : "gray.50",
+                }}
               >
                 <Text>✓</Text>
                 Active members
               </Button>
               <Button
                 variant="outline"
-                borderColor="red.500"
-                color="red.700"
+                borderColor={
+                  activeFilter === "inactive" ? "red.500" : "gray.300"
+                }
+                color={activeFilter === "inactive" ? "red.700" : "gray.700"}
+                bg={activeFilter === "inactive" ? "red.50" : "transparent"}
                 size="sm"
                 gap={2}
+                onClick={() => setActiveFilter("inactive")}
+                _hover={{
+                  bg: activeFilter === "inactive" ? "red.100" : "gray.50",
+                }}
               >
                 <Text>⊘</Text>
                 Inactive members
               </Button>
               <Button
                 variant="outline"
-                borderColor="gray.300"
-                color="gray.700"
+                borderColor={activeFilter === "all" ? "blue.500" : "gray.300"}
+                color={activeFilter === "all" ? "blue.700" : "gray.700"}
+                bg={activeFilter === "all" ? "blue.50" : "transparent"}
                 size="sm"
                 gap={2}
+                onClick={() => setActiveFilter("all")}
+                _hover={{
+                  bg: activeFilter === "all" ? "blue.100" : "gray.50",
+                }}
               >
                 <Text>👥</Text>
                 All
@@ -423,6 +473,8 @@ const Profile = () => {
                 </Box>
                 <Input
                   placeholder="Search team member"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   bg="white"
                   border="1px solid"
                   borderColor="gray.300"
@@ -440,12 +492,12 @@ const Profile = () => {
 
             {/* Team Members List */}
             <Box>
-              {teamMembers.length === 0 ? (
+              {filteredTeamMembers.length === 0 ? (
                 <Text fontSize="sm" color="gray.500" textAlign="center" py={8}>
                   No team members to display
                 </Text>
               ) : (
-                teamMembers.map((member) => (
+                filteredTeamMembers.map((member) => (
                   <Flex
                     key={member.id}
                     justify="space-between"
@@ -494,13 +546,16 @@ const Profile = () => {
                     </Flex>
                     <Button
                       variant="outline"
-                      borderColor="red.500"
-                      color="red.600"
+                      borderColor={member.is_active ? "red.500" : "green.500"}
+                      color={member.is_active ? "red.600" : "green.600"}
                       size="sm"
                       gap={2}
+                      _hover={{
+                        bg: member.is_active ? "red.50" : "green.50",
+                      }}
                     >
-                      <Text>⊘</Text>
-                      Add to Inactive
+                      <Text>{member.is_active ? "⊘" : "✓"}</Text>
+                      {member.is_active ? "Add to Inactive" : "Add to Active"}
                     </Button>
                   </Flex>
                 ))
