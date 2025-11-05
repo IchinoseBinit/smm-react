@@ -126,9 +126,6 @@ const AcceptInvite: React.FC = () => {
       <Container maxW="2xl" py={8}>
         <VStack gap={8} w="full">
           {/* Logo */}
-          <VStack gap={4} textAlign="center">
-            <Image src={LightLogo} height={10} width="auto" maxW="100%" />
-          </VStack>
 
           {/* Form Container */}
           <Box
@@ -142,9 +139,12 @@ const AcceptInvite: React.FC = () => {
             border="1px solid"
             borderColor="gray.100"
           >
+            <VStack gap={4} textAlign="center">
+              <Image src={LightLogo} height={10} width="auto" maxW="100%" />
+            </VStack>
             <VStack gap={8}>
               <VStack gap={2} textAlign="center">
-                <Heading size="2xl" color="gray.900" fontWeight="bold">
+                <Heading size="2xl" mt={2} color="gray.900" fontWeight="bold">
                   Accept Invitation
                 </Heading>
                 <Text color="gray.600" fontSize="lg" maxW="md">
@@ -310,11 +310,14 @@ const AcceptInvite: React.FC = () => {
                     fontSize="md"
                     mb={3}
                   >
-                    Mobile Number <Text as="span" color="gray.500" fontWeight="normal">(Optional)</Text>
+                    Mobile Number{" "}
+                    <Text as="span" color="gray.500" fontWeight="normal">
+                      (Optional)
+                    </Text>
                   </Field.Label>
                   <Box position="relative" w="full">
                     <Input
-                      type="tel"
+                      type="number"
                       placeholder="Enter your mobile number"
                       value={formData.mobile}
                       onChange={(e) =>
@@ -432,11 +435,7 @@ const AcceptInvite: React.FC = () => {
                       {errors.password}
                     </Text>
                   )}
-                  <Text
-                    color="gray.500"
-                    fontSize="sm"
-                    mt={2}
-                  >
+                  <Text color="gray.500" fontSize="sm" mt={2}>
                     Password must be at least 6 characters
                   </Text>
                 </Field.Root>
@@ -464,7 +463,7 @@ const AcceptInvite: React.FC = () => {
                 loading={isAccepting}
                 disabled={isAccepting || !!errors.token}
               >
-                {isAccepting ? "Accepting Invitation..." : "Accept Invitation"}
+                {isAccepting ? "Accepting..." : "Accept "}
               </Button>
             </VStack>
           </Box>
