@@ -19,6 +19,7 @@ import Aboutus from "./pages/Company/Aboutus"
 import OrganizationSignup from "./pages/organization/OrganizationSignup"
 import Contactus from "./pages/Contactus/Contactus"
 import Inviteteammates from "./pages/organization/Inviteteammates"
+import AcceptInvite from "./pages/organization/AcceptInvite"
 import Profile from "./pages/Profile/Profile";
 import PricingPage from "./pages/Pricing/Pricing";
 import SendOtp from "./pages/auth/SendOtp";
@@ -51,6 +52,10 @@ function App() {
         {flatRoute({
           path: "/invite",
           component: <Inviteteammates />,
+        })}
+        {flatRoute({
+          path: "/accept",
+          component: <AcceptInvite />,
         })}
         {flatRoute({
           path: "/termsofservices",
