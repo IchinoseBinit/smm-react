@@ -337,7 +337,7 @@ const Profile = () => {
                     type="tel"
                     pattern="[0-9]*"
                     inputMode="numeric"
-                    placeholder="9845463404"
+                    placeholder="xxxxxxxxxx"
                     onKeyDown={(e) => {
                       if (
                         !/[0-9]/.test(e.key) &&
