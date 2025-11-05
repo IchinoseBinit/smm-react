@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
+import {  useNavigate } from "react-router";
 import { handleError, handleSuccess } from "../lib/utils";
 import {
 	acceptInvite,
@@ -22,10 +22,15 @@ const useAcceptInvite = () => {
 };
 
 const useCreateOrgInvite = () => {
+		const navigate = useNavigate();
+
 	return useMutation<any, Error, { orgId: string | number; data: CreateOrgInviteRequest }>({
 		mutationFn: ({ orgId, data }: { orgId: string | number; data: CreateOrgInviteRequest }) =>
 			createOrgInvite(orgId, data),
-		onSuccess: () => handleSuccess("Invite sent", "User has been invited"),
+		onSuccess: () => () => {
+			handleSuccess("Invite sent", "User has been invited");
+			navigate("/profile");
+		} ,
 		onError: (error: Error) => handleError("Create org invite failed", error),
 	});
 };
