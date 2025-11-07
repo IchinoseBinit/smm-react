@@ -38,7 +38,7 @@ export default function SocialMediaPosts({
   const getCurrentPosts = () => {
     switch (status) {
       case "posted": return postedPosts
-      case "scheduled": return pendingPosts
+      case "pending": return pendingPosts
       case "failed": return failedPosts
       default: return []
     }
@@ -90,7 +90,7 @@ if (isLoading) return <CircularLoading />
               </Tabs.Trigger>
 
               <Tabs.Trigger
-                value="scheduled"
+                value="pending"
                 display="flex"
                 alignItems="center"
                 gap={2}
@@ -142,7 +142,7 @@ if (isLoading) return <CircularLoading />
                 </VStack>
               </Tabs.Content>
 
-              <Tabs.Content value="scheduled">
+              <Tabs.Content value="pending">
                 <VStack gap={4} align="stretch">
                   {(!pendingPosts || pendingPosts.length === 0) ? (
                     <Text textAlign="center" color="gray.500" py={8}>

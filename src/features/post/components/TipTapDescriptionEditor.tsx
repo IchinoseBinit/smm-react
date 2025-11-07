@@ -10,6 +10,7 @@ import {
   Button,
   Menu,
   Portal,
+  Popover,
 } from "@chakra-ui/react"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
@@ -20,7 +21,7 @@ import { TextStyle } from "@tiptap/extension-text-style"
 import { IoMdArrowDropup, IoMdArrowDropdown } from "react-icons/io"
 import {
   FiSmile,
-  FiHash,
+  // FiHash,
   FiBold,
   FiItalic,
   FiUnderline,
@@ -34,6 +35,7 @@ import {
   MdFormatStrikethrough,
   MdFormatClear,
 } from "react-icons/md"
+import EmojiPicker, { type EmojiClickData } from "emoji-picker-react"
 import type {
   FormatType,
   TiptapDescriptionEditorProps,
@@ -55,12 +57,13 @@ export const TiptapDescriptionEditor: React.FC<
   value = "",
   onChange,
   onEmojiClick,
-  onHashtagClick,
+  // onHashtagClick,
   maxHeight = "300px",
 }) => {
   const [selectedFont, setSelectedFont] = useState("")
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isEmpty, setIsEmpty] = useState(true)
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
 
   const editor = useEditor({
     extensions: [
@@ -166,6 +169,22 @@ export const TiptapDescriptionEditor: React.FC<
     const { fontFamily } = editor.getAttributes("textStyle")
     return fontFamily || selectedFont || "Arial"
   }, [editor, selectedFont])
+
+  const handleEmojiSelect = useCallback(
+    (emojiData: EmojiClickData) => {
+      if (!editor) return
+
+      // Insert emoji at current cursor position
+      editor.chain().focus().insertContent(emojiData.emoji).run()
+
+      // Close the emoji picker
+      setIsEmojiPickerOpen(false)
+
+      // Call the optional onEmojiClick callback
+      onEmojiClick?.()
+    },
+    [editor, onEmojiClick]
+  )
 
   const isActive = useCallback(
     (format: FormatType) => {
@@ -452,14 +471,47 @@ export const TiptapDescriptionEditor: React.FC<
           alignItems="center"
           justifyContent="center"
         >
-          <HStack gap={1} cursor="pointer" onClick={onEmojiClick}>
-            <Icon as={FiSmile} color="black.700" />
-            <Text fontSize="sm" color="black.700" fontWeight="medium">
-              Emoji
-            </Text>
-          </HStack>
+          <Popover.Root
+            open={isEmojiPickerOpen}
+            onOpenChange={(e) => setIsEmojiPickerOpen(e.open)}
+          >
+            <Popover.Trigger asChild>
+              <HStack
+                gap={1}
+                cursor="pointer"
+                _hover={{ bg: "gray.50" }}
+                p={2}
+                borderRadius="md"
+                transition="background 0.2s"
+              >
+                <Icon as={FiSmile} color="black.700" />
+                <Text fontSize="sm" color="black.700" fontWeight="medium">
+                  Emoji
+                </Text>
+              </HStack>
+            </Popover.Trigger>
+            <Portal>
+              <Popover.Positioner>
+                <Popover.Content
+                  p={0}
+                  borderRadius="md"
+                  boxShadow="lg"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  overflow="hidden"
+                  width="auto"
+                >
+                  <EmojiPicker
+                    onEmojiClick={handleEmojiSelect}
+                    width={350}
+                    height={400}
+                  />
+                </Popover.Content>
+              </Popover.Positioner>
+            </Portal>
+          </Popover.Root>
 
-          <Box w="1px" h="16px" bg="gray.200" />
+          {/* <Box w="1px" h="16px" bg="gray.200" />
 
           <HStack gap={1} cursor="pointer" onClick={onHashtagClick}>
             <Icon
@@ -473,7 +525,7 @@ export const TiptapDescriptionEditor: React.FC<
             <Text fontSize="sm" color="#00325c" fontWeight="medium">
               Hashtag Suggestion
             </Text>
-          </HStack>
+          </HStack> */}
         </HStack>
       </Box>
     </Box>

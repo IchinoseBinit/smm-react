@@ -27,10 +27,10 @@ const useCreateOrgInvite = () => {
 	return useMutation<any, Error, { orgId: string | number; data: CreateOrgInviteRequest }>({
 		mutationFn: ({ orgId, data }: { orgId: string | number; data: CreateOrgInviteRequest }) =>
 			createOrgInvite(orgId, data),
-		onSuccess: () => () => {
+		onSuccess: () => {
 			handleSuccess("Invite sent", "User has been invited");
 			navigate("/profile");
-		} ,
+		},
 		onError: (error: Error) => handleError("Create org invite failed", error),
 	});
 };
