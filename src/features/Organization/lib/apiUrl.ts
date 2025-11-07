@@ -10,6 +10,7 @@ const API_URL = {
   SIGNUP_ORGANIZATION: () => `${api}/user/orgs/signup/`,
   Get_Roles: () => `${api}/user/roles/org/`,
   
+  GET_USER_OF_ORGANIZATION: (org_id :string , user_id:string)=>`${api}/user/org-users/?org_id=${org_id}&user_id=${user_id}`,
   
 
 };

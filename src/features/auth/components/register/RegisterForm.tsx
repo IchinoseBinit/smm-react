@@ -400,7 +400,8 @@ const RegisterForm: React.FC = () => {
             color="blue.500"
             textDecoration="underline"
             fontWeight="bold"
-            href="/login"
+            onClick={() => window.location.href = "/login"}
+            cursor="pointer"
           >
             Sign in
           </Link>

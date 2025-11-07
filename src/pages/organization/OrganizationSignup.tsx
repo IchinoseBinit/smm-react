@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import {
   Box,
   Button,
@@ -12,14 +12,26 @@ import {
 import LightLogo from "@/assets/app/Header Logo White.png"
 import { LoginFormSection } from "@/features/auth/components/login/LoginFormSection"
 import { RegisterFormSection } from "@/features/auth/components/register/RegisterFormSection"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 
 const OrganizationSignup: React.FC = () => {
   const navigate = useNavigate()
-  const location = useLocation()
+  const [searchParams] = useSearchParams()
+  const modal = searchParams.get("modal")
+
+  // Determine initial tab based on URL parameter
   const [activeTab, setActiveTab] = useState<"signin" | "create">(
-    location.pathname === "/login" ? "signin" : "create"
+    modal === "signup" ? "create" : "signin"
   )
+
+  // Update tab when URL parameter changes
+  useEffect(() => {
+    if (modal === "signup") {
+      setActiveTab("create")
+    } else {
+      setActiveTab("signin")
+    }
+  }, [modal])
 
   return (
     <Box
@@ -62,7 +74,10 @@ const OrganizationSignup: React.FC = () => {
               _hover={{
                 bg: activeTab === "signin" ? "white" : "gray.300",
               }}
-              onClick={() => setActiveTab("signin")}
+              onClick={() => {
+                setActiveTab("signin")
+                navigate("/login")
+              }}
               borderRadius="md"
             >
               Sign In
@@ -76,7 +91,10 @@ const OrganizationSignup: React.FC = () => {
               _hover={{
                 bg: activeTab === "create" ? "white" : "gray.300",
               }}
-              onClick={() => setActiveTab("create")}
+              onClick={() => {
+                setActiveTab("create")
+                navigate("/login?modal=signup")
+              }}
               borderRadius="md"
             >
               Create Account

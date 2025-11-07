@@ -189,7 +189,12 @@ const LoginForm = () => {
 
           <Text textAlign="center" mt={6} color="gray.600">
             Don't have an account?{" "}
-            <Link onClick={() => navigate("/register")} color="blue.600" fontWeight="medium" cursor="pointer">
+            <Link
+              onClick={() => navigate("/login?modal=signup")}
+              color="blue.600"
+              fontWeight="medium"
+              cursor="pointer"
+            >
               Sign up
             </Link>
           </Text>

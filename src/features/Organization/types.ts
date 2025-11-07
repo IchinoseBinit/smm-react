@@ -39,4 +39,20 @@ type SignupOrganizationRequest = {
   };
 };
 
-export type { Role, AcceptInviteRequest, CreateOrgInviteRequest, SignupOrganizationRequest };
+
+ type TorgUser = {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  mobile: string;
+  is_email_verified: boolean;
+  is_active: boolean;
+  profile_url: string | null;
+  role: Role;
+}
+
+
+
+
+export type { Role, AcceptInviteRequest, CreateOrgInviteRequest, SignupOrganizationRequest,TorgUser };
