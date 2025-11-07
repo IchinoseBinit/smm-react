@@ -51,7 +51,7 @@ export default function CTASection() {
             justify="center"
           >
             <Button
-              onClick={() => (window.location.href = "/register")}
+              onClick={() => (window.location.href = "/login?modal=signup")}
               size="lg"
               bg="white"
               color="blue.500"

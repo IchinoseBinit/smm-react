@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import {
   Box,
   Button,
@@ -10,19 +10,21 @@ import {
   Field,
   Fieldset,
   Avatar,
-  Image,
+  // Image,
   Spinner,
 
 } from "@chakra-ui/react"
-import Lock from "@/assets/lock.svg"
+// import Lock from "@/assets/lock.svg"
 import { useForm, type SubmitHandler } from "react-hook-form"
+import { Skeleton, SkeletonCircle, SkeletonText } from "@chakra-ui/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import {
   useProfile,
   useUpdateProfile,
 } from "@/features/Profile/hooks/useProfile"
-import { IoIosSearch } from "react-icons/io"
+import { useGetMembersOfOrganization } from "@/features/Organization/hooks/useOrganization"
+// import { IoIosSearch } from "react-icons/io"
 import { useNavigate } from "react-router-dom"
 
 const profileSchema = z.object({
@@ -46,14 +48,16 @@ const Profile = () => {
   const navigate = useNavigate()
   const data = useProfile()
   const updateProfileMutation = useUpdateProfile()
-  const [activeFilter, setActiveFilter] = useState<
-    "all" | "active" | "inactive"
-  >("all")
-  const [searchQuery, setSearchQuery] = useState("")
+  // const [activeFilter, setActiveFilter] = useState<
+  //   "all" | "active" | "inactive"
+  // >("all")
+  // const [searchQuery, setSearchQuery] = useState("")
 
   const handleInviteMember = () => {
     navigate("/invite")
   }
+
+ 
 
   const {
     register,
@@ -94,70 +98,54 @@ const Profile = () => {
 
   const isPersonalMode = data.data?.context?.mode === "personal"
 
-  // Organization data from API
-  const organizationData = (data.data as any)?.organization || {
-    name: "Tech solution",
-    mobile_country_code: "",
-    billing_email: "",
-    branding_logo: "",
-  }
+  // Get organization members from API (only in organization mode)
+  const orgId =
+    (data.data as any)?.org_id?.toString() ||
+    (data.data as any)?.organization_id?.toString() ||
+    (data.data as any)?.organization?.id?.toString() ||
+    (data.data as any)?.organization?.org_id?.toString() ||
+    (data.data as any)?.context?.org_id?.toString() ||
+    (data.data as any)?.context?.organization_id?.toString() ||
+    (data.data as any)?.context?.company_user_id?.toString() ||
+    ""
+  const userId = data.data?.user?.id?.toString() || ""
 
-  // Team members data - hardcoded for now
-  const teamMembers = data.data?.team_members || [
-    {
-      id: 1,
-      name: "Asha Shrestha",
-      email: "bibekupreti9813@gmail.com",
-      profile_url: "",
-      role: "Member",
-      joined_date: "March 2020",
-      is_active: true,
-    },
-    {
-      id: 2,
-      name: "Ram Oli",
-      email: "ramoli@gmail.com",
-      profile_url: "",
-      role: "Member",
-      joined_date: "March 2020",
-      is_active: true,
-    },
-    {
-      id: 3,
-      name: "Rita Oli",
-      email: "ritaoli@gmail.com",
-      profile_url: "",
-      role: "Member",
-      joined_date: "April 2020",
-      is_active: false,
-    },
-    {
-      id: 4,
-      name: "Sita Sharma",
-      email: "sitasharma@gmail.com",
-      profile_url: "",
-      role: "Member",
-      joined_date: "May 2020",
-      is_active: true,
-    },
-  ]
+  const {
+    data: orgMembers,
+    isLoading: membersLoading,
+    error: membersError
+  } = useGetMembersOfOrganization(orgId, userId)
+
+  // Map API data to team members format
+  const teamMembers = orgMembers?.map((member) => ({
+    id: member.id,
+    name: `${member.first_name} ${member.last_name}`,
+    email: member.email,
+    profile_url: member.profile_url || "",
+    role: member.role?.name || "Member",
+    joined_date: "", // API doesn't provide this, you can add it if available
+    is_active: member.is_active,
+  })) || []
 
   // Filter team members based on active filter and search query
-  const filteredTeamMembers = teamMembers.filter((member) => {
-    // Apply status filter
-    const matchesFilter =
-      activeFilter === "all" ||
-      (activeFilter === "active" && member.is_active) ||
-      (activeFilter === "inactive" && !member.is_active)
+  // const filteredTeamMembers = teamMembers.filter((member) => {
+  //   // Apply status filter
+  //   const matchesFilter =
+  //     activeFilter === "all" ||
+  //     (activeFilter === "active" && member.is_active) ||
+  //     (activeFilter === "inactive" && !member.is_active)
 
-    // Apply search filter
-    const matchesSearch =
-      searchQuery === "" ||
-      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.email.toLowerCase().includes(searchQuery.toLowerCase())
+  //   // Apply search filter
+  //   const matchesSearch =
+  //     searchQuery === "" ||
+  //     member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     member.email.toLowerCase().includes(searchQuery.toLowerCase())
 
-    return matchesFilter && matchesSearch
-  })
+  //   return matchesFilter && matchesSearch
+  // })
+
+  // Temporarily show all team members without filtering
+  const filteredTeamMembers = teamMembers
 
   // Show loading state while data is being fetched
   if (data.isLoading) {
@@ -204,7 +192,7 @@ const Profile = () => {
           w={isPersonalMode ? "100%" : "auto"}
           mx={isPersonalMode ? "0" : "0"}
         >
-          <Flex justify="space-between" align="center" mb={8}>
+          {/* <Flex justify="space-between" align="center" mb={8}>
             <Text fontSize="2xl" fontWeight="bold" color="#1a365d">
               {isPersonalMode ? "" : organizationData.name}
             </Text>
@@ -223,7 +211,7 @@ const Profile = () => {
               <Image src={Lock} alt="lock icon" width={4} height={4} />
               Change Password
             </Button>
-          </Flex>
+          </Flex> */}
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* User Info Section */}
             <Box>
@@ -408,6 +396,8 @@ const Profile = () => {
             </Flex>
 
             {/* Filter Tabs and Search */}
+
+{/*             
             <Flex gap={3} mb={6} flexWrap="wrap" align="center">
               <Button
                 variant="outline"
@@ -459,7 +449,6 @@ const Profile = () => {
                 All
               </Button>
 
-              {/* Search Box */}
               <Box flex="1" position="relative">
                 <Box
                   position="absolute"
@@ -488,11 +477,38 @@ const Profile = () => {
                   }}
                 />
               </Box>
-            </Flex>
+            </Flex> */}
 
-            {/* Team Members List */}
             <Box>
-              {filteredTeamMembers.length === 0 ? (
+              {membersLoading ? (
+                <Box gap={3}>
+                  {[1, 2, 3].map((i) => (
+                    <Flex
+                      key={i}
+                      justify="space-between"
+                      align="center"
+                      p={2}
+                      mb={3}
+                      bg="white"
+                      border="1px solid"
+                      borderColor="gray.200"
+                      borderRadius="lg"
+                    >
+                      <Flex align="center" gap={3} width="full">
+                        <SkeletonCircle size="10" />
+                        <Box flex={1}>
+                          <SkeletonText noOfLines={2} gap={2} width="60%" />
+                        </Box>
+                      </Flex>
+                      <Skeleton height="32px" width="120px" borderRadius="md" />
+                    </Flex>
+                  ))}
+                </Box>
+              ) : membersError ? (
+                <Text fontSize="sm" color="red.500" textAlign="center" py={8}>
+                  Failed to load team members
+                </Text>
+              ) : filteredTeamMembers.length === 0 ? (
                 <Text fontSize="sm" color="gray.500" textAlign="center" py={8}>
                   No team members to display
                 </Text>

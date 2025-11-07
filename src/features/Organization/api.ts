@@ -30,13 +30,13 @@ const getRoles = () =>
 			.then((res) => res.data)
 	);
 
-
-
-
+	const getUserofOrganization = (org_id:string,user_id:string)=>
+		safeApiCall(()=>axiosInstance.get(API_URL.GET_USER_OF_ORGANIZATION(org_id,user_id)).then((res)=>res.data))
 
 export {
 	acceptInvite,
 	createOrgInvite,
 	signupOrganization,
-	getRoles
+	getRoles,
+	getUserofOrganization
 };

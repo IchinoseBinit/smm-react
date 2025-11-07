@@ -132,7 +132,7 @@ export default function HeroSection() {
           mb={12}
         >
           <Button
-            onClick={() => (window.location.href = "/register")}
+            onClick={() => (window.location.href = "/login?modal=signup")}
             size="lg"
             bg="blue.500"
             color="white"

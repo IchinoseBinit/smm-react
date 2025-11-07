@@ -5,9 +5,10 @@ import {
 	acceptInvite,
 	createOrgInvite,
 	signupOrganization,
-	getRoles
+	getRoles,
+	getUserofOrganization
 } from "../api";
-import type { Role, CreateOrgInviteRequest, SignupOrganizationRequest, AcceptInviteRequest } from "../types";
+import type { Role, CreateOrgInviteRequest, SignupOrganizationRequest, AcceptInviteRequest, TorgUser } from "../types";
 
 const useAcceptInvite = () => {
 	const navigate = useNavigate();
@@ -59,10 +60,21 @@ const useRoles = () => {
 
 
 
+const useGetMembersOfOrganization = (org_id:string,user_id:string) => {
+	return useQuery<TorgUser[]>({
+		queryKey: ["getUserofOrganization",org_id,user_id],
+		queryFn:()=>getUserofOrganization(org_id,user_id),
+		enabled: !!org_id && !!user_id, // Only run query if both IDs are provided
+	});
+}
+
+
+
 
 export {
 	useAcceptInvite,
 	useCreateOrgInvite,
 	useSignupOrganization,
 	useRoles,
+	useGetMembersOfOrganization
 };
