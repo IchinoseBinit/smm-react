@@ -3253,6 +3253,7 @@ __metadata:
     add: "npm:^2.0.6"
     axios: "npm:^1.9.0"
     dayjs: "npm:^1.11.13"
+    emoji-picker-react: "npm:^4.15.0"
     eslint: "npm:^9.25.0"
     eslint-plugin-react-hooks: "npm:^5.2.0"
     eslint-plugin-react-refresh: "npm:^0.4.19"
@@ -3704,6 +3705,17 @@ __metadata:
   version: 1.5.207
   resolution: "electron-to-chromium@npm:1.5.207"
   checksum: 10c0/33de5f996fcfdb7c7fcedfc76e9e36ed33f2b7a3136b1bbc5eae38f2b0441fbd114843511a46c80aaf21b9586d812fe469ff7f948c5cda0808038c69c4f76298
+  languageName: node
+  linkType: hard
+
+"emoji-picker-react@npm:^4.15.0":
+  version: 4.15.0
+  resolution: "emoji-picker-react@npm:4.15.0"
+  dependencies:
+    flairup: "npm:1.0.0"
+  peerDependencies:
+    react: ">=16"
+  checksum: 10c0/747efa4737fc0b2106d92f7469be61726f34c3b379087563471c5db08bfcac8ec28e7d92c098268c3d09924bfaae6d8b8e8f07645d64b90e1bdaa5ee05724fc1
   languageName: node
   linkType: hard
 
@@ -4169,6 +4181,13 @@ __metadata:
     locate-path: "npm:^6.0.0"
     path-exists: "npm:^4.0.0"
   checksum: 10c0/062c5a83a9c02f53cdd6d175a37ecf8f87ea5bbff1fdfb828f04bfa021441bc7583e8ebc0872a4c1baab96221fb8a8a275a19809fb93fbc40bd69ec35634069a
+  languageName: node
+  linkType: hard
+
+"flairup@npm:1.0.0":
+  version: 1.0.0
+  resolution: "flairup@npm:1.0.0"
+  checksum: 10c0/2d9fe1f1c890383be65ae0ec95d57b96f3ff42eecffaf493f8a39f09f4982e12109a865e79baca051e784919eecd72fa6cf620cfae8a4663b98deaa6d883d7ba
   languageName: node
   linkType: hard
 

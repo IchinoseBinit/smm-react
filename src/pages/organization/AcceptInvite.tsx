@@ -123,31 +123,31 @@ const AcceptInvite: React.FC = () => {
       justifyContent="center"
       p={4}
     >
-      <Container maxW="2xl" py={8}>
-        <VStack gap={8} w="full">
+      <Container maxW="lg" py={4}>
+        <VStack gap={4} w="full">
           {/* Logo */}
 
           {/* Form Container */}
           <Box
             bg="white"
-            p={8}
-            borderRadius="xl"
+            p={5}
+            borderRadius="lg"
             w="full"
-            maxW="2xl"
+            maxW="lg"
             mx="auto"
             boxShadow="lg"
             border="1px solid"
             borderColor="gray.100"
           >
-            <VStack gap={4} textAlign="center">
-              <Image src={LightLogo} height={10} width="auto" maxW="100%" />
+            <VStack gap={2} textAlign="center">
+              <Image src={LightLogo} height={7} width="auto" maxW="100%" />
             </VStack>
-            <VStack gap={8}>
-              <VStack gap={2} textAlign="center">
-                <Heading size="2xl" mt={2} color="gray.900" fontWeight="bold">
+            <VStack gap={4}>
+              <VStack gap={1} textAlign="center">
+                <Heading size="lg" mt={1} color="gray.900" fontWeight="bold">
                   Accept Invitation
                 </Heading>
-                <Text color="gray.600" fontSize="lg" maxW="md">
+                <Text color="gray.600" fontSize="sm" maxW="md">
                   Complete your profile to join the organization
                 </Text>
               </VStack>
@@ -169,14 +169,14 @@ const AcceptInvite: React.FC = () => {
               )}
 
               {/* Form Fields */}
-              <VStack gap={6} w="full">
+              <VStack gap={3} w="full">
                 {/* First Name */}
                 <Field.Root w="full">
                   <Field.Label
                     color="gray.800"
-                    fontWeight="bold"
-                    fontSize="md"
-                    mb={3}
+                    fontWeight="semibold"
+                    fontSize="sm"
+                    mb={1.5}
                   >
                     First Name *
                   </Field.Label>
@@ -188,16 +188,16 @@ const AcceptInvite: React.FC = () => {
                       onChange={(e) =>
                         handleInputChange("first_name", e.target.value)
                       }
-                      pl={12}
-                      pr={4}
-                      py={4}
-                      h={14}
+                      pl={9}
+                      pr={3}
+                      py={1.5}
+                      h={9}
                       w="full"
                       border="2px solid"
                       borderColor={errors.first_name ? "red.300" : "gray.200"}
-                      borderRadius="xl"
+                      borderRadius="md"
                       bg="gray.50"
-                      fontSize="lg"
+                      fontSize="sm"
                       fontWeight="medium"
                       _focus={{
                         borderColor: "blue.400",
@@ -218,10 +218,10 @@ const AcceptInvite: React.FC = () => {
                       as={FiUser}
                       color="gray.500"
                       position="absolute"
-                      left={4}
+                      left={2.5}
                       top="50%"
                       transform="translateY(-50%)"
-                      boxSize={5}
+                      boxSize={3.5}
                     />
                   </Box>
                   {errors.first_name && (
@@ -240,9 +240,9 @@ const AcceptInvite: React.FC = () => {
                 <Field.Root w="full">
                   <Field.Label
                     color="gray.800"
-                    fontWeight="bold"
-                    fontSize="md"
-                    mb={3}
+                    fontWeight="semibold"
+                    fontSize="sm"
+                    mb={1.5}
                   >
                     Last Name *
                   </Field.Label>
@@ -254,16 +254,16 @@ const AcceptInvite: React.FC = () => {
                       onChange={(e) =>
                         handleInputChange("last_name", e.target.value)
                       }
-                      pl={12}
-                      pr={4}
-                      py={4}
-                      h={14}
+                      pl={9}
+                      pr={3}
+                      py={1.5}
+                      h={9}
                       w="full"
                       border="2px solid"
                       borderColor={errors.last_name ? "red.300" : "gray.200"}
-                      borderRadius="xl"
+                      borderRadius="md"
                       bg="gray.50"
-                      fontSize="lg"
+                      fontSize="sm"
                       fontWeight="medium"
                       _focus={{
                         borderColor: "blue.400",
@@ -284,10 +284,10 @@ const AcceptInvite: React.FC = () => {
                       as={FiUser}
                       color="gray.500"
                       position="absolute"
-                      left={4}
+                      left={2.5}
                       top="50%"
                       transform="translateY(-50%)"
-                      boxSize={5}
+                      boxSize={3.5}
                     />
                   </Box>
                   {errors.last_name && (
@@ -306,9 +306,9 @@ const AcceptInvite: React.FC = () => {
                 <Field.Root w="full">
                   <Field.Label
                     color="gray.800"
-                    fontWeight="bold"
-                    fontSize="md"
-                    mb={3}
+                    fontWeight="semibold"
+                    fontSize="sm"
+                    mb={1.5}
                   >
                     Mobile Number{" "}
                     <Text as="span" color="gray.500" fontWeight="normal">
@@ -323,16 +323,16 @@ const AcceptInvite: React.FC = () => {
                       onChange={(e) =>
                         handleInputChange("mobile", e.target.value)
                       }
-                      pl={12}
-                      pr={4}
-                      py={4}
-                      h={14}
+                      pl={9}
+                      pr={3}
+                      py={1.5}
+                      h={9}
                       w="full"
                       border="2px solid"
                       borderColor={errors.mobile ? "red.300" : "gray.200"}
-                      borderRadius="xl"
+                      borderRadius="md"
                       bg="gray.50"
-                      fontSize="lg"
+                      fontSize="sm"
                       fontWeight="medium"
                       _focus={{
                         borderColor: "blue.400",
@@ -353,10 +353,10 @@ const AcceptInvite: React.FC = () => {
                       as={FiPhone}
                       color="gray.500"
                       position="absolute"
-                      left={4}
+                      left={2.5}
                       top="50%"
                       transform="translateY(-50%)"
-                      boxSize={5}
+                      boxSize={3.5}
                     />
                   </Box>
                   {errors.mobile && (
@@ -375,9 +375,9 @@ const AcceptInvite: React.FC = () => {
                 <Field.Root w="full">
                   <Field.Label
                     color="gray.800"
-                    fontWeight="bold"
-                    fontSize="md"
-                    mb={3}
+                    fontWeight="semibold"
+                    fontSize="sm"
+                    mb={1.5}
                   >
                     Password *
                   </Field.Label>
@@ -389,16 +389,16 @@ const AcceptInvite: React.FC = () => {
                       onChange={(e) =>
                         handleInputChange("password", e.target.value)
                       }
-                      pl={12}
-                      pr={4}
-                      py={4}
-                      h={14}
+                      pl={9}
+                      pr={3}
+                      py={1.5}
+                      h={9}
                       w="full"
                       border="2px solid"
                       borderColor={errors.password ? "red.300" : "gray.200"}
-                      borderRadius="xl"
+                      borderRadius="md"
                       bg="gray.50"
-                      fontSize="lg"
+                      fontSize="sm"
                       fontWeight="medium"
                       _focus={{
                         borderColor: "blue.400",
@@ -419,10 +419,10 @@ const AcceptInvite: React.FC = () => {
                       as={FiLock}
                       color="gray.500"
                       position="absolute"
-                      left={4}
+                      left={2.5}
                       top="50%"
                       transform="translateY(-50%)"
-                      boxSize={5}
+                      boxSize={3.5}
                     />
                   </Box>
                   {errors.password && (
@@ -446,12 +446,12 @@ const AcceptInvite: React.FC = () => {
                 w="full"
                 bg="blue.500"
                 color="white"
-                size="lg"
+                size="sm"
                 _active={{ bg: "blue.700" }}
                 onClick={handleSubmit}
-                py={8}
-                borderRadius="xl"
-                fontSize="lg"
+                py={4}
+                borderRadius="md"
+                fontSize="sm"
                 fontWeight="bold"
                 boxShadow="lg"
                 _hover={{
@@ -463,7 +463,7 @@ const AcceptInvite: React.FC = () => {
                 loading={isAccepting}
                 disabled={isAccepting || !!errors.token}
               >
-                {isAccepting ? "Accepting..." : "Accept "}
+                {isAccepting ? "Accepting..." : "Accept Invitation"}
               </Button>
             </VStack>
           </Box>

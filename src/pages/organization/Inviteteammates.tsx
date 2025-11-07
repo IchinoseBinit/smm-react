@@ -147,61 +147,61 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
       justifyContent="center"
       p={4}
     >
-      <Container maxW="2xl" py={8}>
-        <VStack gap={8} w="full">
+      <Container maxW="xl" py={6}>
+        <VStack gap={6} w="full">
           {/* Logo */}
-          <VStack gap={4} textAlign="center">
-            <Image src={LightLogo} height={10} width="auto" maxW="100%" />
+          <VStack gap={3} textAlign="center">
+            <Image src={LightLogo} height={8} width="auto" maxW="100%" />
           </VStack>
 
           {/* Form Container */}
           <Box
             bg="white"
-            p={8}
-            borderRadius="xl"
+            p={6}
+            borderRadius="lg"
             w="full"
-            maxW="6xl"
+            maxW="xl"
             mx="auto"
             boxShadow="lg"
             border="1px solid"
             borderColor="gray.100"
           >
-            <VStack gap={8}>
+            <VStack gap={6}>
               <VStack gap={2} textAlign="center">
-                <Heading size="2xl" color="gray.900" fontWeight="bold">
+                <Heading size="xl" color="gray.900" fontWeight="bold">
                   Invite Team Members
                 </Heading>
-                <Text color="gray.600" fontSize="lg" maxW="md">
+                <Text color="gray.600" fontSize="md" maxW="md">
                   Add team members to your organization and assign their roles
                 </Text>
               </VStack>
 
               {/* Team Members Section */}
-              <VStack gap={6} w="full">
+              <VStack gap={4} w="full">
                 {teamMembers.map((member, memberIndex) => (
                   <Box
                     key={memberIndex}
                     w="full"
-                    p={6}
+                    p={4}
                     border="1px solid"
                     borderColor="gray.200"
-                    borderRadius="xl"
+                    borderRadius="lg"
                     bg="white"
                     boxShadow="sm"
                     _hover={{ boxShadow: "md" }}
                     transition="all 0.2s"
                   >
-                    <VStack gap={6} w="full">
+                    <VStack gap={4} w="full">
                       {/* Header with member number and remove button */}
                       <HStack w="full" justify="space-between" align="center">
-                        <HStack gap={3}>
-                          <Box bg="blue.50" p={2} borderRadius="lg">
-                            <Icon as={FiUsers} color="blue.600" boxSize={5} />
+                        <HStack gap={2}>
+                          <Box bg="blue.50" p={1.5} borderRadius="md">
+                            <Icon as={FiUsers} color="blue.600" boxSize={4} />
                           </Box>
                           <Text
                             fontWeight="bold"
                             color="gray.800"
-                            fontSize="lg"
+                            fontSize="md"
                           >
                             Team Member {memberIndex + 1}
                           </Text>
@@ -224,9 +224,9 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                       <Field.Root w="full">
                         <Field.Label
                           color="gray.800"
-                          fontWeight="bold"
-                          fontSize="md"
-                          mb={3}
+                          fontWeight="semibold"
+                          fontSize="sm"
+                          mb={2}
                         >
                           Email Address
                         </Field.Label>
@@ -238,10 +238,10 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                             onChange={(e) =>
                               handleEmailChange(memberIndex, e.target.value)
                             }
-                            pl={12}
+                            pl={10}
                             pr={4}
-                            py={4}
-                            h={14}
+                            py={2}
+                            h={10}
                             w="full"
                             border="2px solid"
                             borderColor={
@@ -249,9 +249,9 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                                 ? "red.300"
                                 : "gray.200"
                             }
-                            borderRadius="xl"
+                            borderRadius="lg"
                             bg="gray.50"
-                            fontSize="lg"
+                            fontSize="md"
                             fontWeight="medium"
                             _focus={{
                               borderColor: "blue.400",
@@ -272,10 +272,10 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                             as={FiMail}
                             color="gray.500"
                             position="absolute"
-                            left={4}
+                            left={3}
                             top="50%"
                             transform="translateY(-50%)"
-                            boxSize={5}
+                            boxSize={4}
                           />
                         </Box>
                         {errors[memberIndex]?.email && (
@@ -294,9 +294,9 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                       <Field.Root w="full">
                         <Field.Label
                           color="gray.800"
-                          fontWeight="bold"
-                          fontSize="md"
-                          mb={3}
+                          fontWeight="semibold"
+                          fontSize="sm"
+                          mb={2}
                         >
                           Roles
                         </Field.Label>
@@ -358,14 +358,14 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                             {roles.map((role) => (
                               <Box
                                 key={role.id}
-                                p={5}
+                                p={3}
                                 border="2px solid"
                                 borderColor={
                                   member.roles.includes(role.id)
                                     ? "blue.300"
                                     : "gray.200"
                                 }
-                                borderRadius="xl"
+                                borderRadius="lg"
                                 bg={
                                   member.roles.includes(role.id)
                                     ? "blue.50"
@@ -389,7 +389,7 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                                   )
                                 }
                               >
-                                <HStack gap={4} align="start">
+                                <HStack gap={3} align="start">
                                   <Checkbox.Root
                                     checked={member.roles.includes(role.id)}
                                     onCheckedChange={(details) =>
@@ -400,7 +400,7 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                                       )
                                     }
                                     colorPalette="blue"
-                                    mt={1}
+                                    mt={0.5}
                                     onClick={(e) => e.stopPropagation()}
                                   >
                                     <Checkbox.HiddenInput />
@@ -408,10 +408,10 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                                       <Checkbox.Indicator />
                                     </Checkbox.Control>
                                   </Checkbox.Root>
-                                  <VStack gap={1} align="start" flex={1}>
+                                  <VStack gap={0.5} align="start" flex={1}>
                                     <Text
-                                      fontWeight="bold"
-                                      fontSize="md"
+                                      fontWeight="semibold"
+                                      fontSize="sm"
                                       color="gray.800"
                                     >
                                       {role.name}
@@ -459,12 +459,12 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                 w="full"
                 bg="blue.500"
                 color="white"
-                size="lg"
+                size="md"
                 _active={{ bg: "blue.700" }}
                 onClick={handleSubmit}
-                py={8}
-                borderRadius="xl"
-                fontSize="lg"
+                py={5}
+                borderRadius="lg"
+                fontSize="md"
                 fontWeight="bold"
                 boxShadow="lg"
                 _hover={{
