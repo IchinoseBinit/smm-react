@@ -3,7 +3,7 @@ interface RegisterUserData {
   first_name: string;
   last_name: string;
   email: string;
-  mobile?: string;
+  mobile?: string | null;
   password: string;
 }
 

@@ -71,6 +71,7 @@ export default function FeatureSection() {
 
               <Card.Title asChild>
                 <Heading
+                  
                   as="h3"
                   fontSize="xl"
                   fontWeight="semibold"

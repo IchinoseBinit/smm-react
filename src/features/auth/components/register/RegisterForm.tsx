@@ -82,7 +82,12 @@ const RegisterForm: React.FC = () => {
   const onSubmit = async (data: SignupFormData) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirmPassword, ...registerData } = data;
-    mutate(registerData);
+    // Send null for mobile if empty
+    const finalData = {
+      ...registerData,
+      mobile: registerData.mobile?.trim() ? registerData.mobile : null,
+    };
+    mutate(finalData);
     setEmail(data.email);
   };
 
@@ -218,7 +223,7 @@ const RegisterForm: React.FC = () => {
                 </Field.Root> */}
 
                 <Field.Root invalid={Boolean(errors.mobile)}>
-                  <Field.Label>Mobile Number</Field.Label>
+                  <Field.Label>Mobile Number (Optional)</Field.Label>
                   <Input
                     {...register("mobile", {
                       onChange: (e) => {
