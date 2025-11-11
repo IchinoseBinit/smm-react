@@ -227,14 +227,12 @@ const RegisterForm: React.FC = () => {
                   <Input
                     {...register("mobile", {
                       onChange: (e) => {
-                        e.target.value = e.target.value.replace(
-                          /[^0-9+\-\s()]/g,
-                          ""
-                        )
+                        e.target.value = e.target.value.replace(/[^0-9]/g, "")
                       },
                     })}
                     type="tel"
                     placeholder="Enter mobile number"
+                    maxLength={10}
                     border="none"
                     bg="gray.50"
                     _focus={{

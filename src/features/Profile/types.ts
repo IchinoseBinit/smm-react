@@ -18,6 +18,7 @@ interface UserProfile {
     is_email_verified: boolean;
     trial_ends_at: string | null;
     phone?: string;
+    mobile?: string;
   };
   context: {
     mode: string;
