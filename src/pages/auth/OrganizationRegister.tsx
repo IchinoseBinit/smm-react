@@ -322,7 +322,7 @@ const OrganizationRegister: React.FC = () => {
                 >
                   <Icon as={FiUser} size="lg" />
                   <VStack gap={0}>
-                    <Text fontWeight="semibold">Individual</Text>
+                    <Text fontWeight="semibold">Organization User</Text>
                     <Text fontSize="xs" opacity={0.8}>
                       Complete your organization profile
                     </Text>
