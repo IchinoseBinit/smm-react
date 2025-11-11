@@ -31,15 +31,10 @@ const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email address"),
-  phone: z
-    .string()
-    .optional()
-    .refine((val) => !val || val.length >= 10, {
-      message: "Phone number must be at least 10 digits",
-    })
-    .refine((val) => !val || /^\d+$/.test(val), {
-      message: "Phone number must contain only numbers",
-    }),
+  phone: z.union([
+    z.literal(""),
+    z.string().regex(/^\d{10}$/, "Phone number must be 10 digits")
+  ]).optional(),
 })
 
 type ProfileFormInputs = z.infer<typeof profileSchema>
@@ -80,7 +75,7 @@ const Profile = () => {
         firstName: data.data.user.first_name || "",
         lastName: data.data.user.last_name || "",
         email: data.data.user.email || "",
-        phone: data.data.user.phone || "",
+        phone: data.data.user.mobile ? String(data.data.user.mobile) : "xxxxxxxxxx",
       })
     }
   }, [data.data?.user, reset])
@@ -321,23 +316,15 @@ const Profile = () => {
                     Phone Number ( Optional)
                   </Field.Label>
                   <Input
-                    {...register("phone")}
+                    {...register("phone", {
+                      onChange: (e) => {
+                        e.target.value = e.target.value.replace(/[^0-9]/g, "")
+                      },
+                    })}
                     type="tel"
+                    maxLength={10}
                     pattern="[0-9]*"
                     inputMode="numeric"
-                    placeholder="xxxxxxxxxx"
-                    onKeyDown={(e) => {
-                      if (
-                        !/[0-9]/.test(e.key) &&
-                        e.key !== "Backspace" &&
-                        e.key !== "Delete" &&
-                        e.key !== "Tab" &&
-                        e.key !== "ArrowLeft" &&
-                        e.key !== "ArrowRight"
-                      ) {
-                        e.preventDefault()
-                      }
-                    }}
                     bg="gray.50"
                     border="1px solid"
                     borderColor="gray.300"
@@ -347,7 +334,6 @@ const Profile = () => {
                       borderColor: "#068e1d",
                       boxShadow: "0 0 0 1px #068e1d",
                     }}
-                    _placeholder={{ color: "gray.400" }}
                   />
                   <Field.ErrorText>{errors.phone?.message}</Field.ErrorText>
                 </Field.Root>

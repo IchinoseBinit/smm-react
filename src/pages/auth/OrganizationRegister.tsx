@@ -60,7 +60,7 @@ const formSchema = z.object({
     .email("Please enter a valid email address"),
   phoneNumber: z.union([
     z.literal(""),
-    z.string().regex(/^\+?[\d\s()-]{10,}$/, "Please enter a valid phone number (min 10 digits)")
+    z.string().regex(/^\d{10}$/, "Phone number must be 10 digits")
   ]).optional(),
   password: z
     .string()
@@ -287,7 +287,7 @@ const OrganizationRegister: React.FC = () => {
                 <Text color="gray.500" fontSize="md" fontWeight="medium">
                   {accountType === "organization"
                     ? "Create your organization account to get started"
-                    : "Choose your account type to get started"}
+                    : "Set up your organization account"}
                 </Text>
               </VStack>
 
@@ -324,7 +324,7 @@ const OrganizationRegister: React.FC = () => {
                   <VStack gap={0}>
                     <Text fontWeight="semibold">Individual</Text>
                     <Text fontSize="xs" opacity={0.8}>
-                      Personal use
+                      Complete your organization profile
                     </Text>
                   </VStack>
                 </Box>
@@ -366,8 +366,7 @@ const OrganizationRegister: React.FC = () => {
                   <VStack gap={0}>
                     <Text fontWeight="semibold">Organization</Text>
                     <Text fontSize="xs" opacity={0.8}>
-                      Team & business
-                    </Text>
+Let's get your organization setup                    </Text>
                   </VStack>
                 </Box>
               </HStack>
@@ -621,8 +620,9 @@ const OrganizationRegister: React.FC = () => {
                         type="tel"
                         placeholder="Enter your number"
                         value={formData.phoneNumber}
+                        maxLength={10}
                         onChange={(e) => {
-                          const value = e.target.value.replace(/[^0-9+\-\s()]/g, "")
+                          const value = e.target.value.replace(/[^0-9]/g, "")
                           handleInputChange("phoneNumber", value)
                         }}
                         border={submitted && errors.phoneNumber ? "2px solid" : "none"}

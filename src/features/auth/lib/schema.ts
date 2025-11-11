@@ -9,7 +9,7 @@ const signupSchema = z
 
     mobile: z.union([
       z.literal(""),
-      z.string().regex(/^\d{10,15}$/, "Mobile number must be 10-15 digits")
+      z.string().regex(/^\d{10}$/, "Mobile number must be 10 digits")
     ]).optional(),
 
     // countryCode: z.string().min(1, "Select country code"),
