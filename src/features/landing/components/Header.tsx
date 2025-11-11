@@ -1,7 +1,7 @@
 import { Box, Flex, Image, Link, Button, Icon, Menu, Portal } from "@chakra-ui/react";
-import { getStartedLinks } from "../lib/Links";
+// import { getStartedLinks } from "../lib/Links";
 import logo from "@/assets/app/Header Logo White.png";
-import { BsRocketTakeoffFill } from "react-icons/bs";
+// import { BsRocketTakeoffFill } from "react-icons/bs";
 import { FiChevronDown } from "react-icons/fi";
 
 export default function Header() {
@@ -103,7 +103,7 @@ export default function Header() {
             </Portal>
           </Menu.Root>
 
-          <Link href={getStartedLinks} _hover={{ textDecoration: "none" }}>
+          {/* <Link href={getStartedLinks} _hover={{ textDecoration: "none" }}>
             <Button
               bg="blue.500"
               color="white"
@@ -120,7 +120,7 @@ export default function Header() {
               </Icon>
               Get Started
             </Button>
-          </Link>
+          </Link> */}
         </Flex>
       </Flex>
     </Box>
