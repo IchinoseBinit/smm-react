@@ -149,7 +149,7 @@ const LoginForm = () => {
                   transform="translateY(-50%)"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <LuEyeOff size={20} /> : <LuEye size={20} />}
+                  {showPassword ? <LuEye size={20} /> : <LuEyeOff size={20} />}
                 </IconButton>
               </Flex>
 
