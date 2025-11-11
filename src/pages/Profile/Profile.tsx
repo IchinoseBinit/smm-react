@@ -222,7 +222,7 @@ const Profile = () => {
               {/* Avatar Section */}
               <Flex justify="center" align="center" mb={8}>
                 <Avatar.Root size="2xl">
-                  <Avatar.Fallback name="Ram Oli" />
+                  <Avatar.Fallback name={`${data.data?.user.first_name || ''} ${data.data?.user.last_name || ''}`} />
                   <Avatar.Image src={data.data?.user.profile_url} />
                 </Avatar.Root>
               </Flex>
