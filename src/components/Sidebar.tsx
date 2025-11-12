@@ -7,6 +7,8 @@ import {
   // FiUsers,
   FiKey,
   FiCalendar,
+  FiShield,
+  FiUsers,
 } from "react-icons/fi"
 import { MdManageAccounts } from "react-icons/md"
 import { useLocation } from "react-router"
@@ -18,6 +20,7 @@ import { HamburgerBar } from "./Hamburger"
 import LightLogo from "@/assets/app/Header Logo White.png"
 import DarkLogo from "@/assets/app/Header Logo Black.png"
 import { useColorMode } from "./ui/color-mode"
+import { useAuthContext } from "@/hooks/useAuthContext"
 
 import Cookies from "js-cookie"
 
@@ -29,6 +32,11 @@ const navItems = [
   { label: "Calendar", icon: FiCalendar, href: "/calendar" },
   { label: "Posts", icon: MdManageAccounts, href: "/posts" },
   { label: "Accounts", icon: FiKey, href: "/account" },
+]
+
+const adminNavItems = [
+  { label: "Admin Dashboard", icon: FiShield, href: "/admin/dashboard" },
+  { label: "Manage Users", icon: FiUsers, href: "/admin/users" },
 ]
 
 const bottomNavItems = [
@@ -47,6 +55,8 @@ const handleLogout = () => {
 export function Sidebar() {
   const { pathname } = useLocation()
   const { colorMode } = useColorMode()
+  const { user } = useAuthContext()
+  const isAdmin = user?.role === "ADMIN"
 
   return (
     <Flex
@@ -115,6 +125,50 @@ export function Sidebar() {
           </Link>
         )
       })}
+
+      {/* Admin Menu - Only shown to admin users */}
+      {isAdmin && (
+        <>
+          <Text marginLeft={2} marginBottom={4} marginTop={4} fontWeight={"bold"}>
+            Admin
+          </Text>
+          {adminNavItems.map((item) => {
+            const isActive =
+              pathname === item.href || pathname.startsWith(`${item.href}/`)
+
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                mb={1}
+                _hover={{
+                  textDecor: "none",
+                  bg: "purple.50",
+                  _dark: { bg: "purple.700" },
+                }}
+                bg={
+                  isActive
+                    ? { base: "purple.50", _dark: "purple.700" }
+                    : "transparent"
+                }
+                borderRadius="lg"
+              >
+                <HStack
+                  px={{ base: 3, md: 6 }}
+                  py={3}
+                  spaceX={3}
+                  borderRadius="md"
+                  justify={{ base: "center", md: "flex-start" }}
+                >
+                  <Icon as={item.icon} boxSize={5} />
+                  <Text fontSize="sm">{item.label}</Text>
+                </HStack>
+              </Link>
+            )
+          })}
+        </>
+      )}
+
       <Text marginLeft={2} marginBottom={4} marginTop={1} fontWeight={"bold"}>
         General
       </Text>

@@ -7,7 +7,6 @@ import {
   Badge,
   Button,
   Image,
-
 } from "@chakra-ui/react";
 import { useEffect, useState, useMemo } from "react";
 
@@ -17,7 +16,8 @@ import { format } from "date-fns";
 import useMediaSummary from "../hooks/useMediaSummary";
 import WarningIcon from "@/assets/WarningIcon.svg"
 import ScheduleIcon from "@/assets/ScheduleIcon.svg"
-import SuccessIcon from "@/assets/Sucess.svg"
+import SuccessIcon from "@/assets/Sucess.svg";
+
 const MetricCard = ({
   title,
   value,

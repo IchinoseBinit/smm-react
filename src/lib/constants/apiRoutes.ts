@@ -9,7 +9,9 @@ export const API_ROUTES = {
     SEND_OTP: `${api}/user/auth/password-reset/`,
     UPDATE_PSW: `${api}/user/auth/confirm-password/`,
   },
-  USER: {},
+  USER: {
+    LIST: `${api}/user/user-list/?page=1&page_size=5`,
+  },
   CONNECT_ACC: {
     ALL_Conn_ACC: `${thirdPartyApi}/auth/social/connected-accounts/`,
     DELETE_Conn_ACC: `${thirdPartyApi}/auth/social/connected-accounts/`,

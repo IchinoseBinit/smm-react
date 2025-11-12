@@ -9,6 +9,7 @@ export const getUserFromToken = (token: string): JwtUser => {
     email: data.email,
     full_name: data.full_name,
     mobile: data.mobile,
+    role: data.role,
   };
   return user;
 };

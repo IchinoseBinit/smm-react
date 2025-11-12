@@ -3,6 +3,7 @@ type JwtUser = {
   email: string;
   full_name: string;
   mobile: string;
+  role: string;
 };
 
 export { JwtUser };
