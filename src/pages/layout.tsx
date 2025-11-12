@@ -6,7 +6,8 @@ import {
   HStack,
   Heading,
   Image,
-  VStack,
+  IconButton,
+  Icon,
 } from "@chakra-ui/react"
 import { QuickActionSearch } from "@/components/Navbar"
 import { Sidebar } from "@/components/Sidebar"
@@ -16,6 +17,7 @@ import { useColorMode } from "@/components/ui/color-mode"
 import { useLocation } from "react-router-dom"
 import createPostPencil from "@/assets/createpostpencil.svg"
 import { useEditPostStore } from "@/features/calendar/lib/store/editPost.store"
+import { FiMenu } from "react-icons/fi"
 
 // Define page titles and configurations for different routes
 const getPageConfig = (pathname: string) => {
@@ -64,6 +66,7 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const isOpen = useSidebarStore((s) => s.isOpen)
+  const toggle = useSidebarStore((s) => s.toggle)
   const isMobile = useBreakpointValue({ base: true, md: false })
   const { colorMode } = useColorMode()
   const location = useLocation()
@@ -79,34 +82,45 @@ export default function DashboardLayout({
       {/* Desktop sidebar */}
       {!isMobile && <Sidebar />}
 
-      {/* Main content area - no separate header */}
+      {/* Main content area */}
       <Box flex="1" bg="white" mt={4} ml={!isMobile ? "240px" : 0}>
-        {/* Top right header content - positioned absolutely */}
+        {/* Header with mobile menu button */}
         <HStack
           justifyContent="space-between"
           width="100%"
           borderBottom="1px solid"
           borderColor="gray.200"
           paddingBottom={4}
+          px={{ base: 3, md: 4 }}
         >
-          {/* Left side - Title with icon and subtitle */}
-          <VStack align="flex-start" gap={1}>
-            <HStack gap={3} marginLeft={4}>
-              {pageConfig.icon && <Image src={pageConfig.icon} boxSize={6} />}
-              <Heading
+          {/* Left side - Mobile menu button + Title with icon */}
+          <HStack gap={3}>
+            {/* Mobile hamburger menu - always visible on mobile */}
+            {isMobile && (
+              <IconButton
+                aria-label="Open menu"
+                variant="ghost"
+                onClick={toggle}
                 size="lg"
-                color="gray.800"
-                fontWeight="600"
-                display={{ base: "none", md: "block" }}
               >
-                {pageConfig.title}
-              </Heading>
-            </HStack>
-          </VStack>
+                <Icon as={FiMenu} boxSize={6} />
+              </IconButton>
+            )}
+
+            {/* Page icon and title */}
+            {pageConfig.icon && <Image src={pageConfig.icon} boxSize={6} />}
+            <Heading
+              size={{ base: "md", md: "lg" }}
+              color="gray.800"
+              fontWeight="600"
+            >
+              {pageConfig.title}
+            </Heading>
+          </HStack>
 
           {/* Right side - Search and notification */}
-          <HStack gap={4} marginRight={4}>
-            <Box maxW="300px">
+          <HStack gap={{ base: 2, md: 4 }}>
+            <Box maxW={{ base: "150px", md: "300px" }} display={{ base: "none", sm: "block" }}>
               <QuickActionSearch />
             </Box>
             <Box
@@ -125,21 +139,36 @@ export default function DashboardLayout({
 
         {/* Main content */}
         <Box
-          p={6}
+          p={{ base: 4, md: 6 }}
           overflowY="auto"
           css={{
             "&::-webkit-scrollbar": { display: "none" },
           }}
           overflow="scroll"
+          h="calc(100dvh - 80px)"
         >
           {children}
         </Box>
       </Box>
 
-      {/* Mobile slide‑in sidebar */}
+      {/* Backdrop overlay for mobile sidebar */}
+      {isMobile && isOpen && (
+        <Box
+          pos="fixed"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bg="blackAlpha.600"
+          zIndex={99}
+          onClick={toggle}
+        />
+      )}
+
+      {/* Mobile slide-in sidebar */}
       {isMobile && (
         <Box
-          pos="absolute"
+          pos="fixed"
           top={0}
           left={0}
           w="240px"
@@ -151,6 +180,7 @@ export default function DashboardLayout({
           borderRight="1px solid"
           borderRightColor={borderColor}
           _dark={{ bg: "gray.800" }}
+          boxShadow={isOpen ? "xl" : "none"}
         >
           <Sidebar />
         </Box>
