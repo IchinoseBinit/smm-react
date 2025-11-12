@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router";
 import { ProtectedRoutesWithAuth } from "./lib/routes/ProtectedRoutes";
+import { AdminRoutesWithAuth } from "./lib/routes/AdminRoutes";
 import { flatRoute, layoutRoute } from "./lib/routes/route";
 import { AuthRoutes } from "./lib/routes/PageRoutes";
 import Account from "./pages/account/Account";
@@ -24,6 +25,8 @@ import Profile from "./pages/Profile/Profile";
 import PricingPage from "./pages/Pricing/Pricing";
 import SendOtp from "./pages/auth/SendOtp";
 import ResetPsw from "./pages/auth/ResetPsw";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminUsers from "./pages/admin/Users";
 function App() {
   return (
     <>
@@ -105,6 +108,13 @@ function App() {
             path: "/auth/youtube",
             component: <YoutubeSuccessPage />,
           })}
+        </Route>
+
+        {/* Admin Routes - Only accessible by ADMIN role */}
+        <Route element={<AdminRoutesWithAuth />}>
+          {layoutRoute({ path: "/admin", component: <AdminDashboard /> })}
+          {layoutRoute({ path: "/admin/dashboard", component: <AdminDashboard /> })}
+          {layoutRoute({ path: "/admin/users", component: <AdminUsers /> })}
         </Route>
       </Routes>
     </>
