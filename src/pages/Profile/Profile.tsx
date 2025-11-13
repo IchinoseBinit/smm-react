@@ -112,7 +112,14 @@ const Profile = () => {
   } = useGetMembersOfOrganization(orgId, userId)
 
   // Map API data to team members format
-  const teamMembers = orgMembers?.map((member) => ({
+  // Handle different API response structures
+  const orgMembersArray = Array.isArray(orgMembers)
+    ? orgMembers
+    : (orgMembers as any)?.data
+    ? (Array.isArray((orgMembers as any).data) ? (orgMembers as any).data : [])
+    : []
+
+  const teamMembers = orgMembersArray.map((member: any) => ({
     id: member.id,
     name: `${member.first_name} ${member.last_name}`,
     email: member.email,
@@ -120,7 +127,7 @@ const Profile = () => {
     role: member.role?.name || "Member",
     joined_date: "", // API doesn't provide this, you can add it if available
     is_active: member.is_active,
-  })) || []
+  }))
 
   // Filter team members based on active filter and search query
   // const filteredTeamMembers = teamMembers.filter((member) => {
@@ -491,15 +498,61 @@ const Profile = () => {
                   ))}
                 </Box>
               ) : membersError ? (
-                <Text fontSize="sm" color="red.500" textAlign="center" py={8}>
-                  Failed to load team members
-                </Text>
-              ) : filteredTeamMembers.length === 0 ? (
-                <Text fontSize="sm" color="gray.500" textAlign="center" py={8}>
-                  No team members to display
-                </Text>
+                <Box
+                  textAlign="center"
+                  py={12}
+                  px={6}
+                  bg="red.50"
+                  borderRadius="lg"
+                  border="1px solid"
+                  borderColor="red.200"
+                >
+                  <Text fontSize="lg" color="red.600" fontWeight="semibold" mb={2}>
+                    Failed to load team members
+                  </Text>
+                  <Text fontSize="sm" color="red.500">
+                    {membersError?.message || "Unable to fetch team members"}
+                  </Text>
+                </Box>
+              ) : !orgMembersArray || orgMembersArray.length === 0 || filteredTeamMembers.length === 0 ? (
+                <Box
+                  textAlign="center"
+                  py={12}
+                  px={6}
+                  bg="gray.50"
+                  borderRadius="lg"
+                  border="1px solid"
+                  borderColor="gray.200"
+                >
+                  <Text fontSize="lg" color="gray.700" fontWeight="semibold" mb={2}>
+                    No Members Found
+                  </Text>
+                  <Text fontSize="sm" color="gray.500" mb={4}>
+                    There are currently no team members in this organization.
+                  </Text>
+                  <Button
+                    variant="outline"
+                    borderColor="#1a365d"
+                    color="#1a365d"
+                    size="sm"
+                    onClick={handleInviteMember}
+                    _hover={{
+                      bg: "#1a365d",
+                      color: "white",
+                      transform: "translateY(-1px)",
+                      boxShadow: "md"
+                    }}
+                    _active={{
+                      transform: "translateY(0px)"
+                    }}
+                    transition="all 0.2s"
+                    fontWeight="semibold"
+                  >
+                    + Invite your first member
+                  </Button>
+                </Box>
               ) : (
-                filteredTeamMembers.map((member) => (
+                filteredTeamMembers.map((member:any) => (
                   <Flex
                     key={member.id}
                     justify="space-between"
