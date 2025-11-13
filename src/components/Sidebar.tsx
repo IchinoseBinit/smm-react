@@ -56,7 +56,7 @@ export function Sidebar() {
   const { pathname } = useLocation()
   const { colorMode } = useColorMode()
   const { user } = useAuthContext()
-  const isAdmin = user?.role === "ADMIN"
+  const isAdmin = user?.role === "admin"
 
   return (
     <Flex
