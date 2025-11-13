@@ -44,6 +44,8 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
   // Handle different API response structures for roles
   const rolesArray = Array.isArray(roles)
     ? roles
+    : (roles as any)?.results
+    ? (Array.isArray((roles as any).results) ? (roles as any).results : [])
     : (roles as any)?.data
     ? (Array.isArray((roles as any).data) ? (roles as any).data : [])
     : []
