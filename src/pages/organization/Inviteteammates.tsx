@@ -41,6 +41,13 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
   ])
   const [errors, setErrors] = useState<FormErrors[]>([{}])
 
+  // Handle different API response structures for roles
+  const rolesArray = Array.isArray(roles)
+    ? roles
+    : (roles as any)?.data
+    ? (Array.isArray((roles as any).data) ? (roles as any).data : [])
+    : []
+
   const handleEmailChange = (index: number, email: string) => {
     const updatedMembers = [...teamMembers]
     updatedMembers[index].email = email
@@ -349,13 +356,32 @@ const Inviteteammates: React.FC<InviteteammatesProps> = ({ orgId = "1" }) => {
                             </Text>
                           </Box>
                         )}
-                        {roles && (
+                        {!rolesLoading && !rolesError && rolesArray.length === 0 && (
+                          <Box
+                            w="full"
+                            p={4}
+                            bg="gray.50"
+                            borderRadius="lg"
+                            border="1px solid"
+                            borderColor="gray.200"
+                            textAlign="center"
+                          >
+                            <Text
+                              color="gray.600"
+                              fontSize="md"
+                              fontWeight="medium"
+                            >
+                              No roles available
+                            </Text>
+                          </Box>
+                        )}
+                        {rolesArray.length > 0 && (
                           <SimpleGrid
                             columns={{ base: 1, md: 1 }}
                             gap={4}
                             mt={2}
                           >
-                            {roles.map((role) => (
+                            {rolesArray.map((role:any) => (
                               <Box
                                 key={role.id}
                                 p={2.5}

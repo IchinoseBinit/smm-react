@@ -194,15 +194,20 @@ export default function ResetPswForm() {
         ) : (
           <Button
             onClick={handleResendOTP}
+            variant="ghost"
             size="sm"
             color="blue.600"
-            fontWeight="medium"
+            fontWeight="semibold"
             loading={isSendingOtp}
             loadingText="Sending..."
             disabled={isSendingOtp}
             _hover={{
               color: "blue.700",
               textDecoration: "underline",
+              bg: "transparent",
+            }}
+            _active={{
+              bg: "blue.50",
             }}
           >
             Resend verification code
