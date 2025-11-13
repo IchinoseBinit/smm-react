@@ -16,8 +16,8 @@ const AdminRoutesWithAuth = () => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Then check if user is admin
-  if (user?.role !== "ADMIN") {
+  // Then check if user is admin (check lowercase as JWT returns "admin" not "ADMIN")
+  if (user?.role !== "admin") {
     return (
       <UiProvider>
         <Center minH="100vh" flexDirection="column">
