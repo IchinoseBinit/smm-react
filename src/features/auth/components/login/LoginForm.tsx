@@ -20,6 +20,8 @@ import { useNavigate } from "react-router";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { useLoginUser } from "../../hooks/useAuth";
 import { useLocation } from "react-router";
+import Cookies from "js-cookie";
+import { getUserFromToken } from "@/lib/token";
 
 // Define the validation schema with Zod
 const loginSchema = z.object({
@@ -40,7 +42,7 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { mutateAsync, isPending } = useLoginUser();
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useAuthContext();
+  const { setIsAuthenticated, setUser } = useAuthContext();
     const location = useLocation()
 
 
@@ -59,8 +61,10 @@ const LoginForm = () => {
   // Form submission handler
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     await mutateAsync(data);
-    setIsAuthenticated(true);
-    navigate("/dashboard");
+
+    // Force a full page reload to ensure AuthProvider reads the fresh token
+    // This ensures user role is properly loaded from the new JWT
+    window.location.href = "/dashboard";
   };
 
   return (

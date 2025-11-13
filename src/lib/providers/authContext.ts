@@ -5,6 +5,7 @@ type AuthContextType = {
   user: JwtUser | null;
   isAuthenticated: boolean;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
+  setUser: (user: JwtUser | null) => void;
   isLoading: boolean;
 };
 export const AuthContext = createContext<AuthContextType | undefined>(
