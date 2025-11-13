@@ -17,11 +17,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import { useNavigate } from "react-router";
-import { useAuthContext } from "@/hooks/useAuthContext";
+// import { useAuthContext } from "@/hooks/useAuthContext";
 import { useLoginUser } from "../../hooks/useAuth";
 import { useLocation } from "react-router";
-import Cookies from "js-cookie";
-import { getUserFromToken } from "@/lib/token";
+// import Cookies from "js-cookie";
+// import { getUserFromToken } from "@/lib/token";
 
 // Define the validation schema with Zod
 const loginSchema = z.object({
@@ -42,7 +42,7 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { mutateAsync, isPending } = useLoginUser();
   const navigate = useNavigate();
-  const { setIsAuthenticated, setUser } = useAuthContext();
+  // const { setIsAuthenticated, setUser } = useAuthContext();
     const location = useLocation()
 
 
