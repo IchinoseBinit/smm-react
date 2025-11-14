@@ -6,8 +6,6 @@ import {
   Button,
   Input,
   Table,
-  HStack,
-  Image,
 } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
 import { useUserList } from "@/features/admin/hooks/useUserlist";
@@ -121,28 +119,9 @@ export function UsersManagement() {
               {filteredUsers.map((user) => (
                 <Table.Row key={user.id} _hover={{ bg: "gray.50", _dark: { bg: "gray.700" } }}>
                   <Table.Cell>
-                    <HStack gap={3}>
-                      <Box
-                        w={8}
-                        h={8}
-                        borderRadius="full"
-                        overflow="hidden"
-                        bg="gray.200"
-                        _dark={{ bg: "gray.600" }}
-                        flexShrink={0}
-                      >
-                        <Image
-                          src={user.profile_url}
-                          alt={`${user.first_name} ${user.last_name}`}
-                          w="100%"
-                          h="100%"
-                          objectFit="cover"
-                        />
-                      </Box>
-                      <Text fontSize="sm" fontWeight="medium" color="gray.900" _dark={{ color: "white" }}>
-                        {user.first_name} {user.last_name}
-                      </Text>
-                    </HStack>
+                    <Text fontSize="sm" fontWeight="medium" color="gray.900" _dark={{ color: "white" }}>
+                      {user.first_name} {user.last_name}
+                    </Text>
                   </Table.Cell>
                   <Table.Cell>
                     <Text fontSize="sm" color="gray.600" _dark={{ color: "gray.400" }}>
