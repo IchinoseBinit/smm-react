@@ -10,7 +10,7 @@ export default function Create() {
         <title>Create Post </title>
       </Helmet>
 
-      <Box w="full">
+      <Box w="100%" maxW="100%" minW={0} px={{ base: 0, md: 2 }}>
         <CreatePostForm />
       </Box>
     </>

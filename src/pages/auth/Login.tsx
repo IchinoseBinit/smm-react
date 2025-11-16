@@ -21,10 +21,10 @@ function Login() {
   };
 
   return (
-    <Box minH="100vh" bg="gray.50" display="flex" alignItems="center" justifyContent="center" p={4}>
-      <VStack gap={6} w="full" maxW="lg">
+    <Box minH="100vh" bg="gray.50" display="flex" alignItems="center" justifyContent="center" p={{ base: 2, md: 4 }} py={{ base: 4, md: 6 }}>
+      <VStack gap={{ base: 2, md: 6 }} w="full" maxW="lg" px={{ base: 2, md: 0 }}>
         {/* Logo */}
-        <Image src={logo} height={8} width="auto" maxW="100%" />
+        <Image src={logo} height={{ base: 6, md: 8 }} width="auto" maxW="100%" />
 
         {/* Manual Tabs */}
         <Box w="full">
@@ -32,7 +32,7 @@ function Login() {
           <Flex
             bg="transparent"
             borderRadius="lg"
-            mb={6}
+            mb={{ base: 2, md: 6 }}
             gap={0}
             border="1px solid"
             borderColor="gray.300"
@@ -40,8 +40,8 @@ function Login() {
           >
             <Box
               flex={1}
-              py={2.5}
-              px={4}
+              py={{ base: 2, md: 2.5 }}
+              px={{ base: 2, md: 4 }}
               bg={!isSignup ? "white" : "gray.200"}
               color={!isSignup ? "gray.900" : "gray.600"}
               fontWeight="medium"
@@ -59,8 +59,8 @@ function Login() {
             </Box>
             <Box
               flex={1}
-              py={2.5}
-              px={4}
+              py={{ base: 2, md: 2.5 }}
+              px={{ base: 2, md: 4 }}
               bg={isSignup ? "white" : "gray.200"}
               color={isSignup ? "gray.900" : "gray.600"}
               fontWeight="medium"

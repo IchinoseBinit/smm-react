@@ -83,34 +83,36 @@ export default function DashboardLayout({
       {!isMobile && <Sidebar />}
 
       {/* Main content area */}
-      <Box flex="1" bg="white" mt={4} ml={!isMobile ? "240px" : 0}>
+      <Box flex="1" bg="white" mt={{ base: 2, md: 4 }} ml={!isMobile ? "240px" : 0} minW={0} maxW="100%">
         {/* Header with mobile menu button */}
         <HStack
           justifyContent="space-between"
           width="100%"
+          maxW="100%"
+          minW={0}
           borderBottom="1px solid"
           borderColor="gray.200"
-          paddingBottom={4}
-          px={{ base: 3, md: 4 }}
+          paddingBottom={{ base: 3, md: 4 }}
+          px={{ base: 2, md: 4 }}
         >
           {/* Left side - Mobile menu button + Title with icon */}
-          <HStack gap={3}>
+          <HStack gap={{ base: 1, md: 3 }}>
             {/* Mobile hamburger menu - always visible on mobile */}
             {isMobile && (
               <IconButton
                 aria-label="Open menu"
                 variant="ghost"
                 onClick={toggle}
-                size="lg"
+                size="sm"
               >
-                <Icon as={FiMenu} boxSize={6} />
+                <Icon as={FiMenu} boxSize={5} />
               </IconButton>
             )}
 
             {/* Page icon and title */}
-            {pageConfig.icon && <Image src={pageConfig.icon} boxSize={6} />}
+            {pageConfig.icon && <Image src={pageConfig.icon} boxSize={{ base: 5, md: 6 }} />}
             <Heading
-              size={{ base: "md", md: "lg" }}
+              size={{ base: "sm", md: "lg" }}
               color="gray.800"
               fontWeight="600"
             >
@@ -124,7 +126,7 @@ export default function DashboardLayout({
               <QuickActionSearch />
             </Box>
             <Box
-              padding={3}
+              padding={{ base: 2, md: 3 }}
               borderRadius="full"
               bg={bgColor}
               border="1px solid"
@@ -132,20 +134,24 @@ export default function DashboardLayout({
               _hover={{ bg: colorMode === "light" ? "gray.100" : "gray.600" }}
               cursor="pointer"
             >
-              <Image src={notificationbing} boxSize={5} />
+              <Image src={notificationbing} boxSize={{ base: 4, md: 5 }} />
             </Box>
           </HStack>
         </HStack>
 
         {/* Main content */}
         <Box
-          p={{ base: 4, md: 6 }}
+          p={{ base: 2, md: 6 }}
           overflowY="auto"
+          overflowX="hidden"
           css={{
             "&::-webkit-scrollbar": { display: "none" },
           }}
-          overflow="scroll"
-          h="calc(100dvh - 80px)"
+          h="calc(100vh - 100px)"
+          minH="calc(100vh - 100px)"
+          w="100%"
+          maxW="100%"
+          minW={0}
         >
           {children}
         </Box>
