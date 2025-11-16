@@ -74,13 +74,13 @@ const LoginForm = () => {
       border="1px solid"
       borderColor="gray.200"
       borderRadius="lg"
-      p={8}
+      p={{ base: 3, sm: 6, md: 8 }}
       className="light"
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Box mb={8}>
+        <Box mb={{ base: 3, md: 8 }}>
           <Text
-            fontSize="3xl"
+            fontSize={{ base: "xl", md: "3xl" }}
             fontWeight="bold"
             color="gray.900"
             textAlign={isOrganizationSignup ? "center" : ""}
@@ -90,13 +90,14 @@ const LoginForm = () => {
           <Text
             color="gray.600"
             textAlign={isOrganizationSignup ? "center" : ""}
-            mt={2}
+            mt={{ base: 1, md: 2 }}
+            fontSize={{ base: "sm", md: "md" }}
           >
             Welcome back! Please enter your details.
           </Text>
         </Box>
 
-        <Stack spaceY={5}>
+        <Stack spaceY={{ base: 3, md: 5 }}>
           <Fieldset.Root color="fg">
             <Field.Root invalid required>
               <Field.Label>
@@ -109,6 +110,7 @@ const LoginForm = () => {
                 placeholder="Enter your email"
                 border="none"
                 bg="gray.50"
+                size={{ base: "md", md: "lg" }}
                 _focus={{
                   bg: "gray.100",
                   boxShadow: "none",
@@ -121,7 +123,7 @@ const LoginForm = () => {
               <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
             </Field.Root>
 
-            <Field.Root invalid mt={5} required>
+            <Field.Root invalid mt={{ base: 3, md: 5 }} required>
               <Field.Label>
                 Password
                 <Field.RequiredIndicator />
@@ -134,6 +136,7 @@ const LoginForm = () => {
                   pr="2.5rem"
                   border="none"
                   bg="gray.50"
+                  size={{ base: "md", md: "lg" }}
                   _focus={{
                     bg: "gray.100",
                     boxShadow: "none",
@@ -191,7 +194,7 @@ const LoginForm = () => {
             Sign in
           </Button>
 
-          <Text textAlign="center" mt={6} color="gray.600">
+          <Text textAlign="center" mt={{ base: 3, md: 6 }} color="gray.600" fontSize={{ base: "sm", md: "md" }}>
             Don't have an account?{" "}
             <Link
               onClick={() => navigate("/login?modal=signup")}

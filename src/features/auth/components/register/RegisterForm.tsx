@@ -98,12 +98,13 @@ const RegisterForm: React.FC = () => {
       maxW="lg"
       mx="auto"
       transition="all 0.3s ease"
+      p={{ base: 3, md: 0 }}
       // border="1px solid"
       // borderColor="gray.200"
       // borderRadius="lg"
     >
-      <Flex align="center" justify="center" mb={7}>
-        <Heading size="2xl">Create Account</Heading>
+      <Flex align="center" justify="center" mb={{ base: 3, md: 7 }}>
+        <Heading size={{ base: "lg", md: "2xl" }}>Create Account</Heading>
       </Flex>
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -112,7 +113,7 @@ const RegisterForm: React.FC = () => {
             {error.message || "Registration failed"}
           </p>
         )} */}
-        <VStack spaceY={5} align="stretch">
+        <VStack spaceY={{ base: 3, md: 5 }} align="stretch">
           <Fieldset.Root invalid>
             {/* <Field.Root>
               <Field.Label>Country</Field.Label>
@@ -128,7 +129,7 @@ const RegisterForm: React.FC = () => {
               </NativeSelect.Root>
               <Field.ErrorText>{errors.country?.message}</Field.ErrorText>
             </Field.Root> */}
-            <Flex gap={4}>
+            <Flex gap={{ base: 2, md: 4 }} flexDirection={{ base: "column", sm: "row" }}>
               <Field.Root invalid={Boolean(errors.first_name)} required>
                 <Field.Label>
                   First Name
@@ -385,7 +386,7 @@ const RegisterForm: React.FC = () => {
             color="white"
             size="lg"
             w="100%"
-            mt={4}
+            mt={{ base: 2, md: 4 }}
             loading={isPending}
             loadingText="Creating Account"
             _hover={{ bg: "blue.600" }}
@@ -396,7 +397,7 @@ const RegisterForm: React.FC = () => {
         </VStack>
       </form>
 
-      <Flex justify="center" mt={6}>
+      <Flex justify="center" mt={{ base: 3, md: 6 }}>
         <Text fontSize="sm" color="gray.600">
           Already have an account?{" "}
           <Link
