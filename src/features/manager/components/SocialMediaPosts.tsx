@@ -51,14 +51,71 @@ if (isLoading) return <CircularLoading />
     <VStack align="stretch" gap={6} w="full">
       {/* Header with Tabs and Date Filters */}
       <Flex
+        direction={{ base: "column", lg: "row" }}
         justify="space-between"
-        align="flex-start"
+        align={{ base: "stretch", lg: "flex-start" }}
         mb={4}
-        flexWrap={{ base: "wrap", lg: "nowrap" }}
         gap={4}
       >
-        {/* Tabs Section */}
-        <Box flex={1} minW="300px">
+        {/* Date Filter Section - Show first on mobile */}
+        <Box
+          order={{ base: 1, lg: 2 }}
+          flexShrink={0}
+          w={{ base: "full", lg: "auto" }}
+        >
+          <HStack gap={4} align="end" justify={{ base: "flex-start", lg: "flex-end" }}>
+            <Box>
+              <Text fontSize="sm" color="gray.600" fontWeight="medium">
+                From
+              </Text>
+              <Input
+                type="date"
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+                size="sm"
+                w="150px"
+                bg="white"
+                border="1px solid"
+                borderColor="gray.200"
+                _focus={{
+                  borderColor: "blue.400",
+                  shadow: "0 0 0 1px rgba(66, 153, 225, 0.6)",
+                }}
+                _dark={{
+                  bg: "gray.700",
+                  borderColor: "gray.600",
+                }}
+              />
+            </Box>
+
+            <Box>
+              <Text fontSize="sm" color="gray.600" fontWeight="medium">
+                To
+              </Text>
+              <Input
+                type="date"
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+                size="sm"
+                w="150px"
+                bg="white"
+                border="1px solid"
+                borderColor="gray.200"
+                _focus={{
+                  borderColor: "blue.400",
+                  shadow: "0 0 0 1px rgba(66, 153, 225, 0.6)",
+                }}
+                _dark={{
+                  bg: "gray.700",
+                  borderColor: "gray.600",
+                }}
+              />
+            </Box>
+          </HStack>
+        </Box>
+
+        {/* Tabs Section - Show second on mobile */}
+        <Box flex={1} minW={{ base: "full", lg: "300px" }} order={{ base: 2, lg: 1 }}>
           <Tabs.Root
             value={status}
             variant="plain"
@@ -171,59 +228,6 @@ if (isLoading) return <CircularLoading />
               </Tabs.Content>
             </Box>
           </Tabs.Root>
-        </Box>
-
-        {/* Date Filter Section */}
-        <Box flexShrink={0} w={{ base: "full", lg: "auto" }}>
-          <HStack gap={4} align="end">
-            <Box>
-              <Text fontSize="sm" color="gray.600" fontWeight="medium">
-                From
-              </Text>
-              <Input
-                type="date"
-                value={from}
-                onChange={(e) => setFrom(e.target.value)}
-                size="sm"
-                w="150px"
-                bg="white"
-                border="1px solid"
-                borderColor="gray.200"
-                _focus={{
-                  borderColor: "blue.400",
-                  shadow: "0 0 0 1px rgba(66, 153, 225, 0.6)",
-                }}
-                _dark={{
-                  bg: "gray.700",
-                  borderColor: "gray.600",
-                }}
-              />
-            </Box>
-
-            <Box>
-              <Text fontSize="sm" color="gray.600" fontWeight="medium">
-                To
-              </Text>
-              <Input
-                type="date"
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
-                size="sm"
-                w="150px"
-                bg="white"
-                border="1px solid"
-                borderColor="gray.200"
-                _focus={{
-                  borderColor: "blue.400",
-                  shadow: "0 0 0 1px rgba(66, 153, 225, 0.6)",
-                }}
-                _dark={{
-                  bg: "gray.700",
-                  borderColor: "gray.600",
-                }}
-              />
-            </Box>
-          </HStack>
         </Box>
       </Flex>
 
