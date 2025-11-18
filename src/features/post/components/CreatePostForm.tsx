@@ -730,13 +730,41 @@ export default function CreatePostForm() {
       maxW="100%"
       minW={0}
     >
-      <Heading paddingLeft={{ base: 2, md: 4 }} fontSize={{ base: "xl", md: "2xl" }} maxW="100%">Post Content</Heading>
-      <Text paddingLeft={{ base: 2, md: 4 }} fontSize={{ base: "sm", md: "md" }} maxW="100%">Craft your content and engage your audience</Text>
-      <VStack spaceY={{ base: 3, md: 6 }} align="stretch" p={{ base: 2, md: 4 }} w="100%" maxW="100%" minW={0}>
+      <Heading
+        paddingLeft={{ base: 2, md: 4 }}
+        fontSize={{ base: "xl", md: "2xl" }}
+        maxW="100%"
+      >
+        Post Content
+      </Heading>
+      <Text
+        paddingLeft={{ base: 2, md: 4 }}
+        fontSize={{ base: "sm", md: "md" }}
+        maxW="100%"
+      >
+        Craft your content and engage your audience
+      </Text>
+      <VStack
+        spaceY={{ base: 3, md: 6 }}
+        align="stretch"
+        p={{ base: 2, md: 4 }}
+        w="100%"
+        maxW="100%"
+        minW={0}
+      >
         <SelectSurface />
         <Box w="full" maxW="100%" minW={0}>
-          <HStack justify="space-between" align="center" mb={{ base: 2, md: 4 }} w="full">
-            <Text fontWeight="bold" color="#00325c" fontSize={{ base: "md", md: "lg" }}>
+          <HStack
+            justify="space-between"
+            align="center"
+            mb={{ base: 2, md: 4 }}
+            w="full"
+          >
+            <Text
+              fontWeight="bold"
+              color="#00325c"
+              fontSize={{ base: "md", md: "lg" }}
+            >
               Connected Accounts <Span color={"red.600"}>*</Span>
             </Text>
           </HStack>
@@ -790,7 +818,14 @@ export default function CreatePostForm() {
           </SimpleGrid>
         </Box>
 
-        <HStack width={"full"} maxW="100%" minW={0} gap={{ base: 2, md: 4 }} alignItems="flex-start" flexDirection={{ base: "column", md: "row" }}>
+        <HStack
+          width={"full"}
+          maxW="100%"
+          minW={0}
+          gap={{ base: 2, md: 4 }}
+          alignItems="flex-start"
+          flexDirection={{ base: "column", md: "row" }}
+        >
           {/* Title Section */}
           {(() => {
             console.log(
@@ -800,7 +835,12 @@ export default function CreatePostForm() {
             return selectedPlatformsType.includes("YOUTUBE")
           })() && (
             <Box flex="1" maxW={{ base: "100%", md: "56%" }} w="full" minW={0}>
-              <Text fontSize={{ base: "md", md: "lg" }} fontWeight="semibold" mb={{ base: 2, md: 3 }} color="#00325c">
+              <Text
+                fontSize={{ base: "md", md: "lg" }}
+                fontWeight="semibold"
+                mb={{ base: 2, md: 3 }}
+                color="#00325c"
+              >
                 Title{" "}
                 <Span fontSize="sm" color={"gray.500"}>
                   (For Youtube Only )
@@ -870,7 +910,12 @@ export default function CreatePostForm() {
         {/* Hashtag suggestions section - hide when description is hidden */}
         {!shouldHideDescription && (
           <Box w="full" maxW="100%" minW={0}>
-            <Text fontSize={{ base: "md", md: "lg" }} fontWeight="semibold" mb={{ base: 2, md: 3 }} color="#00325c">
+            <Text
+              fontSize={{ base: "md", md: "lg" }}
+              fontWeight="semibold"
+              mb={{ base: 2, md: 3 }}
+              color="#00325c"
+            >
               Hashtag Suggestions
             </Text>
             <Flex wrap="wrap" gap={{ base: 1.5, md: 2 }} w="full">
@@ -907,8 +952,17 @@ export default function CreatePostForm() {
             </Flex>
           </Box>
         )}
-        <Box p={{ base: 1, md: 2 }} spaceY={{ base: 3, md: 6 }} w="full" maxW="100%" minW={0}>
-          <Heading color={"#00325c"} fontSize={{ base: "lg", md: "fontSizes.4xl" }}>
+        <Box
+          p={{ base: 1, md: 2 }}
+          spaceY={{ base: 3, md: 6 }}
+          w="full"
+          maxW="100%"
+          minW={0}
+        >
+          <Heading
+            color={"#00325c"}
+            fontSize={{ base: "lg", md: "fontSizes.4xl" }}
+          >
             Media
           </Heading>
 
@@ -980,7 +1034,13 @@ export default function CreatePostForm() {
           borderColor="gray.200"
           borderRadius="md"
         >
-          <VStack align="flex-start" gap={{ base: 4, md: 8 }} w="full" maxW="100%" minW={0}>
+          <VStack
+            align="flex-start"
+            gap={{ base: 4, md: 8 }}
+            w="full"
+            maxW="100%"
+            minW={0}
+          >
             {/* Header */}
             <Box
               backgroundColor={"gray.100"}
@@ -1033,7 +1093,10 @@ export default function CreatePostForm() {
               outline="none"
             >
               <Accordion.Item value="schedule" border="none" outline="none">
-                <Accordion.ItemContent ml={{ base: 2, md: 3 }} overflow="visible">
+                <Accordion.ItemContent
+                  ml={{ base: 2, md: 3 }}
+                  overflow="visible"
+                >
                   <Accordion.ItemBody>
                     <Flex
                       align="center"
@@ -1045,7 +1108,10 @@ export default function CreatePostForm() {
                       position={"relative"}
                       mb={{ base: 2, md: 3 }}
                     >
-                      <Text fontSize={{ base: "xs", md: "sm" }} color="orange.500">
+                      <Text
+                        fontSize={{ base: "xs", md: "sm" }}
+                        color="orange.500"
+                      >
                         ⚠️
                       </Text>
                       <Text
@@ -1079,7 +1145,13 @@ export default function CreatePostForm() {
                         </Text>
                       </Text>
                     </Flex>
-                    <VStack spaceY={{ base: 3, md: 4 }} align="stretch" w="full" maxW="100%" minW={0}>
+                    <VStack
+                      spaceY={{ base: 3, md: 4 }}
+                      align="stretch"
+                      w="full"
+                      maxW="100%"
+                      minW={0}
+                    >
                       <DateTime setvalue={setValue} scheduled={scheduledTime} />
                     </VStack>
                   </Accordion.ItemBody>
