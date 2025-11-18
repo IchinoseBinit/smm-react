@@ -78,17 +78,23 @@ export default function DashboardLayout({
   const pageConfig = getPageConfig(location.pathname)
 
   return (
-    <Flex h="100dvh" bg="white">
+    <Flex minH="100vh" position={"fixed"} w="100%">
       {/* Desktop sidebar */}
       {!isMobile && <Sidebar />}
 
       {/* Main content area */}
-      <Box flex="1" bg="white" mt={{ base: 2, md: 4 }} ml={!isMobile ? "240px" : 0} minW={0} maxW="100%">
+      <Box
+        flex="1"
+        bg="white"
+        mt={{ base: 2, md: 4 }}
+        ml={!isMobile ? "240px" : 0}
+        minW={0}
+        w="100%"
+      >
         {/* Header with mobile menu button */}
         <HStack
           justifyContent="space-between"
-          width="100%"
-          maxW="100%"
+          w="100%"
           minW={0}
           borderBottom="1px solid"
           borderColor="gray.200"
@@ -110,7 +116,9 @@ export default function DashboardLayout({
             )}
 
             {/* Page icon and title */}
-            {pageConfig.icon && <Image src={pageConfig.icon} boxSize={{ base: 5, md: 6 }} />}
+            {pageConfig.icon && (
+              <Image src={pageConfig.icon} boxSize={{ base: 5, md: 6 }} />
+            )}
             <Heading
               size={{ base: "sm", md: "lg" }}
               color="gray.800"
@@ -122,7 +130,10 @@ export default function DashboardLayout({
 
           {/* Right side - Search and notification */}
           <HStack gap={{ base: 2, md: 4 }}>
-            <Box maxW={{ base: "150px", md: "300px" }} display={{ base: "none", sm: "block" }}>
+            <Box
+              maxW={{ base: "150px", md: "300px" }}
+              display={{ base: "none", sm: "block" }}
+            >
               <QuickActionSearch />
             </Box>
             <Box
