@@ -212,7 +212,7 @@ const QuickActionSearch = () => {
           />
         </HStack>
 
-        <HStack gap={1} opacity={0.6}>
+        <HStack gap={1} opacity={0.6} display={{ base: "none", md: "flex" }}>
           <Kbd
             bg="white"
             borderColor="gray.300"
