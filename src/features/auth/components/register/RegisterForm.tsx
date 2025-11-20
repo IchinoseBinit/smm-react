@@ -129,7 +129,7 @@ const RegisterForm: React.FC = () => {
               </NativeSelect.Root>
               <Field.ErrorText>{errors.country?.message}</Field.ErrorText>
             </Field.Root> */}
-            <Flex gap={{ base: 2, md: 4 }} flexDirection={{ base: "column", sm: "row" }}>
+            <Flex gap={{ base: 2, md: 4 }} flexDirection={{ base: "column", md: "row" }}>
               <Field.Root invalid={Boolean(errors.first_name)} required>
                 <Field.Label>
                   First Name
