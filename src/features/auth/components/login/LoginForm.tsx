@@ -163,18 +163,20 @@ const LoginForm = () => {
               <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
             </Field.Root>
 
-            <Flex justify="space-between" align="center">
+            <Flex justify="space-between" align="center" flexWrap="nowrap" gap={{ base: 2, md: 4 }}>
               <Checkbox.Root>
                 <Checkbox.HiddenInput />
                 <Checkbox.Control boxSize={4} cursor="pointer" />
-                <Checkbox.Label>Remember me</Checkbox.Label>
+                <Checkbox.Label fontSize={{ base: "xs", md: "sm" }} whiteSpace="nowrap">Remember me</Checkbox.Label>
               </Checkbox.Root>
               <Link
                 onClick={() => navigate("/reset-password/send-otp")}
                 color="blue.600"
-                fontSize="sm"
+                fontSize={{ base: "xs", md: "sm" }}
                 fontWeight="medium"
                 cursor="pointer"
+                flexShrink={0}
+                whiteSpace="nowrap"
               >
                 Forgot password ?
               </Link>
