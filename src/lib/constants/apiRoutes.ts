@@ -10,7 +10,7 @@ export const API_ROUTES = {
     UPDATE_PSW: `${api}/user/auth/confirm-password/`,
   },
   USER: {
-    LIST: `${api}/user/user-list/?page=1&page_size=5`,
+    LIST: `${api}/user/user-list/`,
   },
   CONNECT_ACC: {
     ALL_Conn_ACC: `${thirdPartyApi}/auth/social/connected-accounts/`,
