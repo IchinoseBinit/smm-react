@@ -87,13 +87,71 @@ export function UsersManagement() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             size="sm"
-            maxW="400px"
+            maxW={{ base: "100%", md: "400px" }}
+            w="100%"
           />
         </Flex>
       </Box>
 
-      {/* Users Table */}
+      {/* Mobile Card Layout */}
       <Box
+        display={{ base: "block", md: "none" }}
+        mt={1}
+        mb={1}
+      >
+        {filteredUsers.map((user) => (
+          <Box
+            key={user.id}
+            bg="white"
+            _dark={{ bg: "gray.800" }}
+            borderRadius="md"
+            border="1px solid"
+            borderColor="gray.300"
+            p={3}
+            mb={2}
+          >
+            <Flex justify="space-between" align="flex-start" mb={2}>
+              <Box>
+                <Text fontSize="sm" fontWeight="medium" color="gray.900" _dark={{ color: "white" }}>
+                  {user.first_name} {user.last_name}
+                </Text>
+                <Text fontSize="xs" color="gray.500" _dark={{ color: "gray.400" }}>
+                  {user.organization?.name || "No organization"}
+                </Text>
+              </Box>
+              <Flex gap={1}>
+                <Button size="xs" variant="ghost" colorScheme="blue">
+                  Edit
+                </Button>
+                <Button size="xs" variant="ghost" colorScheme="red">
+                  Delete
+                </Button>
+              </Flex>
+            </Flex>
+            <Text fontSize="xs" color="gray.600" _dark={{ color: "gray.400" }}>
+              {user.email}
+            </Text>
+          </Box>
+        ))}
+
+        {/* Empty State for Mobile */}
+        {filteredUsers.length === 0 && (
+          <Flex justify="center" align="center" py={12}>
+            <Box textAlign="center">
+              <Text fontSize="sm" color="gray.500" _dark={{ color: "gray.400" }} mb={2}>
+                No users found
+              </Text>
+              <Text fontSize="xs" color="gray.400" _dark={{ color: "gray.500" }}>
+                {searchQuery ? "Try adjusting your search criteria" : "No users available"}
+              </Text>
+            </Box>
+          </Flex>
+        )}
+      </Box>
+
+      {/* Desktop Table Layout */}
+      <Box
+        display={{ base: "none", md: "block" }}
         bg="white"
         _dark={{ bg: "gray.800" }}
         borderRadius="md"
@@ -126,60 +184,55 @@ export function UsersManagement() {
                 </Text>
               </Table.ColumnHeader>
             </Table.Row>
-            </Table.Header>
+          </Table.Header>
 
-            <Table.Body>
-              {filteredUsers.map((user) => (
-                <Table.Row key={user.id} _hover={{ bg: "gray.50", _dark: { bg: "gray.700" } }}>
-                  <Table.Cell>
-                    <Text fontSize="sm" fontWeight="medium" color="gray.900" _dark={{ color: "white" }}>
-                      {user.first_name} {user.last_name}
-                    </Text>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Text fontSize="sm" color="gray.600" _dark={{ color: "gray.400" }}>
-                      {user.email}
-                    </Text>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Text fontSize="sm" color="gray.600" _dark={{ color: "gray.400" }}>
-                      {user.organization?.name || "-"}
-                    </Text>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Flex gap={2}>
-                      <Button size="xs" variant="ghost" colorScheme="blue">
-                        Edit
-                      </Button>
-                      <Button size="xs" variant="ghost" colorScheme="red">
-                        Delete
-                      </Button>
-                    </Flex>
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table.Root>
+          <Table.Body>
+            {filteredUsers.map((user) => (
+              <Table.Row key={user.id} _hover={{ bg: "gray.50", _dark: { bg: "gray.700" } }}>
+                <Table.Cell>
+                  <Text fontSize="sm" fontWeight="medium" color="gray.900" _dark={{ color: "white" }}>
+                    {user.first_name} {user.last_name}
+                  </Text>
+                </Table.Cell>
+                <Table.Cell>
+                  <Text fontSize="sm" color="gray.600" _dark={{ color: "gray.400" }}>
+                    {user.email}
+                  </Text>
+                </Table.Cell>
+                <Table.Cell>
+                  <Text fontSize="sm" color="gray.600" _dark={{ color: "gray.400" }}>
+                    {user.organization?.name || "-"}
+                  </Text>
+                </Table.Cell>
+                <Table.Cell>
+                  <Flex gap={2}>
+                    <Button size="xs" variant="ghost" colorScheme="blue">
+                      Edit
+                    </Button>
+                    <Button size="xs" variant="ghost" colorScheme="red">
+                      Delete
+                    </Button>
+                  </Flex>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
 
-          {/* Empty State (shown when no users found) */}
-          {filteredUsers.length === 0 && (
-            <Flex justify="center" align="center" py={12}>
-              <Box textAlign="center">
-                <Text
-                  fontSize="sm"
-                  color="gray.500"
-                  _dark={{ color: "gray.400" }}
-                  mb={2}
-                >
-                  No users found
-                </Text>
-                <Text fontSize="xs" color="gray.400" _dark={{ color: "gray.500" }}>
-                  {searchQuery ? "Try adjusting your search criteria" : "No users available"}
-                </Text>
-              </Box>
-            </Flex>
-          )}
-        </Box>
+        {/* Empty State for Desktop */}
+        {filteredUsers.length === 0 && (
+          <Flex justify="center" align="center" py={12}>
+            <Box textAlign="center">
+              <Text fontSize="sm" color="gray.500" _dark={{ color: "gray.400" }} mb={2}>
+                No users found
+              </Text>
+              <Text fontSize="xs" color="gray.400" _dark={{ color: "gray.500" }}>
+                {searchQuery ? "Try adjusting your search criteria" : "No users available"}
+              </Text>
+            </Box>
+          </Flex>
+        )}
+      </Box>
 
       {/* Footer Section - Pagination and Stats */}
       <Box
