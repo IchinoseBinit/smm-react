@@ -124,8 +124,8 @@ export const ConnectedAcc = () => {
       ) : (
         <>
           <SimpleGrid
-            columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-            gap={3}
+            columns={{ base: 1, md: 2, lg: 3, xl: 4 }}
+            gap={{ base: 4, md: 3 }}
             mt={6}
             w="full"
           >
