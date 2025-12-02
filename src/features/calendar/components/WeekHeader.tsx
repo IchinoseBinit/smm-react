@@ -9,33 +9,40 @@ interface WeekHeaderProps {
 export const WeekHeader: React.FC<WeekHeaderProps> = ({ weekDays }) => {
   return (
     <Grid
-      templateColumns="60px repeat(7, 1fr)"
+      templateColumns={{ base: "40px repeat(7, 1fr)", md: "60px repeat(7, 1fr)" }}
       borderColor="border.DEFAULT"
       bg="bg.DEFAULT"
+      minWidth={{ base: "600px", md: "auto" }}
     >
       {/* Empty cell for time column */}
-      <Box />
+      <Box
+        borderTop="1px solid"
+        borderBottom="1px solid"
+        borderRight="1px solid"
+        borderColor={{ base: "primary.50", _dark: "primary.700" }}
+      />
 
-      {weekDays.map((day) => (
+      {weekDays.map((day, index) => (
         <Box
           key={day.date.toISOString()}
-          p={3}
+          p={{ base: 1.5, md: 3 }}
           textAlign="center"
-          borderLeft="1px solid"
+          borderLeft={index === 0 ? "1px solid" : "none"}
           borderRight="1px solid"
           borderBottom="1px solid"
+          borderTop="1px solid"
           borderColor={{ base: "primary.50", _dark: "primary.700" }}
         >
-          <Text fontSize="md" color="fg.MUTED" fontWeight="medium" mb={1}>
+          <Text fontSize={{ base: "xs", md: "md" }} color="fg.MUTED" fontWeight="medium" mb={{ base: 0.5, md: 1 }}>
             {day.dayName}
           </Text>
 
           {day.isToday ? (
-            <Circle size="30px" bg="#003a6b" color="white" mx="auto">
-              <Text fontSize="md">{day.dayNumber}</Text>
+            <Circle size={{ base: "24px", md: "30px" }} bg="#003a6b" color="white" mx="auto">
+              <Text fontSize={{ base: "sm", md: "md" }}>{day.dayNumber}</Text>
             </Circle>
           ) : (
-            <Text fontSize="md" color="fg.DEFAULT" fontWeight="medium">
+            <Text fontSize={{ base: "sm", md: "md" }} color="fg.DEFAULT" fontWeight="medium">
               {day.dayNumber}
             </Text>
           )}
