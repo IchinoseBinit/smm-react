@@ -12,14 +12,18 @@ export const LoginFormSection = () => {
     <>
       <Box
         flex="1"
-        p={{ base: 2, md: 6 }}
+        p={{ base: 2,sm:0, md: 6 }}
         display="flex"
         alignItems="center"
         justifyContent="center"
       >
-        <Box w="full" maxW="lg" px={{ base: 2, md: 0 }}>
+        <Box w="full" maxW="lg" px={{ base: 2, sm: 0, md: 0 }}>
           {!shouldHideLogo && (
-            <Flex align="center" mb={{ base: 2, md: 6 }} ml={{ base: 0, md: -5 }}>
+            <Flex
+              align="center"
+              mb={{ base: 2, md: 6 }}
+              ml={{ base: 0, md: -5 }}
+            >
               <Box>
                 <Image
                   src={logo}

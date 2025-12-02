@@ -40,12 +40,12 @@ const OrganizationSignup: React.FC = () => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      p={4}
+      p={{ base: 3, md: 4 }}
     >
-      <Container maxW="2xl" py={8}>
-        <VStack gap={6} w="full">
+      <Container maxW="2xl" py={{ base: 4, md: 6 }}>
+        <VStack gap={{ base: 3, md: 4 }} w="full">
           {/* Logo */}
-          <VStack gap={4} textAlign="center">
+          <VStack gap={{ base: 2, md: 3 }} textAlign="center">
             <Image
               src={LightLogo}
               height={8}
@@ -105,10 +105,10 @@ const OrganizationSignup: React.FC = () => {
           {activeTab === "signin" && (
             <Box
               bg="white"
-              p={6}
+              p={{ base: 3, md: 4, lg: 5 }}
               borderRadius="lg"
               w="full"
-              maxW="3xl"
+              maxW="sm"
               mx="auto"
             >
               <LoginFormSection />
@@ -119,10 +119,10 @@ const OrganizationSignup: React.FC = () => {
           {activeTab === "create" && (
             <Box
               bg="white"
-              p={6}
+              p={{ base: 3, md: 4, lg: 5 }}
               borderRadius="lg"
               w="full"
-              maxW="3xl"
+              maxW="sm"
               mx="auto"
             >
               <RegisterFormSection />

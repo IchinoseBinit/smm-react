@@ -21,8 +21,8 @@ function Login() {
   };
 
   return (
-    <Box minH="100vh" bg="gray.50" display="flex" alignItems="center" justifyContent="center" p={{ base: 2, md: 4 }} py={{ base: 4, md: 6 }}>
-      <VStack gap={{ base: 2, md: 6 }} w="full" maxW="lg" px={{ base: 2, md: 0 }}>
+    <Box minH="100vh" bg="gray.50" display="flex" alignItems="center" justifyContent="center" p={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
+      <VStack gap={{ base: 3, md: 4 }} w="full" maxW="lg" px={{ base: 2, md: 0 }}>
         {/* Logo */}
         <Image src={logo} height={{ base: 6, md: 8 }} width="auto" maxW="100%" />
 
@@ -32,7 +32,7 @@ function Login() {
           <Flex
             bg="transparent"
             borderRadius="lg"
-            mb={{ base: 2, md: 6 }}
+            mb={{ base: 3, md: 4 }}
             gap={0}
             border="1px solid"
             borderColor="gray.300"
