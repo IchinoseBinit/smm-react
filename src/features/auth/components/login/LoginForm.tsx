@@ -74,11 +74,11 @@ const LoginForm = () => {
       border="1px solid"
       borderColor="gray.200"
       borderRadius="lg"
-      p={{ base: 3, sm: 6, md: 8 }}
+      p={{ base: 3, sm: 4, md: 5 }}
       className="light"
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Box mb={{ base: 3, md: 8 }}>
+        <Box mb={{ base: 3, md: 4 }}>
           <Text
             fontSize={{ base: "xl", md: "3xl" }}
             fontWeight="bold"
@@ -97,7 +97,7 @@ const LoginForm = () => {
           </Text>
         </Box>
 
-        <Stack spaceY={{ base: 3, md: 5 }}>
+        <Stack spaceY={{ base: 2.5, md: 3 }}>
           <Fieldset.Root color="fg">
             <Field.Root invalid required>
               <Field.Label>
@@ -123,7 +123,7 @@ const LoginForm = () => {
               <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
             </Field.Root>
 
-            <Field.Root invalid mt={{ base: 3, md: 5 }} required>
+            <Field.Root invalid mt={{ base: 2.5, md: 3 }} required>
               <Field.Label>
                 Password
                 <Field.RequiredIndicator />
@@ -163,11 +163,21 @@ const LoginForm = () => {
               <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
             </Field.Root>
 
-            <Flex justify="space-between" align="center" flexWrap="nowrap" gap={{ base: 2, md: 4 }}>
+            <Flex
+              justify="space-between"
+              align="center"
+              flexWrap="nowrap"
+              gap={{ base: 2, md: 4 }}
+            >
               <Checkbox.Root>
                 <Checkbox.HiddenInput />
                 <Checkbox.Control boxSize={4} cursor="pointer" />
-                <Checkbox.Label fontSize={{ base: "xs", md: "sm" }} whiteSpace="nowrap">Remember me</Checkbox.Label>
+                <Checkbox.Label
+                  fontSize={{ base: "xs", md: "sm" }}
+                  whiteSpace="nowrap"
+                >
+                  Remember me
+                </Checkbox.Label>
               </Checkbox.Root>
               <Link
                 onClick={() => navigate("/reset-password/send-otp")}
@@ -196,7 +206,12 @@ const LoginForm = () => {
             Sign in
           </Button>
 
-          <Text textAlign="center" mt={{ base: 3, md: 6 }} color="gray.600" fontSize={{ base: "sm", md: "md" }}>
+          <Text
+            textAlign="center"
+            mt={{ base: 2, md: 4 }}
+            color="gray.600"
+            fontSize={{ base: "sm", md: "md" }}
+          >
             Don't have an account?{" "}
             <Link
               onClick={() => navigate("/login?modal=signup")}

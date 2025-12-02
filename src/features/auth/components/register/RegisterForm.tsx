@@ -103,7 +103,7 @@ const RegisterForm: React.FC = () => {
       // borderColor="gray.200"
       // borderRadius="lg"
     >
-      <Flex align="center" justify="center" mb={{ base: 3, md: 7 }}>
+      <Flex align="center" justify="center" mb={{ base: 3, md: 4 }}>
         <Heading size={{ base: "lg", md: "2xl" }}>Create Account</Heading>
       </Flex>
 
@@ -113,7 +113,7 @@ const RegisterForm: React.FC = () => {
             {error.message || "Registration failed"}
           </p>
         )} */}
-        <VStack spaceY={{ base: 3, md: 5 }} align="stretch">
+        <VStack spaceY={{ base: 2.5, md: 3 }} align="stretch">
           <Fieldset.Root invalid>
             {/* <Field.Root>
               <Field.Label>Country</Field.Label>
@@ -386,7 +386,7 @@ const RegisterForm: React.FC = () => {
             color="white"
             size="lg"
             w="100%"
-            mt={{ base: 2, md: 4 }}
+            mt={{ base: 1, md: 2 }}
             loading={isPending}
             loadingText="Creating Account"
             _hover={{ bg: "blue.600" }}
@@ -397,7 +397,7 @@ const RegisterForm: React.FC = () => {
         </VStack>
       </form>
 
-      <Flex justify="center" mt={{ base: 3, md: 6 }}>
+      <Flex justify="center" mt={{ base: 2, md: 4 }}>
         <Text fontSize="sm" color="gray.600">
           Already have an account?{" "}
           <Link

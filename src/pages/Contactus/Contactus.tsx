@@ -42,7 +42,7 @@ const Contactus = () => {
   }
 
   return (
-    <Container maxW="7xl">
+    <Container maxW="7xl" pb={{ base: "100px", md: "8" }}>
       {/* Top Section - Hero with Image */}
       <Grid
         templateColumns={{ base: "1fr", lg: "1fr 1fr" }}

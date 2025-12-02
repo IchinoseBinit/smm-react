@@ -7,7 +7,7 @@ export const RegisterFormSection = () => {
     <>
       <Box
         flex="1"
-        p={{ base: 8, lg: 12 }}
+        p={{ base: 3, lg: 4 }}
         display="flex"
         alignItems="center"
         justifyContent="center"
