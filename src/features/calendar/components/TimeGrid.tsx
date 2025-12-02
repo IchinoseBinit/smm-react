@@ -88,12 +88,12 @@ const Card = ({
         left={`${position.left}px`}
         border="1px solid gray"
         borderRadius="md"
-        p={4}
+        p={{ base: 2, md: 4 }}
         bg="white"
-        gap={3}
+        gap={{ base: 2, md: 3 }}
         zIndex={99999}
-        minWidth="250px"
-        maxWidth="300px"
+        minWidth={{ base: "200px", md: "250px" }}
+        maxWidth={{ base: "250px", md: "300px" }}
         boxShadow="0 10px 25px rgba(0,0,0,0.15)"
         _before={{
           content: '""',
@@ -341,15 +341,16 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
     : null
 
   return (
-    <Box flex={1} mt={5} overflowY="hidden">
+    <Box flex={1} mt={{ base: 2, md: 5 }} overflowY="hidden" overflowX={{ base: "auto", md: "hidden" }}>
       <WeekHeader weekDays={weekDays} />
       <Grid
         ref={gridRef}
-        templateColumns="60px repeat(7, 1fr)"
-        autoRows="94px"
+        templateColumns={{ base: "40px repeat(7, 1fr)", md: "60px repeat(7, 1fr)" }}
+        autoRows={{ base: "70px", md: "94px" }}
         position="sticky"
         top="0"
         zIndex="80"
+        minWidth={{ base: "600px", md: "auto" }}
       >
         {/* Time labels */}
         {timeSlots.map((slot, i) => (
@@ -360,12 +361,12 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
             display="flex"
             alignItems="flex-start"
             justifyContent="center"
-            pt={2}
-            borderTop="1px solid"
+            pt={{ base: 1, md: 2 }}
+            borderRight="1px solid"
             borderBottom="1px solid"
             borderColor={{ base: "primary.50", _dark: "primary.700" }}
           >
-            <Text fontSize="xs" color="fg.MUTED" fontWeight="medium">
+            <Text fontSize={{ base: "2xs", md: "xs" }} color="fg.MUTED" fontWeight="medium">
               {slot.label}
             </Text>
           </Box>
@@ -385,7 +386,9 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                 gridColumn={dayIndex + 2}
                 gridRow={timeIndex + 1}
                 position="relative"
-                border="1px solid"
+                borderLeft={dayIndex === 0 ? "1px solid" : "none"}
+                borderRight="1px solid"
+                borderBottom="1px solid"
                 backgroundColor={"white"}
                 borderColor={{ base: "primary.50", _dark: "primary.700" }}
                 _hover={{
@@ -422,11 +425,11 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                           left="-1px"
                           top="50%"
                           transform="translateY(-50%)"
-                          width="10px"
-                          height="10px"
+                          width={{ base: "8px", md: "10px" }}
+                          height={{ base: "8px", md: "10px" }}
                           backgroundColor="white"
                           borderRadius="50%"
-                          border="2px solid black"
+                          border={{ base: "1.5px solid black", md: "2px solid black" }}
                           zIndex="5"
                         />
                         <Box
@@ -435,12 +438,12 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                           top="8px"
                           backgroundColor="#003a6b"
                           color="white"
-                          px={2}
-                          py={1}
+                          px={{ base: 1, md: 2 }}
+                          py={{ base: 0.5, md: 1 }}
                           borderRadius="4px"
-                          fontSize="xs"
+                          fontSize={{ base: "2xs", md: "xs" }}
                           fontWeight="medium"
-                          minWidth="35px"
+                          minWidth={{ base: "30px", md: "35px" }}
                           textAlign="center"
                           boxShadow="0 2px 4px rgba(0,0,0,0.1)"
                           zIndex="4"
@@ -461,7 +464,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                     bottom="0"
                     display="flex"
                     alignItems="center"
-                    px={2}
+                    px={{ base: 1, md: 2 }}
                     backgroundColor="white"
                     zIndex="2"
                     onMouseEnter={(e) => handleMouseEnter(eventId, e)}
@@ -473,11 +476,11 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                         left="-1px"
                         top="50%"
                         transform="translateY(-50%)"
-                        width="10px"
-                        height="10px"
+                        width={{ base: "8px", md: "10px" }}
+                        height={{ base: "8px", md: "10px" }}
                         backgroundColor="white"
                         borderRadius="50%"
-                        border="2px solid gray"
+                        border={{ base: "1.5px solid gray", md: "2px solid gray" }}
                         zIndex="5"
                       />
                     )}
@@ -485,10 +488,10 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                     <Box
                       backgroundColor="white"
                       color="#003a6b"
-                      px={2}
-                      py={1}
+                      px={{ base: 1, md: 2 }}
+                      py={{ base: 0.5, md: 1 }}
                       borderRadius="12px 12px 12px 0"
-                      fontSize="xs"
+                      fontSize={{ base: "2xs", md: "xs" }}
                       fontWeight="medium"
                       border="1px solid gray"
                       position={"relative"}
@@ -496,11 +499,13 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
                       boxShadowColor={"gray.100"}
                       flex={1}
                       boxShadow="0 2px 4px rgba(0,0,0,0.1)"
+                      overflow="hidden"
+                      textOverflow="ellipsis"
                     >
                       {currentEvent.title}
                       <Box
-                        width="10px"
-                        height="10px"
+                        width={{ base: "6px", md: "10px" }}
+                        height={{ base: "6px", md: "10px" }}
                         borderRadius="50%"
                         position={"absolute"}
                         top={-0.5}

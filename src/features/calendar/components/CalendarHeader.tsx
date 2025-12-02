@@ -16,10 +16,10 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onNextWeek,
 }) => {
   return (
-    <Flex p={4} borderColor="red" bg="bg.DEFAULT">
+    <Flex p={{ base: 2, md: 4 }} borderColor="red" bg="bg.DEFAULT">
       <HStack spaceX={2}>
         <IconButton
-          size="sm"
+          size={{ base: "xs", md: "sm" }}
           variant="ghost"
           onClick={onPrevWeek}
           _hover={{ bg: "bg.MUTED" }}
@@ -29,17 +29,17 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
         </IconButton>
 
         <Text
-          fontSize="lg"
+          fontSize={{ base: "md", md: "lg" }}
           fontWeight="medium"
           color="fg.DEFAULT"
-          minW="200px"
+          minW={{ base: "120px", md: "200px" }}
           textAlign="center"
         >
           {format(currentDate, "MMMM yyyy")}
         </Text>
 
         <IconButton
-          size="sm"
+          size={{ base: "xs", md: "sm" }}
           variant="ghost"
           onClick={onNextWeek}
           _hover={{ bg: "bg.MUTED" }}
@@ -48,7 +48,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
           <FaChevronRight size={16} />
         </IconButton>
       </HStack>
-      <Box w="120px" /> {/* Spacer for balance */}
+      <Box w={{ base: "60px", md: "120px" }} /> {/* Spacer for balance */}
     </Flex>
   )
 };
