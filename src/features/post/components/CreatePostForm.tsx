@@ -1160,7 +1160,7 @@ export default function CreatePostForm() {
             </Accordion.Root>
           </Box>
         </Box>
-        <Box pb={{ base: "50px", md: 4 }} w="full" maxW="100%" minW={0}>
+        <Box pb={{ base: "100px", md: 4 }} w="full" maxW="100%" minW={0}>
           <Flex justify="end" gap={{ base: 1.5, md: 2 }} w="full">
             <Button
               type="submit"
