@@ -8,7 +8,7 @@ export default function AdminDashboard() {
         <title>Admin Dashboard</title>
       </Helmet>
 
-      <Box h="full" overflowY="auto" p={4}>
+      <Box h="full" overflowY="auto" p={4} pb={{ base: "100px", md: 4 }}>
         <Text
           fontSize="2xl"
           fontWeight="bold"

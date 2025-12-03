@@ -66,7 +66,7 @@ export const WeekView: React.FC<WeekViewProps> = ({
   };
 
   return (
-    <Box bg="bg.DEFAULT">
+    <Box bg="bg.DEFAULT" pb={{ base: "100px", md: 4 }}>
       <CalendarHeader
         currentDate={currentDate}
         onPrevWeek={handlePrevWeek}

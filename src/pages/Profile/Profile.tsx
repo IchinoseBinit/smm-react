@@ -165,6 +165,7 @@ const Profile = () => {
       minH="100vh"
       py={6}
       px={4}
+      pb={{ base: "100px", md: 6 }}
     >
       {/* Header Section */}
       {/* <Flex justify="space-between" align="center" mb={8}>

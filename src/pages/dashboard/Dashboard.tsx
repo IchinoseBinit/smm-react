@@ -9,7 +9,7 @@ export default function Dashboard() {
         <title>Dashboard </title>
       </Helmet>
 
-      <Box h="full" overflowY="auto" p={4}>
+      <Box h="full" overflowY="auto" p={4} pb={{ base: "100px", md: 4 }}>
         {/* <Box mb={4}> */}
         {/* <Heading size="3xl" mb={1}>
             Dashboard
