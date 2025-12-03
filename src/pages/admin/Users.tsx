@@ -9,7 +9,7 @@ export default function AdminUsers() {
         <title>User Management - Admin</title>
       </Helmet>
 
-      <Box h="full" overflowY="auto" p={4}>
+      <Box h="full" overflowY="auto" p={4} pb={{ base: "100px", md: 4 }}>
         <UsersManagement />
       </Box>
     </>

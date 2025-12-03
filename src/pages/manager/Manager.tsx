@@ -16,7 +16,7 @@ export default function Manager() {
       <Helmet>
         <title>Posts</title>
       </Helmet>
-      <Box p={{ base: 4, md: 8 }} bg="bg.DEFAULT" minH="100vh">
+      <Box p={{ base: 4, md: 8 }} pb={{ base: "100px", md: 8 }} bg="bg.DEFAULT" minH="100vh">
         {/* <Flex justify="space-between" align="end" mb={6}>
           <Text
             fontSize={{ base: "2xl", md: "3xl" }}

@@ -29,7 +29,7 @@ export default function Account() {
       <Helmet>
         <title>Account </title>
       </Helmet>
-      <Box>
+      <Box pb={{ base: "100px", md: 4 }}>
         <Flex justify="space-between" marginTop={1}>
           <Heading size="2xl">{}</Heading>
           {/* <Heading size="2xl">Connected Accounts</Heading> */}
