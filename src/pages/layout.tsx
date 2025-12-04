@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react"
 import { QuickActionSearch } from "@/components/Navbar"
 import { Sidebar } from "@/components/Sidebar"
+import { MobileBottomNav } from "@/components/MobileBottomNav"
 import { useSidebarStore } from "@/lib/store/sideBarStore"
 import notificationbing from "@/assets/notification-bing.svg"
 import { useColorMode } from "@/components/ui/color-mode"
@@ -78,7 +79,7 @@ export default function DashboardLayout({
   const pageConfig = getPageConfig(location.pathname)
 
   return (
-    <Flex minH="100vh" position={"fixed"} w="100%">
+    <Flex minH="100vh" w="100%" position="relative">
       {/* Desktop sidebar */}
       {!isMobile && <Sidebar />}
 
@@ -89,7 +90,7 @@ export default function DashboardLayout({
         mt={{ base: 2, md: 4 }}
         ml={!isMobile ? "240px" : 0}
         minW={0}
-        w="100%"
+        w={{ base: "100%", md: "calc(100% - 240px)" }}
       >
         {/* Header with mobile menu button */}
         <HStack
@@ -202,6 +203,9 @@ export default function DashboardLayout({
           <Sidebar />
         </Box>
       )}
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
     </Flex>
   )
 }

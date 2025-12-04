@@ -98,7 +98,7 @@ const RegisterForm: React.FC = () => {
       maxW="lg"
       mx="auto"
       transition="all 0.3s ease"
-      p={{ base: 3, md: 0 }}
+      p={{ base: 4, md: 2 }}
       // border="1px solid"
       // borderColor="gray.200"
       // borderRadius="lg"

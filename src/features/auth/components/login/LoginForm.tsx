@@ -74,7 +74,7 @@ const LoginForm = () => {
       border="1px solid"
       borderColor="gray.200"
       borderRadius="lg"
-      p={{ base: 3, sm: 4, md: 5 }}
+      p={{ base: 4, sm: 5, md: 6 }}
       className="light"
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
