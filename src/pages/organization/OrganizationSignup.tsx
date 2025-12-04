@@ -105,10 +105,10 @@ const OrganizationSignup: React.FC = () => {
           {activeTab === "signin" && (
             <Box
               bg="white"
-              p={{ base: 3, md: 4, lg: 5 }}
+              p={{ base: 4, md: 5, lg: 6 }}
               borderRadius="lg"
               w="full"
-              maxW="sm"
+              maxW="lg"
               mx="auto"
             >
               <LoginFormSection />
@@ -119,10 +119,10 @@ const OrganizationSignup: React.FC = () => {
           {activeTab === "create" && (
             <Box
               bg="white"
-              p={{ base: 3, md: 4, lg: 5 }}
+              p={{ base: 4, md: 5, lg: 6 }}
               borderRadius="lg"
               w="full"
-              maxW="sm"
+              maxW="lg"
               mx="auto"
             >
               <RegisterFormSection />

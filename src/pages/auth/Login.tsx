@@ -22,7 +22,7 @@ function Login() {
 
   return (
     <Box minH="100vh" bg="gray.50" display="flex" alignItems="center" justifyContent="center" p={{ base: 3, md: 4 }} py={{ base: 3, md: 4 }}>
-      <VStack gap={{ base: 3, md: 4 }} w="full" maxW="lg" px={{ base: 2, md: 0 }}>
+      <VStack gap={{ base: 3, md: 4 }} w="full" maxW="xl" px={{ base: 2, md: 0 }}>
         {/* Logo */}
         <Image src={logo} height={{ base: 6, md: 8 }} width="auto" maxW="100%" />
 
