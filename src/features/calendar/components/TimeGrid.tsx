@@ -189,6 +189,36 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
   const gridRef = useRef<HTMLDivElement>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Filter weekDays to show only 5 days on mobile (2 before today, today, 2 after)
+  const displayWeekDays = isMobile ? (() => {
+    const todayIndex = weekDays.findIndex(day => day.isToday)
+
+    if (todayIndex === -1) {
+      // Today not found, show first 5 days
+      return weekDays.slice(0, 5)
+    }
+
+    // Calculate start index to center today (show 2 days before)
+    const startIndex = Math.max(0, todayIndex - 2)
+    // Ensure we don't go past the end of the array
+    const endIndex = Math.min(weekDays.length, startIndex + 5)
+
+    return weekDays.slice(startIndex, endIndex)
+  })() : weekDays
 
   const from = format(weekDays[0].date, "yyyy-MM-dd")
   const to = format(weekDays[weekDays.length - 1].date, "yyyy-MM-dd")
@@ -266,16 +296,17 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
 
   const hasEventLaterInWeek = (
     currentDayIndex: number,
-    timeSlotHour: number
+    timeSlotHour: number,
+    daysArray: typeof weekDays
   ) => {
     if (!data || !Array.isArray(data)) return null
 
     for (
       let dayIndex = currentDayIndex + 1;
-      dayIndex < weekDays.length;
+      dayIndex < daysArray.length;
       dayIndex++
     ) {
-      const dayDate = weekDays[dayIndex].date
+      const dayDate = daysArray[dayIndex].date
       const event = getEventInCell(dayDate, timeSlotHour)
       if (event) {
         return event
@@ -284,13 +315,13 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
     return null
   }
 
-  const getFirstTimelineDay = (timeSlotHour: number) => {
+  const getFirstTimelineDay = (timeSlotHour: number, daysArray: typeof weekDays) => {
     if (!data || !Array.isArray(data)) return -1
 
-    for (let dayIndex = 0; dayIndex < weekDays.length; dayIndex++) {
-      const dayDate = weekDays[dayIndex].date
+    for (let dayIndex = 0; dayIndex < daysArray.length; dayIndex++) {
+      const dayDate = daysArray[dayIndex].date
       const currentEvent = getEventInCell(dayDate, timeSlotHour)
-      const laterEvent = hasEventLaterInWeek(dayIndex, timeSlotHour)
+      const laterEvent = hasEventLaterInWeek(dayIndex, timeSlotHour, daysArray)
 
       if (currentEvent || laterEvent) {
         return dayIndex
@@ -330,72 +361,13 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
     }
   }, [])
 
-  // Auto-scroll to center today's date on mobile
-  useEffect(() => {
-    // Only run on mobile screens (width < 768px)
-    const isMobile = window.innerWidth < 768
-
-    if (!isMobile || !scrollContainerRef.current || weekDays.length === 0 || isLoading) return
-
-    const scrollToToday = () => {
-      if (!scrollContainerRef.current) return
-
-      const today = new Date()
-      const todayDay = today.getDay() // 0 (Sun) to 6 (Sat)
-
-      // Only scroll if today is Wed, Thu, Fri, or Sat (days 3-6)
-      if (todayDay >= 3) {
-        // Get the width of the scroll container
-        const containerWidth = scrollContainerRef.current.offsetWidth
-        // Get the total scrollable width
-        const scrollWidth = scrollContainerRef.current.scrollWidth
-
-        // Don't scroll if dimensions aren't ready
-        if (containerWidth === 0 || scrollWidth === 0) {
-          // Retry after a short delay if dimensions not ready
-          setTimeout(scrollToToday, 100)
-          return
-        }
-
-        // Calculate the width of each day column (including the time column)
-        const columnWidth = scrollWidth / 8 // 1 time column + 7 day columns
-
-        // Calculate scroll position to center today
-        // We want today's column to be centered, so:
-        // scroll position = (today's column position) - (half of container width) + (half of column width)
-        const todayColumnPosition = columnWidth * (todayDay + 1) // +1 because index 0 is time column
-        const scrollPosition = todayColumnPosition - (containerWidth / 2) + (columnWidth / 2)
-
-        console.log('Scrolling calendar:', {
-          todayDay,
-          containerWidth,
-          scrollWidth,
-          columnWidth,
-          scrollPosition
-        })
-
-        // Scroll to the calculated position
-        scrollContainerRef.current.scrollTo({
-          left: Math.max(0, scrollPosition), // Don't scroll to negative values
-          behavior: 'smooth'
-        })
-      }
-    }
-
-    // Use requestAnimationFrame for better timing
-    const rafId = requestAnimationFrame(() => {
-      setTimeout(scrollToToday, 300) // Increased delay to 300ms
-    })
-
-    return () => cancelAnimationFrame(rafId)
-  }, [weekDays, isLoading])
 
   if (isLoading) return <CircularLoading />
 
   const hoveredEventData = hoveredEvent
     ? (() => {
         const [dayIndex, timeIndex] = hoveredEvent.split("-").map(Number)
-        const day = weekDays[dayIndex]
+        const day = displayWeekDays[dayIndex]
         const slot = timeSlots[timeIndex]
         return getEventInCell(day.date, slot.hour)
       })()
@@ -409,15 +381,18 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
       overflowY="hidden"
       overflowX={{ base: "auto", md: "hidden" }}
     >
-      <WeekHeader weekDays={weekDays} />
+      <WeekHeader weekDays={displayWeekDays} />
       <Grid
         ref={gridRef}
-        templateColumns={{ base: "40px repeat(7, 1fr)", md: "60px repeat(7, 1fr)" }}
+        templateColumns={{
+          base: `40px repeat(${displayWeekDays.length}, 1fr)`,
+          md: "60px repeat(7, 1fr)"
+        }}
         autoRows={{ base: "70px", md: "94px" }}
         position="sticky"
         top="0"
         zIndex="80"
-        minWidth={{ base: "600px", md: "auto" }}
+        minWidth={{ base: "auto", md: "auto" }}
       >
         {/* Time labels */}
         {timeSlots.map((slot, i) => (
@@ -440,11 +415,11 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
         ))}
 
         {/* Grid cells */}
-        {weekDays.map((day, dayIndex) =>
+        {displayWeekDays.map((day, dayIndex) =>
           timeSlots.map((slot, timeIndex) => {
             const currentEvent = getEventInCell(day.date, slot.hour)
-            const laterEvent = hasEventLaterInWeek(dayIndex, slot.hour)
-            const firstTimelineDay = getFirstTimelineDay(slot.hour)
+            const laterEvent = hasEventLaterInWeek(dayIndex, slot.hour, displayWeekDays)
+            const firstTimelineDay = getFirstTimelineDay(slot.hour, displayWeekDays)
             const eventId = `${dayIndex}-${timeIndex}`
 
             return (

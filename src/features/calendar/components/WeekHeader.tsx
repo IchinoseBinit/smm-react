@@ -9,10 +9,13 @@ interface WeekHeaderProps {
 export const WeekHeader: React.FC<WeekHeaderProps> = ({ weekDays }) => {
   return (
     <Grid
-      templateColumns={{ base: "40px repeat(7, 1fr)", md: "60px repeat(7, 1fr)" }}
+      templateColumns={{
+        base: `40px repeat(${weekDays.length}, 1fr)`,
+        md: "60px repeat(7, 1fr)"
+      }}
       borderColor="border.DEFAULT"
       bg="bg.DEFAULT"
-      minWidth={{ base: "600px", md: "auto" }}
+      minWidth={{ base: "auto", md: "auto" }}
     >
       {/* Empty cell for time column */}
       <Box
