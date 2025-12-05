@@ -187,6 +187,7 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
   const [hoveredEvent, setHoveredEvent] = useState<string | null>(null)
   const [cardPosition, setCardPosition] = useState({ top: 0, left: 0 })
   const gridRef = useRef<HTMLDivElement>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const from = format(weekDays[0].date, "yyyy-MM-dd")
@@ -329,6 +330,66 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
     }
   }, [])
 
+  // Auto-scroll to center today's date on mobile
+  useEffect(() => {
+    // Only run on mobile screens (width < 768px)
+    const isMobile = window.innerWidth < 768
+
+    if (!isMobile || !scrollContainerRef.current || weekDays.length === 0 || isLoading) return
+
+    const scrollToToday = () => {
+      if (!scrollContainerRef.current) return
+
+      const today = new Date()
+      const todayDay = today.getDay() // 0 (Sun) to 6 (Sat)
+
+      // Only scroll if today is Wed, Thu, Fri, or Sat (days 3-6)
+      if (todayDay >= 3) {
+        // Get the width of the scroll container
+        const containerWidth = scrollContainerRef.current.offsetWidth
+        // Get the total scrollable width
+        const scrollWidth = scrollContainerRef.current.scrollWidth
+
+        // Don't scroll if dimensions aren't ready
+        if (containerWidth === 0 || scrollWidth === 0) {
+          // Retry after a short delay if dimensions not ready
+          setTimeout(scrollToToday, 100)
+          return
+        }
+
+        // Calculate the width of each day column (including the time column)
+        const columnWidth = scrollWidth / 8 // 1 time column + 7 day columns
+
+        // Calculate scroll position to center today
+        // We want today's column to be centered, so:
+        // scroll position = (today's column position) - (half of container width) + (half of column width)
+        const todayColumnPosition = columnWidth * (todayDay + 1) // +1 because index 0 is time column
+        const scrollPosition = todayColumnPosition - (containerWidth / 2) + (columnWidth / 2)
+
+        console.log('Scrolling calendar:', {
+          todayDay,
+          containerWidth,
+          scrollWidth,
+          columnWidth,
+          scrollPosition
+        })
+
+        // Scroll to the calculated position
+        scrollContainerRef.current.scrollTo({
+          left: Math.max(0, scrollPosition), // Don't scroll to negative values
+          behavior: 'smooth'
+        })
+      }
+    }
+
+    // Use requestAnimationFrame for better timing
+    const rafId = requestAnimationFrame(() => {
+      setTimeout(scrollToToday, 300) // Increased delay to 300ms
+    })
+
+    return () => cancelAnimationFrame(rafId)
+  }, [weekDays, isLoading])
+
   if (isLoading) return <CircularLoading />
 
   const hoveredEventData = hoveredEvent
@@ -341,7 +402,13 @@ export const TimeGrid: React.FC<TimeGridProps> = ({ timeSlots, weekDays }) => {
     : null
 
   return (
-    <Box flex={1} mt={{ base: 2, md: 5 }} overflowY="hidden" overflowX={{ base: "auto", md: "hidden" }}>
+    <Box
+      ref={scrollContainerRef}
+      flex={1}
+      mt={{ base: 2, md: 5 }}
+      overflowY="hidden"
+      overflowX={{ base: "auto", md: "hidden" }}
+    >
       <WeekHeader weekDays={weekDays} />
       <Grid
         ref={gridRef}
